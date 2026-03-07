@@ -203,7 +203,8 @@
                 width: '0',
                 videoId: 'DZ47H84Bc_Q',
                 playerVars: {
-                    'autoplay': 0,
+                    'autoplay': 1, // Activé ici
+                    'mute': 0,
                     'loop': 1,
                     'playlist': 'DZ47H84Bc_Q',
                     'controls': 0,
@@ -218,11 +219,13 @@
 
         function onPlayerReady(event) {
             event.target.setVolume(50);
+            // Tente de lancer la musique immédiatement (marchera si l'utilisateur a déjà interagi)
+            event.target.playVideo();
         }
 
-        // Démarre la musique au premier clic n'importe où sur la page
+        // Sécurité : Démarre au premier clic n'importe où si le navigateur a bloqué l'autoplay
         document.body.addEventListener('click', function() {
-            if (!musicStarted && player && player.playVideo) {
+            if (!musicStarted && player && typeof player.playVideo === 'function') {
                 player.playVideo();
                 document.getElementById('music-icon').className = "fa-solid fa-pause";
                 musicStarted = true;
@@ -230,9 +233,7 @@
         }, { once: true });
 
         function toggleMusic(event) {
-            // Empêche l'événement de clic du body de se déclencher en même temps
             event.stopPropagation();
-            
             var icon = document.getElementById('music-icon');
             if (player.getPlayerState() == 1) { 
                 player.pauseVideo();
