@@ -5,246 +5,604 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glitchsize | 𝐋𝐢𝐧𝐤 𝐭𝐫𝐞𝐞</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --cyan: #00f5ff;
+            --magenta: #ff006e;
+            --purple: #7b2ff7;
+            --dark: #03010a;
+            --card-bg: rgba(255,255,255,0.03);
+            --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.4);
+            --glow-mag: 0 0 20px rgba(255, 0, 110, 0.4);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at center, #111111 0%, #000000 100%);
-            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 40px 20px;
+            padding: 50px 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* ─── ANIMATED ANIME BACKGROUND ─── */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Gradient overlay on top of canvas */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 20% 20%, rgba(123,47,247,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(0,245,255,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 50% at 50% 50%, rgba(255,0,110,0.06) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Scanlines */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ─── CONTENT WRAPPER ─── */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ─── HEADER ─── */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 44px;
+            position: relative;
+        }
+
+        .header-tag {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            opacity: 0.7;
         }
 
         h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #ffffff, #666666);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(0,245,255,0.5), 0 0 60px rgba(0,245,255,0.2);
         }
 
+        /* Glitch effect on title */
+        h1::before, h1::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+        h1::before {
+            color: var(--cyan);
+            animation: glitch-top 3.5s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            transform: translateX(-2px);
+            opacity: 0.8;
+        }
+        h1::after {
+            color: var(--magenta);
+            animation: glitch-bot 3.5s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            transform: translateX(2px);
+            opacity: 0.8;
+        }
+
+        @keyframes glitch-top {
+            0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+            92% { transform: translateX(-3px); opacity: 0.8; }
+            94% { transform: translateX(3px); opacity: 0.6; }
+            96% { transform: translateX(-1px); opacity: 0.9; }
+            98% { transform: translateX(0); opacity: 0; }
+        }
+        @keyframes glitch-bot {
+            0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+            91% { transform: translateX(3px); opacity: 0.7; }
+            93% { transform: translateX(-3px); opacity: 0.9; }
+            95% { transform: translateX(2px); opacity: 0.6; }
+            97% { transform: translateX(0); opacity: 0; }
+        }
+
+        /* Decorative line under title */
+        .title-line {
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+            margin: 14px auto 0;
+            animation: pulse-line 3s ease-in-out infinite;
+        }
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.5; width: 60px; }
+            50% { opacity: 1; width: 100px; }
+        }
+
+        /* ─── LINKS ─── */
         .links-container {
             width: 100%;
-            max-width: 400px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .link-card {
             display: flex;
             align-items: center;
             text-decoration: none;
-            padding: 18px 25px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 16px 22px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: card-in 0.6s both;
+        }
+
+        .link-card:nth-child(1) { animation-delay: 0.1s; }
+        .link-card:nth-child(2) { animation-delay: 0.2s; }
+        .link-card:nth-child(3) { animation-delay: 0.3s; }
+        .link-card:nth-child(4) { animation-delay: 0.4s; }
+        .link-card:nth-child(5) { animation-delay: 0.5s; }
+        .link-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes card-in {
+            from { opacity: 0; transform: translateX(-20px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Corner accent */
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent, var(--cyan));
+            opacity: 0.3;
+            transition: opacity 0.3s, width 0.3s;
+        }
+
+        /* Shine sweep on hover */
+        .link-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .link-card:hover::after { left: 150%; }
+        .link-card:hover::before { opacity: 1; width: 4px; }
+
+        .link-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--accent, var(--cyan));
+            transform: translateX(6px);
+            box-shadow: -4px 0 20px rgba(0, 245, 255, 0.1), 0 4px 30px rgba(0,0,0,0.5);
         }
 
         .link-card i, .link-card .diagonal-g {
-            font-size: 1.4rem;
-            width: 30px;
-            margin-right: 15px;
+            font-size: 1.3rem;
+            width: 32px;
+            margin-right: 16px;
             display: flex;
             justify-content: center;
-            color: #888;
-            transition: color 0.3s ease;
+            color: rgba(255,255,255,0.35);
+            transition: color 0.3s, text-shadow 0.3s;
         }
 
         .diagonal-g {
-            font-weight: 800;
-            transform: rotate(-15deg);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            transform: rotate(-12deg) skewX(-5deg);
             font-style: normal;
         }
 
-        .link-text {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .link-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
         .link-card:hover i, .link-card:hover .diagonal-g {
-            color: #ffffff;
+            color: var(--accent, var(--cyan));
+            text-shadow: 0 0 12px var(--accent, var(--cyan));
         }
 
-        /* Couleurs au survol */
-        .link-card.czone:hover { border-color: #00ff88; }
-        .link-card.czone:hover .diagonal-g { color: #00ff88; }
-        .link-card.instagram:hover i { color: #E1306C; }
-        .link-card.twitter:hover i { color: #1DA1F2; }
-        .link-card.tiktok:hover i { color: #00f2ea; }
-        .link-card.twitch:hover i { color: #9146FF; }
-        .link-card.discord:hover i { color: #5865F2; }
+        .link-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.75);
+            transition: color 0.3s;
+        }
 
-        /* Lecteur Musique Discret */
+        .link-card:hover .link-text {
+            color: #fff;
+        }
+
+        /* Arrow indicator */
+        .link-arrow {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.15);
+            transition: all 0.3s;
+            transform: translateX(-4px);
+        }
+        .link-card:hover .link-arrow {
+            color: var(--accent, var(--cyan));
+            transform: translateX(2px);
+        }
+
+        /* Per-card accent colors */
+        .link-card.czone     { --accent: #00ff88; }
+        .link-card.instagram { --accent: #E1306C; }
+        .link-card.twitter   { --accent: #1DA1F2; }
+        .link-card.tiktok    { --accent: #00f2ea; }
+        .link-card.twitch    { --accent: #9146FF; }
+        .link-card.discord   { --accent: #5865F2; }
+
+        .link-card:hover { box-shadow: -4px 0 25px rgba(var(--accent-rgb, 0,245,255), 0.15), 0 8px 30px rgba(0,0,0,0.6); }
+
+        /* ─── MUSIC PLAYER ─── */
         #music-control {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(0,245,255,0.2);
+            padding: 10px 18px;
             border-radius: 50px;
             cursor: pointer;
-            color: #888;
+            color: rgba(255,255,255,0.5);
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
             z-index: 100;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
         }
         #music-control:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            border-color: var(--cyan);
+            color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0,245,255,0.15);
         }
 
+        #music-icon { font-size: 0.75rem; }
+
+        /* Equalizer bars */
+        .eq-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+        }
+        .eq-bars span {
+            display: block;
+            width: 2px;
+            background: var(--cyan);
+            border-radius: 2px;
+            animation: eq 0.8s ease-in-out infinite alternate;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .eq-bars span:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .eq-bars span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+        .eq-bars span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+        .eq-bars span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+        .eq-bars span:nth-child(5) { height: 5px; animation-delay: 0.25s; }
+        .eq-bars.playing span { opacity: 1; }
+
+        @keyframes eq {
+            from { transform: scaleY(0.3); }
+            to   { transform: scaleY(1); }
+        }
+
+        /* ─── FOOTER ─── */
         .footer {
-            margin-top: 50px;
-            font-size: 0.75rem;
-            color: #444;
+            margin-top: 44px;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.15);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
+            font-family: 'Orbitron', sans-serif;
         }
 
-        #player {
-            display: none;
-        }
+        #player { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>𝐆𝐋𝐈𝐓𝐂𝐇𝐒𝐈𝐙𝐄</h1>
-    </div>
+    <canvas id="bg-canvas"></canvas>
 
-    <div class="links-container">
-        <a href="https://czone-free-crack-premium.netlify.app/" class="link-card czone" target="_blank">
-            <span class="diagonal-g">G</span>
-            <span class="link-text">𝐂-𝐙𝐎𝐍𝐄</span>
-        </a>
+    <div class="wrapper">
+        <div class="header">
+            <div class="header-tag">// LINK TREE</div>
+            <h1 data-text="GLITCHSIZE">GLITCHSIZE</h1>
+            <span class="title-line"></span>
+        </div>
 
-        <a href="https://www.instagram.com/glitchsize_fr?igsh=ZDFrcnlnZXkwNjZw" class="link-card instagram" target="_blank">
-            <i class="fa-brands fa-instagram"></i>
-            <span class="link-text">𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌</span>
-        </a>
+        <div class="links-container">
+            <a href="https://czone-free-crack-premium.netlify.app/" class="link-card czone" target="_blank">
+                <span class="diagonal-g">G</span>
+                <span class="link-text">𝐂-𝐙𝐎𝐍𝐄</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
 
-        <a href="https://x.com/PalermLeer59724" class="link-card twitter" target="_blank">
-            <i class="fa-brands fa-x-twitter"></i>
-            <span class="link-text">𝐓𝐖𝐈𝐓𝐓𝐄𝐑</span>
-        </a>
+            <a href="https://www.instagram.com/glitchsize_fr?igsh=ZDFrcnlnZXkwNjZw" class="link-card instagram" target="_blank">
+                <i class="fa-brands fa-instagram"></i>
+                <span class="link-text">𝐈𝐍𝐒𝐓𝐀𝐆𝐑𝐀𝐌</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
 
-        <a href="https://www.tiktok.com/@glitchsize6?_r=1&_t=ZN-94TVUONIpMM" class="link-card tiktok" target="_blank">
-            <i class="fa-brands fa-tiktok"></i>
-            <span class="link-text">𝐓𝐈𝐊𝐓𝐎𝐊</span>
-        </a>
+            <a href="https://x.com/PalermLeer59724" class="link-card twitter" target="_blank">
+                <i class="fa-brands fa-x-twitter"></i>
+                <span class="link-text">𝐓𝐖𝐈𝐓𝐓𝐄𝐑</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
 
-        <a href="https://twitch.tv/glitchsize" class="link-card twitch" target="_blank">
-            <i class="fa-brands fa-twitch"></i>
-            <span class="link-text">𝐓𝐖𝐈𝐓𝐂𝐇</span>
-        </a>
+            <a href="https://www.tiktok.com/@glitchsize6?_r=1&_t=ZN-94TVUONIpMM" class="link-card tiktok" target="_blank">
+                <i class="fa-brands fa-tiktok"></i>
+                <span class="link-text">𝐓𝐈𝐊𝐓𝐎𝐊</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
 
-        <a href="https://discord.gg/RPgAtSdzg3" class="link-card discord" target="_blank">
-            <i class="fa-brands fa-discord"></i>
-            <span class="link-text">𝐃𝐈𝐒𝐂𝐎𝐑𝐃</span>
-        </a>
+            <a href="https://twitch.tv/glitchsize" class="link-card twitch" target="_blank">
+                <i class="fa-brands fa-twitch"></i>
+                <span class="link-text">𝐓𝐖𝐈𝐓𝐂𝐇</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
+
+            <a href="https://discord.gg/RPgAtSdzg3" class="link-card discord" target="_blank">
+                <i class="fa-brands fa-discord"></i>
+                <span class="link-text">𝐃𝐈𝐒𝐂𝐎𝐑𝐃</span>
+                <i class="fa-solid fa-chevron-right link-arrow"></i>
+            </a>
+        </div>
+
+        <footer class="footer">© 𝟐𝟎𝟐𝟔 𝐆𝐋𝐈𝐓𝐂𝐇𝐒𝐈𝐙𝐄</footer>
     </div>
 
     <div id="music-control" onclick="toggleMusic(event)">
         <i id="music-icon" class="fa-solid fa-play"></i>
         <span>Mice on Venus</span>
+        <div class="eq-bars" id="eq-bars">
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
     </div>
 
     <div id="player"></div>
 
-    <footer class="footer">
-        © 𝟐𝟎𝟐𝟔 𝐆𝐋𝐈𝐓𝐂𝐇𝐒𝐈𝐙𝐄
-    </footer>
-
     <script>
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    /* ─── ANIME BACKGROUND CANVAS ─── */
+    (function() {
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
 
-        var player;
-        var musicStarted = false;
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: 'DZ47H84Bc_Q',
-                playerVars: {
-                    'autoplay': 1, // Activé ici
-                    'mute': 0,
-                    'loop': 1,
-                    'playlist': 'DZ47H84Bc_Q',
-                    'controls': 0,
-                    'showinfo': 0,
-                    'rel': 0
-                },
-                events: {
-                    'onReady': onPlayerReady
+        /* Floating orbs */
+        const orbs = Array.from({length: 6}, (_, i) => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: 80 + Math.random() * 180,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            hue: [180, 300, 260, 0, 190, 280][i],
+            opacity: 0.03 + Math.random() * 0.06
+        }));
+
+        /* Floating Japanese/anime kanji particles */
+        const CHARS = ['彡', '月', '夢', '光', '影', '空', '星', '刃', '力', '∞', '◈', '⬡', '△', '◇', '※'];
+        const particles = Array.from({length: 28}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            char: CHARS[Math.floor(Math.random() * CHARS.length)],
+            size: 10 + Math.random() * 18,
+            opacity: 0.04 + Math.random() * 0.08,
+            vy: -0.15 - Math.random() * 0.25,
+            vx: (Math.random() - 0.5) * 0.1,
+            color: Math.random() > 0.5 ? '#00f5ff' : '#7b2ff7',
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.005,
+        }));
+
+        /* Grid lines */
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(0, 245, 255, 0.025)';
+            ctx.lineWidth = 1;
+            const spacing = 60;
+            for (let x = 0; x < canvas.width; x += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        /* Shooting lines */
+        const lines = Array.from({length: 5}, () => createLine());
+        function createLine() {
+            return {
+                x: -200,
+                y: Math.random() * window.innerHeight * 0.6,
+                len: 80 + Math.random() * 120,
+                speed: 3 + Math.random() * 5,
+                opacity: 0.3 + Math.random() * 0.4,
+                color: Math.random() > 0.5 ? '#00f5ff' : '#ff006e',
+                active: false,
+                timer: Math.random() * 300
+            };
+        }
+
+        function tick() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Grid
+            drawGrid();
+
+            // Orbs
+            orbs.forEach(o => {
+                o.x += o.vx; o.y += o.vy;
+                if (o.x < -o.r) o.x = canvas.width + o.r;
+                if (o.x > canvas.width + o.r) o.x = -o.r;
+                if (o.y < -o.r) o.y = canvas.height + o.r;
+                if (o.y > canvas.height + o.r) o.y = -o.r;
+
+                const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+                g.addColorStop(0, `hsla(${o.hue}, 100%, 60%, ${o.opacity})`);
+                g.addColorStop(1, `hsla(${o.hue}, 100%, 60%, 0)`);
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Particles (kanji/symbols)
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.rotation += p.rotSpeed;
+                if (p.y < -30) { p.y = canvas.height + 30; p.x = Math.random() * canvas.width; }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation);
+                ctx.globalAlpha = p.opacity;
+                ctx.fillStyle = p.color;
+                ctx.font = `${p.size}px serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText(p.char, 0, 0);
+                ctx.restore();
+            });
+
+            // Shooting lines
+            lines.forEach(l => {
+                l.timer--;
+                if (l.timer <= 0 && !l.active) { l.active = true; l.x = -l.len; l.y = Math.random() * canvas.height * 0.8; }
+                if (l.active) {
+                    l.x += l.speed;
+                    ctx.save();
+                    const g2 = ctx.createLinearGradient(l.x, l.y, l.x + l.len, l.y);
+                    g2.addColorStop(0, 'transparent');
+                    g2.addColorStop(1, l.color + 'cc');
+                    ctx.strokeStyle = g2;
+                    ctx.lineWidth = 1.5;
+                    ctx.globalAlpha = l.opacity;
+                    ctx.beginPath();
+                    ctx.moveTo(l.x, l.y);
+                    ctx.lineTo(l.x + l.len, l.y);
+                    ctx.stroke();
+                    ctx.restore();
+                    if (l.x > canvas.width + l.len) { l.active = false; l.timer = 100 + Math.random() * 200; }
                 }
             });
-        }
 
-        function onPlayerReady(event) {
-            event.target.setVolume(50);
-            // Tente de lancer la musique immédiatement (marchera si l'utilisateur a déjà interagi)
-            event.target.playVideo();
+            requestAnimationFrame(tick);
         }
+        tick();
+    })();
 
-        // Sécurité : Démarre au premier clic n'importe où si le navigateur a bloqué l'autoplay
-        document.body.addEventListener('click', function() {
-            if (!musicStarted && player && typeof player.playVideo === 'function') {
-                player.playVideo();
-                document.getElementById('music-icon').className = "fa-solid fa-pause";
-                musicStarted = true;
+    /* ─── YOUTUBE PLAYER ─── */
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+
+    var player;
+    var musicStarted = false;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '0', width: '0',
+            videoId: 'DZ47H84Bc_Q',
+            playerVars: { autoplay: 1, mute: 0, loop: 1, playlist: 'DZ47H84Bc_Q', controls: 0, rel: 0 },
+            events: {
+                onReady: e => { e.target.setVolume(50); e.target.playVideo(); },
+                onStateChange: e => {
+                    const playing = e.data === 1;
+                    document.getElementById('music-icon').className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+                    document.getElementById('eq-bars').classList.toggle('playing', playing);
+                    if (playing) musicStarted = true;
+                }
             }
-        }, { once: true });
+        });
+    }
 
-        function toggleMusic(event) {
-            event.stopPropagation();
-            var icon = document.getElementById('music-icon');
-            if (player.getPlayerState() == 1) { 
-                player.pauseVideo();
-                icon.className = "fa-solid fa-play";
-            } else {
-                player.playVideo();
-                icon.className = "fa-solid fa-pause";
-                musicStarted = true;
-            }
+    document.body.addEventListener('click', function() {
+        if (!musicStarted && player && typeof player.playVideo === 'function') {
+            player.playVideo();
+            musicStarted = true;
         }
+    }, { once: true });
+
+    function toggleMusic(e) {
+        e.stopPropagation();
+        if (!player) return;
+        if (player.getPlayerState() === 1) {
+            player.pauseVideo();
+        } else {
+            player.playVideo();
+            musicStarted = true;
+        }
+    }
     </script>
-
 </body>
 </html>
