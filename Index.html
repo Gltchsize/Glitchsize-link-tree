@@ -300,15 +300,16 @@ var yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_a
 var player,started=false,mpReady=false;
 function onYouTubeIframeAPIReady(){
   player=new YT.Player('player',{
-    height:'0',width:'0',
-    playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:0,controls:0,rel:0,playsinline:1},
+    height:'1',width:'1',
+    playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:1,controls:0,rel:0,playsinline:1,enablejsapi:1},
     events:{
-      onReady:function(e){mpReady=true;e.target.setShuffle(true);e.target.setVolume(60);updateMeta()},
+      onReady:function(e){mpReady=true;e.target.setVolume(60);e.target.setShuffle(true);e.target.playVideo();showPlayer();updateMeta()},
       onStateChange:function(e){
         var p=e.data===1;
         document.getElementById('mpIco').className=p?'fa-solid fa-pause':'fa-solid fa-play';
         document.getElementById('mpEq').classList.toggle('on',p);
         if(p){started=true;updateMeta()}
+        if(e.data===0){player.nextVideo()}
       }
     }
   });
@@ -333,9 +334,7 @@ function showPlayer(){
   mp.style.opacity='1';
   document.getElementById('scene').style.paddingBottom='90px';
 }
-document.body.addEventListener('click',function(){
-  if(!started&&mpReady){player.playVideo();started=true;showPlayer()}
-},{once:true});
+
 </script>
 </body>
 </html>
