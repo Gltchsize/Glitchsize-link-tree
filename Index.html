@@ -67,6 +67,76 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .pg{height:2px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden}
 .pg i{display:block;height:100%;width:0;background:var(--rl);border-radius:2px;transition:width 1s linear}
 
+/* COMMUNAUTE : compteur, chat, livre d'or, comptes */
+.vc{font-size:.5rem;letter-spacing:3px;color:rgba(255,255,255,.28);text-transform:uppercase;text-align:center;padding-top:2px}
+.vc[hidden]{display:none}
+.vc i{margin-right:6px;color:rgba(var(--rlrgb),.5)}
+.cm{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.cm[hidden]{display:none}
+.cm,.cm *{cursor:none}
+.cm [hidden]{display:none!important}
+.cm-bg{position:absolute;inset:0;background:rgba(var(--bgrgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.cm-box{position:relative;width:100%;max-width:440px;height:min(80vh,640px);height:min(80dvh,640px);display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:rgba(var(--bgrgb),.95);border:1px solid rgba(255,255,255,.08);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(var(--rgb),.1);animation:cmIn .35s cubic-bezier(.34,1.3,.64,1)}
+@keyframes cmIn{from{opacity:0;transform:translateY(16px) scale(.97)}}
+.cm-h{display:flex;align-items:center;gap:8px;padding:12px 12px 12px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.cm-tabs{display:flex;gap:4px;flex:1;min-width:0}
+.cm-tab{background:none;border:1px solid transparent;color:rgba(255,255,255,.4);font:500 .62rem 'Inter',sans-serif;letter-spacing:2px;padding:7px 11px;border-radius:20px;text-transform:uppercase;transition:all .2s;white-space:nowrap}
+.cm-tab:hover{color:#fff}
+.cm-tab.on{color:#fff;background:rgba(var(--rgb),.14);border-color:rgba(var(--rgb),.3)}
+.cm-acc{display:flex;align-items:center;gap:8px;font-size:.66rem;color:rgba(255,255,255,.45);min-width:0}
+.cm-acc b{color:var(--rg);font-weight:500;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-sm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);font:500 .6rem 'Inter',sans-serif;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:14px;transition:all .2s;white-space:nowrap}
+.cm-sm:hover{color:#fff;border-color:rgba(var(--rgb),.4)}
+.cm-x{background:none;border:none;color:rgba(255,255,255,.4);font-size:.9rem;padding:8px;border-radius:50%;display:flex;transition:all .2s}
+.cm-x:hover{color:#fff;background:rgba(255,255,255,.08)}
+.cm button:focus-visible{outline:2px solid rgba(var(--rlrgb),.85);outline-offset:2px}
+
+/* COURONNE ADMIN */
+.cr{color:#f7c948;text-shadow:0 0 10px rgba(247,201,72,.55);flex-shrink:0}
+.mh .cr{font-size:.66rem;margin-left:-3px}
+.cm-acc .cr{font-size:.62rem}
+.m.adm{box-shadow:inset 0 0 0 1px rgba(247,201,72,.12)}
+.mh .ab{display:inline-flex;align-items:center;gap:4px}
+
+.cm-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(var(--rgb),.45) transparent;overscroll-behavior:contain}
+.m{padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.m.adm{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.22)}
+.mh{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.mh b{font-size:.74rem;font-weight:500}
+.mh time{font-size:.58rem;color:rgba(255,255,255,.28)}
+.mh .ab{font-size:.44rem;letter-spacing:2px;padding:2px 6px;border-radius:10px;background:rgba(var(--rgb),.22);color:var(--rg);text-transform:uppercase}
+.mx{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.25);font-size:.7rem;padding:3px 5px;transition:color .2s}
+.mx:hover{color:#f23f43}
+.m p{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.75);white-space:pre-wrap;word-break:break-word;font-weight:300}
+.cm-empty{margin:auto;text-align:center;font-size:.72rem;color:rgba(255,255,255,.32);line-height:1.7;padding:20px}
+
+.cm-comp{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.06)}
+.cm-comp input,.cm-auth input{flex:1;min-width:0;font:400 16px 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:11px 13px;outline:none;transition:border-color .2s,background .2s}
+.cm-comp input::placeholder,.cm-auth input::placeholder{color:rgba(255,255,255,.3)}
+.cm-comp input:focus,.cm-auth input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.07)}
+.cm-btn{background:var(--r);color:#fff;border:none;border-radius:12px;padding:0 16px;font:500 .72rem 'Inter',sans-serif;letter-spacing:1.5px;transition:background .2s,opacity .2s}
+.cm-btn:hover{background:var(--rl)}
+.cm-btn[disabled]{opacity:.5}
+.cm-btn.ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7)}
+.cm-btn.ghost:hover{background:rgba(255,255,255,.1)}
+.cm-btn.dc{background:#5865f2;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.cm-btn.dc:hover{background:#4752e0}
+.cm-or{display:flex;align-items:center;gap:10px;font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.22);margin:2px 0}
+.cm-or::before,.cm-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.cm-gate{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-top:1px solid rgba(255,255,255,.06);font-size:.72rem;color:rgba(255,255,255,.45)}
+.cm-gate span{flex:1;min-width:120px}
+.cm-gate .cm-btn{padding:10px 14px}
+.cm-auth{flex:1;display:flex;flex-direction:column;gap:10px;padding:18px;overflow-y:auto}
+.cm-at{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.9rem;letter-spacing:3px;margin-bottom:4px}
+.cm-auth .cm-btn{padding:13px}
+.cm-link{background:none;border:none;color:rgba(255,255,255,.4);font:400 .7rem 'Inter',sans-serif;padding:4px 0;text-align:left;transition:color .2s}
+.cm-link:hover{color:var(--rg)}
+.cm-msg{padding:0 14px;font-size:.7rem;line-height:1.5;color:var(--rg)}
+.cm-msg:not(:empty){padding:8px 14px 10px}
+@media (prefers-reduced-motion:reduce){.cm-box{animation:none}}
+
+.cm-box:focus{outline:none}
+
 /* DIVIDER */
 .div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.25),rgba(255,255,255,.08),transparent);margin:2px 0;opacity:0}
 
@@ -189,7 +259,53 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
 
+        <a href="#" class="card" id="openCm" role="button">
+      <div class="ci"><i class="fa-solid fa-comments"></i></div>
+      <div class="ct"><span class="cs">Messages</span><span class="cn">CHAT &amp; LIVRE D'OR</span></div>
+      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
     <div class="ft" id="eFT">2026 &middot; LEER &middot; glitchsize</div>
+    <div class="vc" id="vcW" hidden><i class="fa-solid fa-eye"></i><span id="vN">0</span> visites</div>
+  </div>
+</div>
+
+<div class="cm" id="cm" hidden>
+  <div class="cm-bg" data-close></div>
+  <div class="cm-box" role="dialog" aria-modal="true" aria-label="Chat et livre d'or">
+    <div class="cm-h">
+      <div class="cm-tabs" role="tablist">
+        <button type="button" class="cm-tab on" data-tab="chat" role="tab" aria-selected="true">Chat</button>
+        <button type="button" class="cm-tab" data-tab="gb" role="tab" aria-selected="false">Livre d'or</button>
+      </div>
+      <div class="cm-acc" id="cmAcc"></div>
+      <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="cm-list" id="cmList" aria-live="polite"></div>
+    <form class="cm-comp" id="cmComp" hidden>
+      <input id="cmIn" type="text" maxlength="300" autocomplete="off" placeholder="Écris un message…" aria-label="Message">
+      <button type="submit" class="cm-btn" id="cmSend" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+    <div class="cm-gate" id="cmGate" hidden>
+      <span>Connecte-toi pour écrire.</span>
+      <button type="button" class="cm-btn dc" id="gDiscord"><i class="fa-brands fa-discord"></i> Discord</button>
+      <button type="button" class="cm-btn" id="gLogin">Connexion</button>
+      <button type="button" class="cm-btn ghost" id="gSign">Créer un compte</button>
+    </div>
+
+    <form class="cm-auth" id="cmAuth" hidden novalidate>
+      <div class="cm-at" id="cmAt">CONNEXION</div>
+      <button type="button" class="cm-btn dc" id="aDiscord"><i class="fa-brands fa-discord"></i> Continuer avec Discord</button>
+      <div class="cm-or">ou</div>
+      <input id="aEmail" type="email" placeholder="Email" autocomplete="email" aria-label="Email">
+      <input id="aUser" type="text" placeholder="Pseudo (3 à 20 : lettres, chiffres, _)" autocomplete="username" maxlength="20" aria-label="Pseudo" hidden>
+      <input id="aPass" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="current-password" aria-label="Mot de passe">
+      <button type="submit" class="cm-btn" id="aGo">Se connecter</button>
+      <button type="button" class="cm-link" id="aSwap">Pas de compte ? Créer un compte</button>
+      <button type="button" class="cm-link" id="aBack">Retour</button>
+    </form>
+    <div class="cm-msg" id="cmMsg" role="status"></div>
   </div>
 </div>
 
@@ -407,7 +523,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   var TYPE={0:'Joue à',1:'En live sur',2:'Écoute',3:'Regarde',5:'Participe à'};
   var $=function(i){return document.getElementById(i)};
   var DEF_AV=$('dAv').src,DEF_BN=$('dBanner').src;
-  var last={av:null,pf:0},wsOk=false;
+  var last={av:null,pf:0},wsOk=false,lastUser=null;
 
   function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
   function avUrl(u,size,anim){return CDN+'/avatars/'+u.id+'/'+u.avatar+((anim&&u.avatar.indexOf('a_')===0)?'.gif':'.png')+'?size='+size}
@@ -542,7 +658,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   /* ---------- MISE À JOUR ---------- */
   function update(d){
     if(!d||!d.discord_user)return;
-    var u=d.discord_user;
+    var u=d.discord_user;lastUser=u;
     swap($('dAv'),u.avatar?avUrl(u,256,true):DEF_AV,DEF_AV);
     $('dName').textContent=u.display_name||u.global_name||u.username||'LEER';
     var s=ST[d.discord_status]||ST.offline;
@@ -564,6 +680,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   function poll(){getJSON(API).then(function(r){if(r.success)update(r.data)}).catch(function(){})}
   poll();
   setInterval(function(){if(!wsOk)poll()},15000);
+  setInterval(function(){if(lastUser)refresh(lastUser)},60000);
 
   var retry=0;
   function connect(){
@@ -581,6 +698,330 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     ws.onerror=function(){try{ws.close()}catch(e){}};
   }
   connect();
+})();
+
+/* COMMUNAUTE — compteur, comptes, chat, livre d'or (Supabase) */
+(function(){
+  var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
+  var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
+  var $=function(i){return document.getElementById(i)};
+  var COLS='id,user_id,username,is_admin,content,created_at';
+  var CFG={
+    chat:{table:'chat_messages',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a encore écrit.<br>Lance la conversation.'},
+    gb:{table:'guestbook',max:500,ph:'Laisse un mot dans le livre d’or…',dir:-1,limit:60,empty:'Le livre d’or est vide.<br>Sois le premier à signer.'}
+  };
+  var sb=null,sbP=null,user=null,profile=null,isAdmin=false;
+  var tab='chat',view='main',mode='login';
+  var data={chat:null,gb:null},chan=null,pollT=null,msgT=null,lastFocus=null;
+
+  /* ---------- COMPTEUR DE VISITES (sans SDK : simple appel REST) ---------- */
+  function counter(){
+    var el=$('vN'),now=Date.now(),lv=0,h={apikey:SB_KEY,'Content-Type':'application/json'};
+    try{lv=+localStorage.getItem('leerVisit')||0}catch(e){}
+    var fresh=now-lv>12*3600*1000;   /* une visite comptée max. toutes les 12 h par navigateur */
+    var p=fresh
+      ?fetch(SB_URL+'/rest/v1/rpc/increment_views',{method:'POST',headers:h,body:'{}'}).then(function(r){return r.json()})
+      :fetch(SB_URL+'/rest/v1/site_stats?select=views&id=eq.1',{headers:h}).then(function(r){return r.json()}).then(function(a){return a[0].views});
+    p.then(function(n){
+      if(typeof n!=='number')throw new Error('bad');
+      el.textContent=n.toLocaleString('fr-FR');$('vcW').hidden=false;
+      if(fresh)try{localStorage.setItem('leerVisit',String(now))}catch(e){}
+    }).catch(function(){$('vcW').hidden=true});
+  }
+
+  /* ---------- SDK + SESSION ---------- */
+  function loadSB(){
+    if(sbP)return sbP;
+    sbP=new Promise(function(res,rej){
+      if(window.supabase)return res(window.supabase);
+      var s=document.createElement('script');s.src=SDK;
+      s.onload=function(){res(window.supabase)};
+      s.onerror=function(){sbP=null;rej(new Error('sdk'))};
+      document.head.appendChild(s);
+    }).then(function(lib){
+      sb=lib.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'}});
+      sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){setSession(session)},0)});
+      return sb.auth.getSession().then(function(r){return setSession(r.data.session)});
+    }).then(function(){return sb},function(e){sbP=null;throw e});
+    return sbP;
+  }
+
+  /* pseudo automatique pour les comptes Discord (métadonnées OAuth) */
+  function pickName(u){
+    var m=u.user_metadata||{};
+    var n=m.username||m.user_name||m.preferred_username||m.custom_claims&&m.custom_claims.global_name||m.global_name||m.full_name||m.name||(u.email||'').split('@')[0]||'user';
+    n=String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9_]/g,'');
+    if(n.length<3)n=(n+'user');
+    return n.slice(0,20);
+  }
+  /* si le compte n'a pas encore de profil (1re connexion Discord), on le crée */
+  function ensureProfile(){
+    if(!user||profile)return Promise.resolve();
+    var base=pickName(user);
+    function attempt(n,i){
+      return sb.from('profiles').insert({id:user.id,username:n}).select('username').single().then(function(r){
+        if(!r.error){profile=r.data;return}
+        if(i<3)return attempt(base.slice(0,15)+Math.floor(1000+Math.random()*9000),i+1);
+      });
+    }
+    return attempt(base,0).catch(function(){});
+  }
+
+  function setSession(session){
+    user=(session&&session.user)||null;profile=null;isAdmin=false;
+    if(!user){renderAcc();renderList();return Promise.resolve()}
+    return Promise.all([
+      sb.from('profiles').select('username').eq('id',user.id).maybeSingle(),
+      sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle()
+    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data})
+     .then(function(){return ensureProfile()})
+     .catch(function(){}).then(function(){renderAcc();renderList()});
+  }
+
+  /* ---------- MESSAGES D'ERREUR ---------- */
+  function flash(t){var e=$('cmMsg');e.textContent=t||'';clearTimeout(msgT);if(t)msgT=setTimeout(function(){e.textContent=''},5000)}
+  function errTxt(e){
+    var m=(e&&e.message)||'';
+    if(m==='trop_rapide')return 'Doucement : attends quelques secondes avant de renvoyer un message.';
+    if(m==='non_connecte'||(e&&e.code==='42501'))return 'Connecte-toi pour écrire.';
+    if(m==='profil_introuvable')return 'Profil introuvable. Déconnecte-toi puis reconnecte-toi.';
+    if(e&&e.code==='23514')return 'Message vide ou trop long.';
+    return 'Envoi impossible. Réessaie.';
+  }
+  function authErr(e){
+    var m=((e&&e.message)||'').toLowerCase();
+    if(m.indexOf('invalid login')>-1)return 'Email ou mot de passe incorrect.';
+    if(m.indexOf('not confirmed')>-1)return 'Confirme d’abord ton adresse email (lien reçu par mail).';
+    if(m.indexOf('already')>-1)return 'Un compte existe déjà avec cet email.';
+    if(m.indexOf('rate')>-1||m.indexOf('too many')>-1)return 'Trop de tentatives. Réessaie dans quelques minutes.';
+    if(m.indexOf('password')>-1)return 'Mot de passe refusé (8 caractères minimum).';
+    if(m.indexOf('email')>-1)return 'Adresse email invalide.';
+    if(m.indexOf('provider')>-1)return 'Connexion Discord non activée côté Supabase.';
+    return 'Connexion impossible. Réessaie.';
+  }
+
+  /* ---------- CONNEXION DISCORD (OAuth) ---------- */
+  function oauth(){
+    flash('Redirection vers Discord…');
+    loadSB().then(function(){
+      return sb.auth.signInWithOAuth({
+        provider:'discord',
+        options:{redirectTo:location.origin+location.pathname,scopes:'identify email'}
+      });
+    }).then(function(r){if(r&&r.error)flash(authErr(r.error))})
+      .catch(function(){flash('Service indisponible. Réessaie plus tard.')});
+  }
+
+  /* ---------- AFFICHAGE ---------- */
+  function crown(){var i=document.createElement('i');i.className='fa-solid fa-crown cr';i.title='Administrateur';return i}
+  function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+  function fmtT(iso){
+    var d=new Date(iso),n=new Date(),hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    return d.toDateString()===n.toDateString()?hm:d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' '+hm;
+  }
+  function msgEl(t,m){
+    var d=document.createElement('div');d.className='m'+(m.is_admin?' adm':'');
+    var h=document.createElement('div');h.className='mh';
+    if(m.is_admin)h.appendChild(crown());
+    var n=document.createElement('b');n.textContent=m.username;
+    n.style.color=m.is_admin?'var(--rg)':'hsl('+hue(m.username)+',65%,74%)';h.appendChild(n);
+    if(m.is_admin){
+      var ab=document.createElement('span');ab.className='ab';
+      var ai=document.createElement('i');ai.className='fa-solid fa-crown';
+      ab.appendChild(ai);ab.appendChild(document.createTextNode('Admin'));h.appendChild(ab);
+    }
+    var tm=document.createElement('time');tm.dateTime=m.created_at;tm.textContent=fmtT(m.created_at);h.appendChild(tm);
+    if(user&&(m.user_id===user.id||isAdmin)){
+      var x=document.createElement('button');x.type='button';x.className='mx';x.title='Supprimer';
+      x.setAttribute('aria-label','Supprimer le message');
+      x.innerHTML='<i class="fa-solid fa-trash-can"></i>';
+      x.onclick=function(){del(t,m.id)};
+      h.appendChild(x);
+    }
+    var p=document.createElement('p');p.textContent=m.content;
+    d.appendChild(h);d.appendChild(p);return d;
+  }
+  function renderList(stick){
+    var box=$('cmList'),rows=data[tab],c=CFG[tab];
+    var atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80,top=box.scrollTop;
+    box.textContent='';
+    if(!Array.isArray(rows)){
+      var e=document.createElement('div');e.className='cm-empty';
+      e.textContent=rows==='err'?'Impossible de charger les messages. Réessaie plus tard.':'Chargement…';
+      box.appendChild(e);return;
+    }
+    if(!rows.length){var e2=document.createElement('div');e2.className='cm-empty';e2.innerHTML=c.empty;box.appendChild(e2);return}
+    (c.dir===1?rows.slice().reverse():rows).forEach(function(m){box.appendChild(msgEl(tab,m))});
+    box.scrollTop=stick?(c.dir===1?box.scrollHeight:0):(c.dir===1&&atBottom?box.scrollHeight:top);
+  }
+  function renderAcc(){
+    var a=$('cmAcc');a.textContent='';
+    if(!sb)return gate();
+    var b=document.createElement('button');b.type='button';
+    if(user){
+      if(isAdmin)a.appendChild(crown());
+      var n=document.createElement('b');n.textContent=profile?profile.username:'…';a.appendChild(n);
+      b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
+      b.innerHTML='<i class="fa-solid fa-right-from-bracket"></i>';
+      b.onclick=function(){sb.auth.signOut()};
+    }else{
+      b.className='cm-sm';b.textContent='Connexion';b.onclick=function(){showAuth('login')};
+    }
+    a.appendChild(b);gate();
+  }
+  function gate(){if(view!=='main')return;$('cmComp').hidden=!user;$('cmGate').hidden=!!user}
+  function setView(v){
+    view=v;$('cmAuth').hidden=v!=='auth';$('cmList').hidden=v==='auth';
+    $('cmComp').hidden=true;$('cmGate').hidden=true;flash('');gate();
+  }
+  function setMode(m){
+    mode=m;var su=m==='signup';
+    $('cmAt').textContent=su?'CRÉER UN COMPTE':'CONNEXION';
+    $('aUser').hidden=!su;$('aGo').textContent=su?'Créer mon compte':'Se connecter';
+    $('aSwap').textContent=su?'Déjà un compte ? Se connecter':'Pas de compte ? Créer un compte';
+    $('aPass').autocomplete=su?'new-password':'current-password';flash('');
+  }
+  function showAuth(m){setMode(m);setView('auth');$('aEmail').focus()}
+
+  /* ---------- DONNÉES ---------- */
+  function load(t,soft){
+    return sb.from(CFG[t].table).select(COLS).order('created_at',{ascending:false}).limit(CFG[t].limit).then(function(r){
+      data[t]=r.error?'err':r.data;
+      if(t===tab&&view==='main')renderList(!soft);
+    });
+  }
+  function onIns(t,m){
+    var a=data[t];if(!Array.isArray(a)||!m)return;
+    if(a.some(function(x){return x.id===m.id}))return;
+    a.unshift(m);if(a.length>CFG[t].limit)a.pop();
+    if(t===tab&&view==='main')renderList();
+  }
+  function onDel(t,id){
+    var a=data[t];if(!Array.isArray(a))return;
+    data[t]=a.filter(function(x){return x.id!==id});
+    if(t===tab&&view==='main')renderList();
+  }
+  function del(t,id){
+    sb.from(CFG[t].table).delete().eq('id',id).then(function(r){
+      if(r.error)return flash('Suppression impossible.');
+      onDel(t,id);
+    });
+  }
+  function subscribe(){
+    if(chan)return;
+    chan=sb.channel('leer-community');
+    [['chat_messages','chat'],['guestbook','gb']].forEach(function(p){
+      chan.on('postgres_changes',{event:'INSERT',schema:'public',table:p[0]},function(x){onIns(p[1],x.new)});
+      chan.on('postgres_changes',{event:'DELETE',schema:'public',table:p[0]},function(x){if(x.old)onDel(p[1],x.old.id)});
+    });
+    chan.subscribe(function(s){
+      if(s==='SUBSCRIBED'){clearInterval(pollT);pollT=null}
+      else if((s==='CHANNEL_ERROR'||s==='TIMED_OUT')&&!pollT){
+        pollT=setInterval(function(){if(!$('cm').hidden&&view==='main')load(tab,true)},15000);
+      }
+    });
+  }
+
+  /* ---------- ONGLETS / OUVERTURE ---------- */
+  function setTab(t){
+    tab=t;
+    Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){
+      var on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+    });
+    var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
+    setView('main');
+    if(sb&&(data[t]===null||data[t]==='err')){data[t]=null;load(t)}
+    renderList(true);
+  }
+  function open(){
+    lastFocus=document.activeElement;
+    $('cm').hidden=false;document.documentElement.style.overflow='hidden';
+    var box=document.querySelector('.cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
+    renderList(true);renderAcc();
+    loadSB().then(function(){
+      subscribe();renderAcc();
+      if(data[tab]===null||data[tab]==='err'){data[tab]=null;return load(tab)}
+    }).catch(function(){
+      if(!Array.isArray(data[tab]))data[tab]='err';
+      renderList(true);
+    });
+  }
+  function close(){
+    $('cm').hidden=true;document.documentElement.style.overflow='';
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+
+  /* ---------- ÉVÉNEMENTS ---------- */
+  $('openCm').addEventListener('click',function(e){e.preventDefault();open()});
+  Array.prototype.forEach.call(document.querySelectorAll('[data-close]'),function(b){b.addEventListener('click',close)});
+  Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
+  $('gLogin').addEventListener('click',function(){showAuth('login')});
+  $('gSign').addEventListener('click',function(){showAuth('signup')});
+  $('gDiscord').addEventListener('click',oauth);
+  $('aDiscord').addEventListener('click',oauth);
+  $('aSwap').addEventListener('click',function(){setMode(mode==='login'?'signup':'login')});
+  $('aBack').addEventListener('click',function(){setView('main')});
+
+  document.addEventListener('keydown',function(e){
+    if($('cm').hidden)return;
+    if(e.key==='Escape'){close();return}
+    if(e.key!=='Tab')return;
+    var f=Array.prototype.filter.call($('cm').querySelectorAll('button,input'),function(x){return !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
+    if(!f.length)return;
+    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('.cm-box');
+    if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
+    else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
+  });
+
+  $('cmComp').addEventListener('submit',function(e){
+    e.preventDefault();
+    var i=$('cmIn'),v=i.value.trim(),t=tab,btn=$('cmSend');
+    if(!v||!user||!sb)return;
+    btn.disabled=true;
+    sb.from(CFG[t].table).insert({content:v}).select(COLS).single().then(function(r){
+      btn.disabled=false;
+      if(r.error)return flash(errTxt(r.error));
+      i.value='';onIns(t,r.data);
+      if(t===tab){var box=$('cmList');box.scrollTop=CFG[t].dir===1?box.scrollHeight:0}
+    });
+  });
+
+  $('cmAuth').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=$('aEmail').value.trim(),pass=$('aPass').value,name=$('aUser').value.trim(),go=$('aGo');
+    if(!/^\S+@\S+\.\S+$/.test(email))return flash('Adresse email invalide.');
+    if(pass.length<8)return flash('Mot de passe : 8 caractères minimum.');
+    if(mode==='signup'&&!/^[A-Za-z0-9_]{3,20}$/.test(name))return flash('Pseudo : 3 à 20 caractères (lettres, chiffres, _).');
+    go.disabled=true;flash('');
+    loadSB().then(function(){
+      if(mode==='login'){
+        return sb.auth.signInWithPassword({email:email,password:pass}).then(function(r){
+          if(r.error)return flash(authErr(r.error));
+          $('aPass').value='';setView('main');
+        });
+      }
+      return sb.rpc('username_available',{p_username:name}).then(function(r){
+        if(r.data===false)return flash('Ce pseudo est déjà pris.');
+        return sb.auth.signUp({email:email,password:pass,options:{data:{username:name}}}).then(function(r2){
+          if(r2.error)return flash(authErr(r2.error));
+          $('aPass').value='';
+          if(r2.data&&r2.data.session){setView('main');return}
+          setMode('login');
+          flash('Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.');
+        });
+      });
+    }).catch(function(){flash('Service indisponible. Réessaie plus tard.')}).then(function(){go.disabled=false});
+  });
+
+  /* retour d'OAuth Discord : on charge le SDK et on rouvre le chat automatiquement */
+  (function(){
+    var u;try{u=new URL(location.href)}catch(e){return}
+    var back=location.hash.indexOf('access_token=')>-1||!!u.searchParams.get('code')||!!u.searchParams.get('error_description');
+    if(!back)return;
+    loadSB().then(function(){open()}).catch(function(){});
+  })();
+
+  counter();
 })();
 
 /* YOUTUBE */
