@@ -224,7 +224,7 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       </div>
       <div class="pb">
         <div class="pname" id="dName">LEER</div>
-        <div class="ptag">@glitchsize &middot; 618</div>
+        <div class="ptag" id="dTag">@glitchsize</div>
         <div class="bio">Streamer &amp; cr&eacute;ateur de contenu &mdash; gaming, clips &amp; live.</div>
         <div class="pres" id="pres" hidden>
           <div class="ps"><i id="psd"></i><b id="pst">Hors ligne</b><span id="psp"></span></div>
@@ -687,7 +687,8 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     if(!d||!d.discord_user)return;
     var u=d.discord_user;lastUser=u;
     swap($('dAv'),u.avatar?avUrl(u,256,true):DEF_AV,DEF_AV);
-    $('dName').textContent=u.display_name||u.global_name||u.username||'LEER';
+    $('dName').textContent=u.global_name||u.display_name||u.username||'LEER';
+    $('dTag').textContent='@'+(u.username||'glitchsize');
     var s=ST[d.discord_status]||ST.offline;
     $('dDot').style.background=s[0];$('dDot').title=s[1];
     $('psd').style.background=s[0];$('pst').textContent=s[1];
@@ -777,17 +778,31 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     }).catch(function(){/* invite indisponible : la carte reste masquée, le reste du chat fonctionne */});
   }
 
-  /* ---------- AVATAR DISCORD ---------- */
+  /* ---------- AVATAR + NOM D'AFFICHAGE DISCORD ---------- */
   function discordAvatar(u){
     if(!u)return null;
     var m=u.user_metadata||{};
     return m.avatar_url||m.picture||null;
+  }
+  function discordDisplayName(u){
+    if(!u)return null;
+    var m=u.user_metadata||{};
+    var n=(m.custom_claims&&m.custom_claims.global_name)||m.global_name||m.full_name||m.name||null;
+    return n?String(n).trim().slice(0,32):null;
   }
   function syncAvatar(){
     if(!user||!profile||!sb)return Promise.resolve();
     var av=discordAvatar(user);
     if(av&&profile.avatar_url!==av){
       return sb.from('profiles').update({avatar_url:av}).eq('id',user.id).then(function(r){if(!r.error)profile.avatar_url=av});
+    }
+    return Promise.resolve();
+  }
+  function syncName(){
+    if(!user||!profile||!sb)return Promise.resolve();
+    var dn=discordDisplayName(user);
+    if(dn&&dn!==profile.username){
+      return sb.from('profiles').update({username:dn}).eq('id',user.id).then(function(r){if(!r.error)profile.username=dn});
     }
     return Promise.resolve();
   }
@@ -839,6 +854,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data})
      .then(function(){return ensureProfile()})
      .then(function(){return syncAvatar()})
+     .then(function(){return syncName()})
      .catch(function(){}).then(function(){renderAcc();renderList()});
   }
 
