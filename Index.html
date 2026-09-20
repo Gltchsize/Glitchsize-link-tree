@@ -151,6 +151,11 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .cm-link:hover{color:var(--rg)}
 .cm-msg{padding:0 14px;font-size:.7rem;line-height:1.5;color:var(--rg)}
 .cm-msg:not(:empty){padding:8px 14px 10px}
+.cm-slow{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center}
+.cm-slow[hidden]{display:none}
+.cm-slow i{font-size:1.8rem;color:var(--rg)}
+.cm-slow p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.6);font-weight:300}
+.cm-slow .cm-btn{padding:11px 20px}
 @media (prefers-reduced-motion:reduce){.cm-box{animation:none}}
 
 .cm-box:focus{outline:none}
@@ -241,9 +246,9 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <div class="ct"><span class="cs">Acc&egrave;s</span><span class="cn">C-ZONE</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://hello-friend8.netlify.app/" class="card" target="_blank">
-      <div class="ci"><i class="fa-solid fa-globe"></i></div>
-      <div class="ct"><span class="cs">Site</span><span class="cn">HELLO FRIEND</span></div>
+    <a href="https://discord.gg/vBHvgKMDFu" class="card" target="_blank">
+      <div class="ci"><i class="fa-brands fa-discord"></i></div>
+      <div class="ct"><span class="cs">Rejoins</span><span class="cn">MON SERVEUR DISCORD</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
     <a href="https://twitch.tv/glitchsize" class="card" target="_blank">
@@ -271,11 +276,6 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <div class="ct"><span class="cs">Actu</span><span class="cn">TWITTER</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://discord.gg/ZbbYH9uS23" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-discord"></i></div>
-      <div class="ct"><span class="cs">Communaut&eacute;</span><span class="cn">DISCORD</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
 
         <a href="#" class="card" id="openCm" role="button">
       <div class="ci"><i class="fa-solid fa-comments"></i></div>
@@ -294,14 +294,13 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
     <div class="cm-h">
       <div class="cm-tabs" role="tablist">
         <button type="button" class="cm-tab on" data-tab="chat" role="tab" aria-selected="true">Chat</button>
-        <button type="button" class="cm-tab" data-tab="gb" role="tab" aria-selected="false">Livre d'or</button>
       </div>
       <div class="cm-acc" id="cmAcc"></div>
       <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <a class="srv" id="srvCard" href="https://discord.gg/ZbbYH9uS23" target="_blank" rel="noopener" hidden>
-      <div class="srv-ic"><i class="fa-brands fa-discord"></i><img id="srvIcon" alt="" hidden></div>
+    <a class="srv" id="srvCard" href="https://discord.gg/vBHvgKMDFu" target="_blank" rel="noopener" hidden>
+      <div class="srv-ic"><img id="srvIcon" alt="" src="https://i.imgur.com/32DYhWA.png"></div>
       <div class="srv-info">
         <div class="srv-name" id="srvName">Serveur Discord</div>
         <div class="srv-stats"><i></i><span id="srvOn">0</span> en ligne &middot; <span id="srvMem">0</span> membres</div>
@@ -332,6 +331,13 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <button type="button" class="cm-link" id="aSwap">Pas de compte ? Créer un compte</button>
       <button type="button" class="cm-link" id="aBack">Retour</button>
     </form>
+
+    <div class="cm-slow" id="cmSlow" hidden>
+      <i class="fa-solid fa-hourglass-half"></i>
+      <p>Doucement ! Tu envoies des messages trop vite.<br>Prends une pause quelques secondes.</p>
+      <button type="button" class="cm-btn" id="slowOk">OK, je continue</button>
+    </div>
+
     <div class="cm-msg" id="cmMsg" role="status"></div>
   </div>
 </div>
@@ -732,7 +738,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
 (function(){
   var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
   var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
-  var INVITE='ZbbYH9uS23';
+  var INVITE='vBHvgKMDFu';
   var $=function(i){return document.getElementById(i)};
   var COLS='id,user_id,username,is_admin,avatar_url,content,created_at';
   var CFG={
@@ -768,10 +774,6 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       srvLoaded=true;
       var g=d.guild||{};
       $('srvName').textContent=g.name||'Serveur Discord';
-      if(g.icon){
-        var url='https://cdn.discordapp.com/icons/'+g.id+'/'+g.icon+(g.icon.indexOf('a_')===0?'.gif':'.png')+'?size=64';
-        var im=$('srvIcon');im.onload=function(){im.hidden=false};im.src=url;
-      }
       $('srvMem').textContent=(d.approximate_member_count||0).toLocaleString('fr-FR');
       $('srvOn').textContent=(d.approximate_presence_count||0).toLocaleString('fr-FR');
       $('srvCard').hidden=false;
@@ -968,7 +970,8 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   }
   function gate(){if(view!=='main')return;$('cmComp').hidden=!user;$('cmGate').hidden=!!user}
   function setView(v){
-    view=v;$('cmAuth').hidden=v!=='auth';$('cmList').hidden=v==='auth';
+    view=v;$('cmAuth').hidden=v!=='auth';$('cmSlow').hidden=v!=='slow';
+    $('cmList').hidden=(v==='auth'||v==='slow');
     $('cmComp').hidden=true;$('cmGate').hidden=true;flash('');gate();
   }
   function setMode(m){
@@ -987,11 +990,28 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       if(t===tab&&view==='main')renderList(!soft);
     });
   }
+  /* ---------- NOTIFICATIONS NAVIGATEUR ---------- */
+  function askNotif(){
+    if('Notification' in window && Notification.permission==='default'){
+      try{Notification.requestPermission()}catch(e){}
+    }
+  }
+  function notifyNew(m){
+    if(!('Notification' in window)||Notification.permission!=='granted')return;
+    if(user&&m.user_id===user.id)return;
+    if(!document.hidden&&!$('cm').hidden)return;
+    try{
+      var n=new Notification(m.username+' · LEER',{body:m.content.slice(0,120),icon:m.avatar_url||'https://i.imgur.com/l4fHXmg.png',tag:'leer-chat'});
+      n.onclick=function(){window.focus();open();n.close()};
+    }catch(e){}
+  }
+
   function onIns(t,m){
     var a=data[t];if(!Array.isArray(a)||!m)return;
     if(a.some(function(x){return x.id===m.id}))return;
     a.unshift(m);if(a.length>CFG[t].limit)a.pop();
     if(t===tab&&view==='main')renderList();
+    if(t==='chat')notifyNew(m);
   }
   function onDel(t,id){
     var a=data[t];if(!Array.isArray(a))return;
@@ -1034,7 +1054,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     lastFocus=document.activeElement;
     $('cm').hidden=false;document.documentElement.style.overflow='hidden';
     var box=document.querySelector('.cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
-    renderList(true);renderAcc();loadServer();
+    renderList(true);renderAcc();loadServer();askNotif();
     loadSB().then(function(){
       subscribe();renderAcc();
       if(data[tab]===null||data[tab]==='err'){data[tab]=null;return load(tab)}
@@ -1070,10 +1090,16 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
   });
 
+  var sendTimes=[];
+  $('slowOk').addEventListener('click',function(){sendTimes=[];setView('main');$('cmIn').focus()});
+
   $('cmComp').addEventListener('submit',function(e){
     e.preventDefault();
     var i=$('cmIn'),v=i.value.trim(),t=tab,btn=$('cmSend');
     if(!v||!user||!sb)return;
+    var now=Date.now();
+    sendTimes.push(now);sendTimes=sendTimes.filter(function(x){return now-x<5000});
+    if(sendTimes.length>10){setView('slow');return}
     btn.disabled=true;
     sb.from(CFG[t].table).insert({content:v}).select(COLS).single().then(function(r){
       btn.disabled=false;
