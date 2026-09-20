@@ -85,6 +85,7 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .cm-tab.on{color:#fff;background:rgba(var(--rgb),.14);border-color:rgba(var(--rgb),.3)}
 .cm-acc{display:flex;align-items:center;gap:8px;font-size:.66rem;color:rgba(255,255,255,.45);min-width:0}
 .cm-acc b{color:var(--rg);font-weight:500;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-acc img{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .cm-sm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);font:500 .6rem 'Inter',sans-serif;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:14px;transition:all .2s;white-space:nowrap}
 .cm-sm:hover{color:#fff;border-color:rgba(var(--rgb),.4)}
 .cm-x{background:none;border:none;color:rgba(255,255,255,.4);font-size:.9rem;padding:8px;border-radius:50%;display:flex;transition:all .2s}
@@ -98,8 +99,25 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .m.adm{box-shadow:inset 0 0 0 1px rgba(247,201,72,.12)}
 .mh .ab{display:inline-flex;align-items:center;gap:4px}
 
+/* SERVEUR DISCORD */
+.srv{display:flex;align-items:center;gap:10px;margin:12px 12px 0;padding:10px 12px;border-radius:14px;background:rgba(88,101,242,.09);border:1px solid rgba(88,101,242,.22);text-decoration:none;color:inherit;transition:background .2s,border-color .2s;flex-shrink:0}
+.srv:hover{background:rgba(88,101,242,.15);border-color:rgba(88,101,242,.4)}
+.srv[hidden]{display:none}
+.srv-ic{width:38px;height:38px;border-radius:11px;overflow:hidden;flex-shrink:0;background:#5865f2;display:flex;align-items:center;justify-content:center}
+.srv-ic img{width:100%;height:100%;object-fit:cover;display:block}
+.srv-ic img[hidden]{display:none}
+.srv-ic i{color:#fff;font-size:1rem}
+.srv-info{flex:1;min-width:0}
+.srv-name{font-size:.72rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srv-stats{font-size:.56rem;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-top:3px;display:flex;align-items:center;gap:5px}
+.srv-stats i{width:6px;height:6px;border-radius:50%;background:#23a55a;display:inline-block;flex-shrink:0}
+.srv-join{font-size:.54rem;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:#5865f2;padding:7px 11px;border-radius:20px;flex-shrink:0}
+
 .cm-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(var(--rgb),.45) transparent;overscroll-behavior:contain}
-.m{padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.m{display:flex;gap:9px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);flex-shrink:0}
+.mbody{flex:1;min-width:0}
+.mav{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,.08);margin-top:1px}
+.mav-i{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:#fff;margin-top:1px}
 .m.adm{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.22)}
 .mh{display:flex;align-items:center;gap:8px;margin-bottom:3px}
 .mh b{font-size:.74rem;font-weight:500}
@@ -253,7 +271,7 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <div class="ct"><span class="cs">Actu</span><span class="cn">TWITTER</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://discord.gg/RPgAtSdzg3" class="card" target="_blank">
+    <a href="https://discord.gg/ZbbYH9uS23" class="card" target="_blank">
       <div class="ci"><i class="fa-brands fa-discord"></i></div>
       <div class="ct"><span class="cs">Communaut&eacute;</span><span class="cn">DISCORD</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
@@ -281,6 +299,15 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
       <div class="cm-acc" id="cmAcc"></div>
       <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
     </div>
+
+    <a class="srv" id="srvCard" href="https://discord.gg/ZbbYH9uS23" target="_blank" rel="noopener" hidden>
+      <div class="srv-ic"><i class="fa-brands fa-discord"></i><img id="srvIcon" alt="" hidden></div>
+      <div class="srv-info">
+        <div class="srv-name" id="srvName">Serveur Discord</div>
+        <div class="srv-stats"><i></i><span id="srvOn">0</span> en ligne &middot; <span id="srvMem">0</span> membres</div>
+      </div>
+      <div class="srv-join">Rejoindre</div>
+    </a>
 
     <div class="cm-list" id="cmList" aria-live="polite"></div>
     <form class="cm-comp" id="cmComp" hidden>
@@ -704,8 +731,9 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
 (function(){
   var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
   var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
+  var INVITE='ZbbYH9uS23';
   var $=function(i){return document.getElementById(i)};
-  var COLS='id,user_id,username,is_admin,content,created_at';
+  var COLS='id,user_id,username,is_admin,avatar_url,content,created_at';
   var CFG={
     chat:{table:'chat_messages',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a encore écrit.<br>Lance la conversation.'},
     gb:{table:'guestbook',max:500,ph:'Laisse un mot dans le livre d’or…',dir:-1,limit:60,empty:'Le livre d’or est vide.<br>Sois le premier à signer.'}
@@ -727,6 +755,41 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       el.textContent=n.toLocaleString('fr-FR');$('vcW').hidden=false;
       if(fresh)try{localStorage.setItem('leerVisit',String(now))}catch(e){}
     }).catch(function(){$('vcW').hidden=true});
+  }
+
+  /* ---------- SERVEUR DISCORD (aperçu, via l'invite, sans bot) ---------- */
+  var srvLoaded=false;
+  function loadServer(){
+    if(srvLoaded)return;
+    fetch('https://discord.com/api/v10/invites/'+INVITE+'?with_counts=true').then(function(r){
+      if(!r.ok)throw new Error('bad');return r.json();
+    }).then(function(d){
+      srvLoaded=true;
+      var g=d.guild||{};
+      $('srvName').textContent=g.name||'Serveur Discord';
+      if(g.icon){
+        var url='https://cdn.discordapp.com/icons/'+g.id+'/'+g.icon+(g.icon.indexOf('a_')===0?'.gif':'.png')+'?size=64';
+        var im=$('srvIcon');im.onload=function(){im.hidden=false};im.src=url;
+      }
+      $('srvMem').textContent=(d.approximate_member_count||0).toLocaleString('fr-FR');
+      $('srvOn').textContent=(d.approximate_presence_count||0).toLocaleString('fr-FR');
+      $('srvCard').hidden=false;
+    }).catch(function(){/* invite indisponible : la carte reste masquée, le reste du chat fonctionne */});
+  }
+
+  /* ---------- AVATAR DISCORD ---------- */
+  function discordAvatar(u){
+    if(!u)return null;
+    var m=u.user_metadata||{};
+    return m.avatar_url||m.picture||null;
+  }
+  function syncAvatar(){
+    if(!user||!profile||!sb)return Promise.resolve();
+    var av=discordAvatar(user);
+    if(av&&profile.avatar_url!==av){
+      return sb.from('profiles').update({avatar_url:av}).eq('id',user.id).then(function(r){if(!r.error)profile.avatar_url=av});
+    }
+    return Promise.resolve();
   }
 
   /* ---------- SDK + SESSION ---------- */
@@ -754,12 +817,12 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     if(n.length<3)n=(n+'user');
     return n.slice(0,20);
   }
-  /* si le compte n'a pas encore de profil (1re connexion Discord), on le crée */
+  /* si le compte n'a pas encore de profil (1re connexion Discord), on le crée avec sa photo Discord */
   function ensureProfile(){
     if(!user||profile)return Promise.resolve();
-    var base=pickName(user);
+    var base=pickName(user),av=discordAvatar(user);
     function attempt(n,i){
-      return sb.from('profiles').insert({id:user.id,username:n}).select('username').single().then(function(r){
+      return sb.from('profiles').insert({id:user.id,username:n,avatar_url:av}).select('username,avatar_url').single().then(function(r){
         if(!r.error){profile=r.data;return}
         if(i<3)return attempt(base.slice(0,15)+Math.floor(1000+Math.random()*9000),i+1);
       });
@@ -771,10 +834,11 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     user=(session&&session.user)||null;profile=null;isAdmin=false;
     if(!user){renderAcc();renderList();return Promise.resolve()}
     return Promise.all([
-      sb.from('profiles').select('username').eq('id',user.id).maybeSingle(),
+      sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
       sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle()
     ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data})
      .then(function(){return ensureProfile()})
+     .then(function(){return syncAvatar()})
      .catch(function(){}).then(function(){renderAcc();renderList()});
   }
 
@@ -815,12 +879,28 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   /* ---------- AFFICHAGE ---------- */
   function crown(){var i=document.createElement('i');i.className='fa-solid fa-crown cr';i.title='Administrateur';return i}
   function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+  function avatarEl(m){
+    if(m.avatar_url){
+      var im=document.createElement('img');im.className='mav';im.alt='';im.loading='lazy';
+      im.onerror=function(){im.replaceWith(initEl(m.username))};
+      im.src=m.avatar_url;return im;
+    }
+    return initEl(m.username);
+  }
+  function initEl(name){
+    var d=document.createElement('div');d.className='mav-i';
+    d.style.background='hsl('+hue(name||'?')+',55%,38%)';
+    d.textContent=(name||'?').slice(0,1).toUpperCase();
+    return d;
+  }
   function fmtT(iso){
     var d=new Date(iso),n=new Date(),hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return d.toDateString()===n.toDateString()?hm:d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' '+hm;
   }
   function msgEl(t,m){
     var d=document.createElement('div');d.className='m'+(m.is_admin?' adm':'');
+    d.appendChild(avatarEl(m));
+    var body=document.createElement('div');body.className='mbody';
     var h=document.createElement('div');h.className='mh';
     if(m.is_admin)h.appendChild(crown());
     var n=document.createElement('b');n.textContent=m.username;
@@ -839,7 +919,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       h.appendChild(x);
     }
     var p=document.createElement('p');p.textContent=m.content;
-    d.appendChild(h);d.appendChild(p);return d;
+    body.appendChild(h);body.appendChild(p);d.appendChild(body);return d;
   }
   function renderList(stick){
     var box=$('cmList'),rows=data[tab],c=CFG[tab];
@@ -859,6 +939,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     if(!sb)return gate();
     var b=document.createElement('button');b.type='button';
     if(user){
+      if(profile&&profile.avatar_url){var pa=document.createElement('img');pa.alt='';pa.src=profile.avatar_url;a.appendChild(pa)}
       if(isAdmin)a.appendChild(crown());
       var n=document.createElement('b');n.textContent=profile?profile.username:'…';a.appendChild(n);
       b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
@@ -937,7 +1018,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     lastFocus=document.activeElement;
     $('cm').hidden=false;document.documentElement.style.overflow='hidden';
     var box=document.querySelector('.cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
-    renderList(true);renderAcc();
+    renderList(true);renderAcc();loadServer();
     loadSB().then(function(){
       subscribe();renderAcc();
       if(data[tab]===null||data[tab]==='err'){data[tab]=null;return load(tab)}
