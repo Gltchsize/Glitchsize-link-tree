@@ -238,6 +238,15 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
 #player{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
 
+/* PANEL ADMIN (stats + membres) */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+.stat-card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.stat-card .sv{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px}
+.stat-card .sv .live{width:7px;height:7px;border-radius:50%;background:#23a55a;box-shadow:0 0 8px #23a55a;flex-shrink:0;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.stat-card .sl{font-size:.48rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.panel-sec-title{padding:2px 14px 6px;font-size:.5rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+
 /* MOBILE / TACTILE */
 a,button{-webkit-tap-highlight-color:transparent}
 @media (hover:none),(pointer:coarse){
@@ -326,6 +335,12 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
 
+    <a href="#" class="card" id="openPanel" role="button" hidden>
+      <div class="ci"><i class="fa-solid fa-gauge-high"></i></div>
+      <div class="ct"><span class="cs">Administration</span><span class="cn">PANEL ADMIN</span></div>
+      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
     <div class="ft" id="eFT">2026 &middot; LEER &middot; glitchsize</div>
     <div class="vc" id="vcW" hidden><i class="fa-solid fa-eye"></i><span id="vN">0</span> visites</div>
   </div>
@@ -338,9 +353,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="cm-tabs" role="tablist">
         <button type="button" class="cm-tab on" data-tab="general" role="tab" aria-selected="true"># général</button>
         <button type="button" class="cm-tab" data-tab="annonce" role="tab" aria-selected="false"># annonce</button>
-        <button type="button" class="cm-tab" data-tab="membres" role="tab" aria-selected="false" id="tabMembres" hidden># membres</button>
       </div>
-      <button type="button" class="gear" id="gearBtn" title="Modération" aria-label="Modération" hidden><i class="fa-solid fa-gear"></i></button>
       <div class="cm-acc" id="cmAcc"></div>
       <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -388,6 +401,21 @@ a,button{-webkit-tap-highlight-color:transparent}
     </div>
 
     <div class="cm-msg" id="cmMsg" role="status"></div>
+  </div>
+</div>
+
+<div class="cm" id="panel" hidden>
+  <div class="cm-bg" data-close-panel></div>
+  <div class="cm-box" role="dialog" aria-modal="true" aria-label="Panel administrateur">
+    <div class="cm-h">
+      <div class="cm-tabs" role="tablist">
+        <button type="button" class="cm-tab on" data-ptab="stats" role="tab" aria-selected="true">Statistiques</button>
+        <button type="button" class="cm-tab" data-ptab="membres" role="tab" aria-selected="false">Membres</button>
+      </div>
+      <div class="cm-acc" id="panelAcc"></div>
+      <button type="button" class="cm-x" data-close-panel aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cm-list" id="panelBody" aria-live="polite"></div>
   </div>
 </div>
 
@@ -783,7 +811,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   connect();
 })();
 
-/* COMMUNAUTE — compteur, comptes, chat, livre d'or (Supabase) */
+/* COMMUNAUTE — compteur, comptes, chat, livre d'or, panel admin (Supabase) */
 (function(){
   var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
   var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
@@ -815,6 +843,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     p.then(function(n){
       if(typeof n!=='number')throw new Error('bad');
       el.textContent=n.toLocaleString('fr-FR');$('vcW').hidden=false;
+      panelStats.visits=n;renderStats();
       if(fresh)try{localStorage.setItem('leerVisit',String(now))}catch(e){}
     }).catch(function(){$('vcW').hidden=true});
   }
@@ -905,22 +934,21 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   function setSession(session){
     user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;
     if(!user){
-      $('gearBtn').hidden=true;$('tabMembres').hidden=true;
-      if(tab==='membres')tab='general';
+      $('openPanel').hidden=true;
       renderAcc();renderList();return Promise.resolve();
     }
     return Promise.all([
       sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
       sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle(),
       sb.from('moderators').select('user_id').eq('user_id',user.id).maybeSingle()
-    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data;isMod=!!r[2].data})
+    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data||(OWNER_ID&&user.id===OWNER_ID);isMod=!!r[2].data})
      .then(function(){return ensureProfile()})
      .then(function(){return syncAvatar()})
      .then(function(){return syncName()})
      .catch(function(){}).then(function(){
-        $('gearBtn').hidden=!(isAdmin||isMod);
-        $('tabMembres').hidden=!(isAdmin||isMod);
+        $('openPanel').hidden=!isAdmin;
         renderAcc();renderList();
+        if(isAdmin)initPresence();
       });
   }
 
@@ -1022,27 +1050,29 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     box.scrollTop=stick?(c.dir===1?box.scrollHeight:0):(c.dir===1&&atBottom?box.scrollHeight:top);
   }
   function renderAcc(){
-    var a=$('cmAcc');a.textContent='';
+    var a=$('cmAcc'),b2=$('panelAcc');a.textContent='';if(b2)b2.textContent='';
     if(!sb)return gate();
-    var b=document.createElement('button');b.type='button';
-    if(user){
-      if(profile&&profile.avatar_url){var pa=document.createElement('img');pa.alt='';pa.src=profile.avatar_url;a.appendChild(pa)}
-      if(isAdmin)a.appendChild(crown());else if(isMod)a.appendChild(shield());
-      var n=document.createElement('b');n.textContent=profile?profile.username:'…';a.appendChild(n);
-      b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
-      b.innerHTML='<i class="fa-solid fa-right-from-bracket"></i>';
-      b.onclick=function(){sb.auth.signOut()};
-    }else{
-      b.className='cm-sm';b.textContent='Connexion';b.onclick=function(){showAuth('login')};
+    function build(target,withLogout){
+      var b=document.createElement('button');b.type='button';
+      if(user){
+        if(profile&&profile.avatar_url){var pa=document.createElement('img');pa.alt='';pa.src=profile.avatar_url;target.appendChild(pa)}
+        if(isAdmin)target.appendChild(crown());else if(isMod)target.appendChild(shield());
+        var n=document.createElement('b');n.textContent=profile?profile.username:'…';target.appendChild(n);
+        if(!withLogout)return;
+        b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
+        b.innerHTML='<i class="fa-solid fa-right-from-bracket"></i>';
+        b.onclick=function(){sb.auth.signOut()};
+      }else{
+        b.className='cm-sm';b.textContent='Connexion';b.onclick=function(){showAuth('login')};
+      }
+      target.appendChild(b);
     }
-    a.appendChild(b);gate();
+    build(a,true);
+    if(b2)build(b2,true);
+    gate();
   }
   function gate(){
     if(view!=='main')return;
-    if(tab==='membres'){
-      $('cmComp').hidden=true;$('cmGate').hidden=true;$('cmLocked').hidden=true;$('srvCard').hidden=true;
-      return;
-    }
     var c=CFG[tab],canWrite=user&&(!c.locked||(OWNER_ID&&user.id===OWNER_ID));
     $('cmComp').hidden=!canWrite;
     $('cmGate').hidden=!!user;
@@ -1091,11 +1121,13 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     a.unshift(m);if(a.length>CFG[t].limit)a.pop();
     if(t===tab&&view==='main')renderList();
     notifyNew(m);
+    panelStats.messages+=1;renderStats();
   }
   function onDel(t,id){
     var a=data[t];if(!Array.isArray(a))return;
     data[t]=a.filter(function(x){return x.id!==id});
     if(t===tab&&view==='main')renderList();
+    panelStats.messages=Math.max(0,panelStats.messages-1);renderStats();
   }
   function del(t,id){
     sb.from(CFG[t].table).delete().eq('id',id).then(function(r){
@@ -1115,7 +1147,59 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     });
   }
 
-  /* ---------- PANEL MEMBRES ---------- */
+  /* ---------- PANEL ADMIN : STATISTIQUES TEMPS RÉEL ---------- */
+  var panelStats={visits:0,members:0,messages:0,online:0},statsChan=null,presenceChan=null;
+  function statCard(icon,label,value,live){
+    var c=document.createElement('div');c.className='stat-card';
+    var v=document.createElement('div');v.className='sv';
+    if(live){var dot=document.createElement('span');dot.className='live';v.appendChild(dot)}
+    v.appendChild(document.createTextNode(value));
+    var l=document.createElement('div');l.className='sl';l.innerHTML='<i class="fa-solid '+icon+'"></i> '+label;
+    c.appendChild(v);c.appendChild(l);return c;
+  }
+  function renderStats(){
+    if(ptab!=='stats'||$('panel').hidden)return;
+    var box=$('panelBody');box.textContent='';
+    var grid=document.createElement('div');grid.className='stat-grid';
+    grid.appendChild(statCard('fa-eye','Visites totales',panelStats.visits.toLocaleString('fr-FR')));
+    grid.appendChild(statCard('fa-tower-broadcast','En ligne maintenant',panelStats.online.toLocaleString('fr-FR'),true));
+    grid.appendChild(statCard('fa-users','Membres inscrits',panelStats.members.toLocaleString('fr-FR')));
+    grid.appendChild(statCard('fa-message','Messages postés',panelStats.messages.toLocaleString('fr-FR')));
+    box.appendChild(grid);
+  }
+  function loadStats(){
+    return Promise.all([
+      sb.from('profiles').select('id',{count:'exact',head:true}),
+      sb.from('chat_messages').select('id',{count:'exact',head:true})
+    ]).then(function(r){
+      panelStats.members=r[0].count||0;
+      panelStats.messages=r[1].count||0;
+      renderStats();
+    }).catch(function(){});
+  }
+  /* présence en direct : chaque visiteur connecté au SDK "track" sa session ; le panel compte les sessions actives */
+  function initPresence(){
+    if(presenceChan||!sb)return;
+    var pid;
+    try{pid=sessionStorage.getItem('leerPid');if(!pid){pid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem('leerPid',pid)}}
+    catch(e){pid=Math.random().toString(36).slice(2)}
+    presenceChan=sb.channel('leer-presence',{config:{presence:{key:pid}}});
+    presenceChan.on('presence',{event:'sync'},function(){
+      panelStats.online=Object.keys(presenceChan.presenceState()).length;renderStats();
+    });
+    presenceChan.subscribe(function(status){
+      if(status==='SUBSCRIBED')presenceChan.track({at:new Date().toISOString()});
+    });
+  }
+  function subscribeStats(){
+    if(statsChan)return;
+    statsChan=sb.channel('leer-panel-stats');
+    statsChan.on('postgres_changes',{event:'INSERT',schema:'public',table:'profiles'},function(){panelStats.members+=1;renderStats()});
+    statsChan.on('postgres_changes',{event:'DELETE',schema:'public',table:'profiles'},function(){panelStats.members=Math.max(0,panelStats.members-1);renderStats()});
+    statsChan.subscribe();
+  }
+
+  /* ---------- PANEL ADMIN : MEMBRES ---------- */
   function loadMembers(){
     return Promise.all([
       sb.from('profiles').select('id,username,avatar_url'),
@@ -1132,6 +1216,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       membersCache=(r[0].data||[]).map(function(p){
         return{id:p.id,username:p.username,avatar_url:p.avatar_url,is_admin:!!admins[p.id],is_mod:!!mods[p.id],banned:!!bans[p.id],muted_until:mutes[p.id]||null};
       }).sort(function(a,b){return (b.is_admin-a.is_admin)||(b.is_mod-a.is_mod)||a.username.localeCompare(b.username)});
+      panelStats.members=membersCache.length;
       return membersCache;
     });
   }
@@ -1166,7 +1251,8 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     }).catch(function(e){flash(e.message||'Action impossible.')});
   }
   function renderMembers(){
-    var box=$('cmList');box.textContent='';
+    if(ptab!=='membres'||$('panel').hidden)return;
+    var box=$('panelBody');box.textContent='';
     if(!Array.isArray(membersCache)){
       var e=document.createElement('div');e.className='cm-empty';e.textContent='Chargement…';box.appendChild(e);return;
     }
@@ -1182,7 +1268,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       if(m.banned){var t3=document.createElement('span');t3.className='mtag ban';t3.textContent='Banni';tags.appendChild(t3)}
       if(m.muted_until){var t4=document.createElement('span');t4.className='mtag mute';t4.textContent='Muet';tags.appendChild(t4)}
       nm.appendChild(tags);row.appendChild(nm);
-      if(isAdmin&&m.id!==user.id){
+      if(isAdmin&&user&&m.id!==user.id){
         var dots=document.createElement('button');dots.type='button';dots.className='mdots';dots.setAttribute('aria-label','Actions');
         dots.innerHTML='<i class="fa-solid fa-ellipsis-vertical"></i>';
         dots.onclick=function(ev){
@@ -1203,6 +1289,45 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     }
   });
 
+  /* ---------- OUVERTURE / ONGLETS DU PANEL ADMIN ---------- */
+  var ptab='stats';
+  function setPtab(t){
+    ptab=t;
+    Array.prototype.forEach.call(document.querySelectorAll('#panel .cm-tab'),function(b){
+      var on=b.dataset.ptab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+    });
+    if(t==='stats'){renderStats();loadStats()}
+    else{renderMembers();loadMembers().then(function(){renderMembers()})}
+  }
+  function openPanel(){
+    if(!isAdmin)return;
+    lastFocus=document.activeElement;
+    $('panel').hidden=false;document.documentElement.style.overflow='hidden';
+    var box=document.querySelector('#panel .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
+    loadSB().then(function(){
+      renderAcc();subscribeStats();initPresence();
+      setPtab(ptab);
+    }).catch(function(){flash('Service indisponible.')});
+  }
+  function closePanel(){
+    $('panel').hidden=true;document.documentElement.style.overflow='';
+    document.querySelectorAll('#panel .mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+  $('openPanel').addEventListener('click',function(e){e.preventDefault();openPanel()});
+  Array.prototype.forEach.call(document.querySelectorAll('[data-close-panel]'),function(b){b.addEventListener('click',closePanel)});
+  Array.prototype.forEach.call(document.querySelectorAll('#panel [data-ptab]'),function(b){b.addEventListener('click',function(){setPtab(b.dataset.ptab)})});
+  document.addEventListener('keydown',function(e){
+    if($('panel').hidden)return;
+    if(e.key==='Escape'){closePanel();return}
+    if(e.key!=='Tab')return;
+    var f=Array.prototype.filter.call($('panel').querySelectorAll('button,input'),function(x){return !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
+    if(!f.length)return;
+    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#panel .cm-box');
+    if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
+    else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
+  });
+
   function chanKey(row){return row&&row.channel==='annonce'?'annonce':'general'}
   function subscribe(){
     if(chan)return;
@@ -1217,20 +1342,13 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     });
   }
 
-  /* ---------- ONGLETS / OUVERTURE ---------- */
+  /* ---------- ONGLETS / OUVERTURE DU CHAT ---------- */
   function setTab(t){
     tab=t;
-    Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){
+    Array.prototype.forEach.call(document.querySelectorAll('#cm .cm-tab'),function(b){
       var on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
     });
     setView('main');
-    if(t==='membres'){
-      if(!isAdmin&&!isMod){tab='general';return setTab('general')}
-      var i=$('cmIn');i.maxLength=300;i.placeholder='Écris un message…';
-      renderMembers();
-      if(sb)loadMembers().then(function(){renderMembers()});
-      return;
-    }
     var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
     if(sb&&(data[t]===null||data[t]==='err')){data[t]=null;load(t)}
     renderList(true);
@@ -1238,7 +1356,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   function open(){
     lastFocus=document.activeElement;
     $('cm').hidden=false;document.documentElement.style.overflow='hidden';
-    var box=document.querySelector('.cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
+    var box=document.querySelector('#cm .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
     renderList(true);renderAcc();loadServer();askNotif();
     loadSB().then(function(){
       subscribe();renderAcc();
@@ -1255,9 +1373,8 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
 
   /* ---------- ÉVÉNEMENTS ---------- */
   $('openCm').addEventListener('click',function(e){e.preventDefault();open()});
-  Array.prototype.forEach.call(document.querySelectorAll('[data-close]'),function(b){b.addEventListener('click',close)});
-  Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
-  $('gearBtn').addEventListener('click',function(){setTab('membres')});
+  Array.prototype.forEach.call(document.querySelectorAll('#cm [data-close]'),function(b){b.addEventListener('click',close)});
+  Array.prototype.forEach.call(document.querySelectorAll('#cm .cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
   $('gLogin').addEventListener('click',function(){showAuth('login')});
   $('gSign').addEventListener('click',function(){showAuth('signup')});
   $('gDiscord').addEventListener('click',oauth);
@@ -1271,7 +1388,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     if(e.key!=='Tab')return;
     var f=Array.prototype.filter.call($('cm').querySelectorAll('button,input'),function(x){return !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
     if(!f.length)return;
-    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('.cm-box');
+    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#cm .cm-box');
     if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
     else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
   });
