@@ -168,6 +168,34 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 
 .cm-box:focus{outline:none}
 
+/* PANEL MEMBRES (admin/modo) */
+.mrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);position:relative}
+.mrow.b{opacity:.5}
+.mrow .mav,.mrow .mav-i{width:30px;height:30px}
+.mrow .mname{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mrow .mname b{font-size:.76rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .mtags{display:flex;gap:5px;flex-wrap:wrap}
+.mrow .mtag{font-size:.42rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4)}
+.mrow .mtag.adm{background:rgba(247,201,72,.16);color:#f7c948}
+.mrow .mtag.mod{background:rgba(94,234,212,.16);color:#5eead4}
+.mrow .mtag.ban{background:rgba(242,63,67,.18);color:#f23f43}
+.mrow .mtag.mute{background:rgba(240,178,50,.18);color:#f0b232}
+.mdots{background:none;border:none;color:rgba(255,255,255,.35);font-size:.9rem;padding:8px;border-radius:50%;flex-shrink:0;transition:all .2s}
+.mdots:hover{color:#fff;background:rgba(255,255,255,.08)}
+.mmenu{position:absolute;top:100%;right:8px;z-index:5;margin-top:4px;min-width:190px;background:rgba(10,4,4,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);overflow:hidden;backdrop-filter:blur(20px)}
+.mmenu[hidden]{display:none}
+.mmenu button{width:100%;text-align:left;background:none;border:none;color:rgba(255,255,255,.75);font:400 .68rem 'Inter',sans-serif;padding:10px 13px;display:flex;align-items:center;gap:9px;transition:background .15s}
+.mmenu button:hover{background:rgba(var(--rgb),.12)}
+.mmenu button i{width:14px;text-align:center;color:rgba(255,255,255,.4);font-size:.72rem}
+.mmenu button.danger{color:#f23f43}
+.mmenu button.danger i{color:#f23f43}
+.mmenu hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
+.mmenu .mmlabel{padding:8px 13px 4px;font-size:.42rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.gear{background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;padding:8px;border-radius:50%;transition:all .2s;flex-shrink:0}
+.gear:hover{color:#fff;background:rgba(255,255,255,.08)}
+.gear[hidden]{display:none}
+.bot-badge{background:rgba(94,110,255,.18);color:#8f9bff}
+
 /* DIVIDER */
 .div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.25),rgba(255,255,255,.08),transparent);margin:2px 0;opacity:0}
 
@@ -310,7 +338,9 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="cm-tabs" role="tablist">
         <button type="button" class="cm-tab on" data-tab="general" role="tab" aria-selected="true"># général</button>
         <button type="button" class="cm-tab" data-tab="annonce" role="tab" aria-selected="false"># annonce</button>
+        <button type="button" class="cm-tab" data-tab="membres" role="tab" aria-selected="false" id="tabMembres" hidden># membres</button>
       </div>
+      <button type="button" class="gear" id="gearBtn" title="Modération" aria-label="Modération" hidden><i class="fa-solid fa-gear"></i></button>
       <div class="cm-acc" id="cmAcc"></div>
       <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -762,6 +792,10 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   var COLS='id,user_id,username,is_admin,is_mod,avatar_url,content,created_at,channel';
   /* Remplace par ton UUID Supabase (Authentication > Users) : seul ce compte peut écrire dans #annonce */
   var OWNER_ID='a7adc335-134f-456e-92d9-e09796b7808f';
+  /* Edge Functions (voir fichiers admin-action et ai-chat fournis à côté) */
+  var FN_ADMIN=SB_URL+'/functions/v1/admin-action';
+  var FN_AI=SB_URL+'/functions/v1/ai-chat';
+  var membersCache=null,menuOpenFor=null;
   var CFG={
     general:{table:'chat_messages',channel:'general',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a encore écrit.<br>Lance la conversation.',locked:false},
     annonce:{table:'chat_messages',channel:'annonce',max:500,ph:'Nouvelle annonce…',dir:1,limit:40,empty:'Aucune annonce pour le moment.',locked:true}
@@ -870,7 +904,11 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
 
   function setSession(session){
     user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;
-    if(!user){renderAcc();renderList();return Promise.resolve()}
+    if(!user){
+      $('gearBtn').hidden=true;$('tabMembres').hidden=true;
+      if(tab==='membres')tab='general';
+      renderAcc();renderList();return Promise.resolve();
+    }
     return Promise.all([
       sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
       sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle(),
@@ -879,7 +917,11 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
      .then(function(){return ensureProfile()})
      .then(function(){return syncAvatar()})
      .then(function(){return syncName()})
-     .catch(function(){}).then(function(){renderAcc();renderList()});
+     .catch(function(){}).then(function(){
+        $('gearBtn').hidden=!(isAdmin||isMod);
+        $('tabMembres').hidden=!(isAdmin||isMod);
+        renderAcc();renderList();
+      });
   }
 
   /* ---------- MESSAGES D'ERREUR ---------- */
@@ -997,6 +1039,10 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   }
   function gate(){
     if(view!=='main')return;
+    if(tab==='membres'){
+      $('cmComp').hidden=true;$('cmGate').hidden=true;$('cmLocked').hidden=true;$('srvCard').hidden=true;
+      return;
+    }
     var c=CFG[tab],canWrite=user&&(!c.locked||(OWNER_ID&&user.id===OWNER_ID));
     $('cmComp').hidden=!canWrite;
     $('cmGate').hidden=!!user;
@@ -1057,6 +1103,106 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       onDel(t,id);
     });
   }
+  /* ---------- APPEL EDGE FUNCTION ADMIN (rôles / ban / mute / déconnexion) ---------- */
+  function adminCall(action,targetId,extra){
+    if(!sb||!user)return Promise.reject(new Error('non_connecte'));
+    return sb.auth.getSession().then(function(r){
+      var tok=r.data.session&&r.data.session.access_token;
+      if(!tok)throw new Error('non_connecte');
+      var body=Object.assign({action:action,target_id:targetId},extra||{});
+      return fetch(FN_ADMIN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify(body)})
+        .then(function(res){return res.json().catch(function(){return{}}).then(function(j){if(!res.ok)throw new Error(j.error||'Erreur serveur');return j})});
+    });
+  }
+
+  /* ---------- PANEL MEMBRES ---------- */
+  function loadMembers(){
+    return Promise.all([
+      sb.from('profiles').select('id,username,avatar_url'),
+      sb.from('admins').select('user_id'),
+      sb.from('moderators').select('user_id'),
+      sb.from('banned_users').select('user_id'),
+      sb.from('mutes').select('user_id,muted_until')
+    ]).then(function(r){
+      var admins={},mods={},bans={},mutes={};
+      (r[1].data||[]).forEach(function(x){admins[x.user_id]=1});
+      (r[2].data||[]).forEach(function(x){mods[x.user_id]=1});
+      (r[3].data||[]).forEach(function(x){bans[x.user_id]=1});
+      (r[4].data||[]).forEach(function(x){if(new Date(x.muted_until)>new Date())mutes[x.user_id]=x.muted_until});
+      membersCache=(r[0].data||[]).map(function(p){
+        return{id:p.id,username:p.username,avatar_url:p.avatar_url,is_admin:!!admins[p.id],is_mod:!!mods[p.id],banned:!!bans[p.id],muted_until:mutes[p.id]||null};
+      }).sort(function(a,b){return (b.is_admin-a.is_admin)||(b.is_mod-a.is_mod)||a.username.localeCompare(b.username)});
+      return membersCache;
+    });
+  }
+  function memberMenu(m){
+    var box=document.createElement('div');box.className='mmenu';box.setAttribute('role','menu');
+    function btn(cls,icon,label,fn){
+      var b=document.createElement('button');b.type='button';if(cls)b.className=cls;
+      b.innerHTML='<i class="fa-solid '+icon+'"></i>'+label;
+      b.onclick=function(){box.remove();menuOpenFor=null;fn()};
+      return b;
+    }
+    var lbl=document.createElement('div');lbl.className='mmlabel';lbl.textContent='Rôle';box.appendChild(lbl);
+    box.appendChild(btn(null,m.is_admin?'fa-crown':'fa-crown',m.is_admin?'Retirer admin':'Nommer admin',function(){doAction(m.is_admin?'unset_admin':'set_admin',m)}));
+    box.appendChild(btn(null,m.is_mod?'fa-shield-halved':'fa-shield-halved',m.is_mod?'Retirer modérateur':'Nommer modérateur',function(){doAction(m.is_mod?'unset_mod':'set_mod',m)}));
+    box.appendChild(document.createElement('hr'));
+    var lbl2=document.createElement('div');lbl2.className='mmlabel';lbl2.textContent='Modération';box.appendChild(lbl2);
+    if(!m.muted_until){
+      box.appendChild(btn(null,'fa-volume-xmark','Mute 10 min',function(){doAction('mute',m,{minutes:10})}));
+      box.appendChild(btn(null,'fa-volume-xmark','Mute 1 h',function(){doAction('mute',m,{minutes:60})}));
+      box.appendChild(btn(null,'fa-volume-xmark','Mute 24 h',function(){doAction('mute',m,{minutes:1440})}));
+    }else{
+      box.appendChild(btn(null,'fa-volume-high','Démute',function(){doAction('unmute',m)}));
+    }
+    box.appendChild(btn('danger',m.banned?'fa-user-check':'fa-user-slash',m.banned?'Débannir':'Bannir',function(){doAction(m.banned?'unban':'ban',m)}));
+    box.appendChild(btn('danger','fa-plug-circle-xmark','Déconnecter',function(){doAction('disconnect',m)}));
+    return box;
+  }
+  function doAction(action,m,extra){
+    adminCall(action,m.id,extra).then(function(){
+      flash('Action effectuée : '+m.username);
+      loadMembers().then(function(){renderMembers()});
+    }).catch(function(e){flash(e.message||'Action impossible.')});
+  }
+  function renderMembers(){
+    var box=$('cmList');box.textContent='';
+    if(!Array.isArray(membersCache)){
+      var e=document.createElement('div');e.className='cm-empty';e.textContent='Chargement…';box.appendChild(e);return;
+    }
+    if(!membersCache.length){var e2=document.createElement('div');e2.className='cm-empty';e2.textContent='Aucun membre.';box.appendChild(e2);return}
+    membersCache.forEach(function(m){
+      var row=document.createElement('div');row.className='mrow'+(m.banned?' b':'');
+      row.appendChild(avatarEl({avatar_url:m.avatar_url,username:m.username}));
+      var nm=document.createElement('div');nm.className='mname';
+      var b=document.createElement('b');b.textContent=m.username;nm.appendChild(b);
+      var tags=document.createElement('div');tags.className='mtags';
+      if(m.is_admin){var t1=document.createElement('span');t1.className='mtag adm';t1.textContent='Admin';tags.appendChild(t1)}
+      if(m.is_mod){var t2=document.createElement('span');t2.className='mtag mod';t2.textContent='Modo';tags.appendChild(t2)}
+      if(m.banned){var t3=document.createElement('span');t3.className='mtag ban';t3.textContent='Banni';tags.appendChild(t3)}
+      if(m.muted_until){var t4=document.createElement('span');t4.className='mtag mute';t4.textContent='Muet';tags.appendChild(t4)}
+      nm.appendChild(tags);row.appendChild(nm);
+      if(isAdmin&&m.id!==user.id){
+        var dots=document.createElement('button');dots.type='button';dots.className='mdots';dots.setAttribute('aria-label','Actions');
+        dots.innerHTML='<i class="fa-solid fa-ellipsis-vertical"></i>';
+        dots.onclick=function(ev){
+          ev.stopPropagation();
+          var existing=row.querySelector('.mmenu');
+          if(existing){existing.remove();menuOpenFor=null;return}
+          document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});
+          var menu=memberMenu(m);row.appendChild(menu);menuOpenFor=m.id;
+        };
+        row.appendChild(dots);
+      }
+      box.appendChild(row);
+    });
+  }
+  document.addEventListener('click',function(e){
+    if(menuOpenFor&&!e.target.closest('.mmenu')&&!e.target.closest('.mdots')){
+      document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
+    }
+  });
+
   function chanKey(row){return row&&row.channel==='annonce'?'annonce':'general'}
   function subscribe(){
     if(chan)return;
@@ -1077,8 +1223,15 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){
       var on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
     });
-    var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
     setView('main');
+    if(t==='membres'){
+      if(!isAdmin&&!isMod){tab='general';return setTab('general')}
+      var i=$('cmIn');i.maxLength=300;i.placeholder='Écris un message…';
+      renderMembers();
+      if(sb)loadMembers().then(function(){renderMembers()});
+      return;
+    }
+    var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
     if(sb&&(data[t]===null||data[t]==='err')){data[t]=null;load(t)}
     renderList(true);
   }
@@ -1104,6 +1257,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   $('openCm').addEventListener('click',function(e){e.preventDefault();open()});
   Array.prototype.forEach.call(document.querySelectorAll('[data-close]'),function(b){b.addEventListener('click',close)});
   Array.prototype.forEach.call(document.querySelectorAll('.cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
+  $('gearBtn').addEventListener('click',function(){setTab('membres')});
   $('gLogin').addEventListener('click',function(){showAuth('login')});
   $('gSign').addEventListener('click',function(){showAuth('signup')});
   $('gDiscord').addEventListener('click',oauth);
@@ -1139,8 +1293,23 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       if(r.error)return flash(errTxt(r.error));
       i.value='';onIns(t,r.data);
       if(t===tab){var box=$('cmList');box.scrollTop=c.dir===1?box.scrollHeight:0}
+      /* commande /ai : le message est posté normalement puis l'IA répond dans le même salon */
+      var aiMatch=v.match(/^\/ai\s+([\s\S]+)/i);
+      if(aiMatch)askAI(aiMatch[1].trim(),c.channel);
     });
   });
+
+  /* ---------- COMMANDE /ai (Groq via Edge Function, clé jamais exposée côté client) ---------- */
+  function askAI(prompt,channel){
+    sb.auth.getSession().then(function(r){
+      var tok=r.data.session&&r.data.session.access_token;
+      if(!tok)return;
+      return fetch(FN_AI,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify({prompt:prompt,channel:channel})})
+        .then(function(res){return res.json().catch(function(){return{}})})
+        .then(function(j){if(j&&j.error)flash(j.error)});
+      /* la réponse elle-même arrive par le realtime (INSERT du bot) comme un message normal */
+    }).catch(function(){});
+  }
 
   $('cmAuth').addEventListener('submit',function(e){
     e.preventDefault();
