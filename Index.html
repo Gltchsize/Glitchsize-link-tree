@@ -191,6 +191,12 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .mmenu button.danger i{color:#f23f43}
 .mmenu hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
 .mmenu .mmlabel{padding:8px 13px 4px;font-size:.42rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
+.mm-custom{display:flex;gap:6px;padding:6px 13px 10px}
+.mm-custom input{flex:1;min-width:0;font:400 .68rem 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 9px;outline:none}
+.mm-custom input::placeholder{color:rgba(255,255,255,.3)}
+.mm-custom input:focus{border-color:rgba(var(--rgb),.6)}
+.mm-custom .mm-go{background:rgba(var(--rgb),.18);border:1px solid rgba(var(--rgb),.32);color:var(--rg);border-radius:8px;padding:0 12px;flex-shrink:0;transition:background .2s}
+.mm-custom .mm-go:hover{background:rgba(var(--rgb),.3)}
 .gear{background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;padding:8px;border-radius:50%;transition:all .2s;flex-shrink:0}
 .gear:hover{color:#fff;background:rgba(255,255,255,.08)}
 .gear[hidden]{display:none}
@@ -303,19 +309,14 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="ct"><span class="cs">Rejoins</span><span class="cn">MON SERVEUR DISCORD</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://twitch.tv/glitchsize" class="card" target="_blank">
+    <a href="https://www.twitch.tv/leer0610" class="card" target="_blank">
       <div class="ci"><i class="fa-brands fa-twitch"></i></div>
       <div class="ct"><span class="cs">Live</span><span class="cn">TWITCH</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://youtube.com/@glitchsize6" class="card" target="_blank">
+    <a href="https://youtube.com/@leer0610" class="card" target="_blank">
       <div class="ci"><i class="fa-brands fa-youtube"></i></div>
       <div class="ct"><span class="cs">Vid&eacute;os</span><span class="cn">YOUTUBE</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://www.tiktok.com/@glitchsize6" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-tiktok"></i></div>
-      <div class="ct"><span class="cs">Clips</span><span class="cn">TIKTOK</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
     <a href="https://www.instagram.com/glitchsize_fr" class="card" target="_blank">
@@ -828,7 +829,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     general:{table:'chat_messages',channel:'general',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a encore écrit.<br>Lance la conversation.',locked:false},
     annonce:{table:'chat_messages',channel:'annonce',max:500,ph:'Nouvelle annonce…',dir:1,limit:40,empty:'Aucune annonce pour le moment.',locked:true}
   };
-  var sb=null,sbP=null,user=null,profile=null,isAdmin=false,isMod=false;
+  var sb=null,sbP=null,user=null,profile=null,isAdmin=false,isMod=false,isOwner=false;
   var tab='general',view='main',mode='login';
   var data={general:null,annonce:null},chan=null,pollT=null,msgT=null,lastFocus=null;
 
@@ -932,7 +933,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
   }
 
   function setSession(session){
-    user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;
+    user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;isOwner=false;
     if(!user){
       $('openPanel').hidden=true;
       renderAcc();renderList();return Promise.resolve();
@@ -941,14 +942,14 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
       sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle(),
       sb.from('moderators').select('user_id').eq('user_id',user.id).maybeSingle()
-    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data||(OWNER_ID&&user.id===OWNER_ID);isMod=!!r[2].data})
+    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data;isMod=!!r[2].data;isOwner=!!(OWNER_ID&&user.id===OWNER_ID)})
      .then(function(){return ensureProfile()})
      .then(function(){return syncAvatar()})
      .then(function(){return syncName()})
      .catch(function(){}).then(function(){
-        $('openPanel').hidden=!isAdmin;
+        $('openPanel').hidden=!isOwner;
         renderAcc();renderList();
-        if(isAdmin)initPresence();
+        if(isOwner)initPresence();
       });
   }
 
@@ -980,7 +981,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     loadSB().then(function(){
       return sb.auth.signInWithOAuth({
         provider:'discord',
-        options:{redirectTo:location.origin+location.pathname,scopes:'identify email'}
+        options:{redirectTo:'https://leer6.netlify.app/',scopes:'identify email'}
       });
     }).then(function(r){if(r&&r.error)flash(authErr(r.error))})
       .catch(function(){flash('Service indisponible. Réessaie plus tard.')});
@@ -1237,6 +1238,18 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
       box.appendChild(btn(null,'fa-volume-xmark','Mute 10 min',function(){doAction('mute',m,{minutes:10})}));
       box.appendChild(btn(null,'fa-volume-xmark','Mute 1 h',function(){doAction('mute',m,{minutes:60})}));
       box.appendChild(btn(null,'fa-volume-xmark','Mute 24 h',function(){doAction('mute',m,{minutes:1440})}));
+      var mrow=document.createElement('div');mrow.className='mm-custom';
+      mrow.innerHTML='<input type="number" min="1" max="43200" step="1" placeholder="Durée (min.)" class="mm-min" aria-label="Durée du mute en minutes"><button type="button" class="mm-go" aria-label="Valider"><i class="fa-solid fa-check"></i></button>';
+      var mIn=mrow.querySelector('.mm-min'),mGo=mrow.querySelector('.mm-go');
+      mrow.addEventListener('click',function(e){e.stopPropagation()});
+      mIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();mGo.click()}});
+      mGo.addEventListener('click',function(){
+        var v=parseInt(mIn.value,10);
+        if(!v||v<1)return mIn.focus();
+        box.remove();menuOpenFor=null;
+        doAction('mute',m,{minutes:v});
+      });
+      box.appendChild(mrow);
     }else{
       box.appendChild(btn(null,'fa-volume-high','Démute',function(){doAction('unmute',m)}));
     }
@@ -1300,7 +1313,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     else{renderMembers();loadMembers().then(function(){renderMembers()})}
   }
   function openPanel(){
-    if(!isAdmin)return;
+    if(!isOwner)return;
     lastFocus=document.activeElement;
     $('panel').hidden=false;document.documentElement.style.overflow='hidden';
     var box=document.querySelector('#panel .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
