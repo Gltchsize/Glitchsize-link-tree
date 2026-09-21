@@ -182,7 +182,7 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .mrow .mtag.mute{background:rgba(240,178,50,.18);color:#f0b232}
 .mdots{background:none;border:none;color:rgba(255,255,255,.35);font-size:.9rem;padding:8px;border-radius:50%;flex-shrink:0;transition:all .2s}
 .mdots:hover{color:#fff;background:rgba(255,255,255,.08)}
-.mmenu{position:absolute;top:100%;right:8px;z-index:5;margin-top:4px;min-width:190px;background:rgba(10,4,4,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);overflow:hidden;backdrop-filter:blur(20px)}
+.mmenu{position:absolute;top:100%;right:8px;left:8px;z-index:5;margin-top:4px;min-width:190px;max-width:280px;background:rgba(10,4,4,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);overflow:hidden;backdrop-filter:blur(20px)}
 .mmenu[hidden]{display:none}
 .mmenu button{width:100%;text-align:left;background:none;border:none;color:rgba(255,255,255,.75);font:400 .68rem 'Inter',sans-serif;padding:10px 13px;display:flex;align-items:center;gap:9px;transition:background .15s}
 .mmenu button:hover{background:rgba(var(--rgb),.12)}
@@ -191,12 +191,16 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .mmenu button.danger i{color:#f23f43}
 .mmenu hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
 .mmenu .mmlabel{padding:8px 13px 4px;font-size:.42rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
-.mm-custom{display:flex;gap:6px;padding:6px 13px 10px}
-.mm-custom input{flex:1;min-width:0;font:400 .68rem 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 9px;outline:none}
-.mm-custom input::placeholder{color:rgba(255,255,255,.3)}
-.mm-custom input:focus{border-color:rgba(var(--rgb),.6)}
-.mm-custom .mm-go{background:rgba(var(--rgb),.18);border:1px solid rgba(var(--rgb),.32);color:var(--rg);border-radius:8px;padding:0 12px;flex-shrink:0;transition:background .2s}
-.mm-custom .mm-go:hover{background:rgba(var(--rgb),.3)}
+.mm-custom{display:flex;flex-direction:column;gap:8px;padding:4px 13px 12px}
+.mm-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mm-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65);font:500 .62rem 'Inter',sans-serif;letter-spacing:.5px;padding:6px 11px;border-radius:20px;transition:all .2s;white-space:nowrap}
+.mm-chip:hover{background:rgba(var(--rgb),.18);border-color:rgba(var(--rgb),.4);color:#fff}
+.mm-inrow{display:flex;gap:8px}
+.mm-custom input{flex:1;min-width:0;font:600 .9rem 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:12px 13px;outline:none}
+.mm-custom input::placeholder{color:rgba(255,255,255,.32);font-weight:400}
+.mm-custom input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.1)}
+.mm-custom .mm-go{background:var(--r);color:#fff;border:none;border-radius:11px;padding:0 18px;font-size:1rem;flex-shrink:0;min-width:48px;transition:background .2s}
+.mm-custom .mm-go:hover{background:var(--rl)}
 .gear{background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;padding:8px;border-radius:50%;transition:all .2s;flex-shrink:0}
 .gear:hover{color:#fff;background:rgba(255,255,255,.08)}
 .gear[hidden]{display:none}
@@ -1235,13 +1239,22 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
     box.appendChild(document.createElement('hr'));
     var lbl2=document.createElement('div');lbl2.className='mmlabel';lbl2.textContent='Modération';box.appendChild(lbl2);
     if(!m.muted_until){
-      box.appendChild(btn(null,'fa-volume-xmark','Mute 10 min',function(){doAction('mute',m,{minutes:10})}));
-      box.appendChild(btn(null,'fa-volume-xmark','Mute 1 h',function(){doAction('mute',m,{minutes:60})}));
-      box.appendChild(btn(null,'fa-volume-xmark','Mute 24 h',function(){doAction('mute',m,{minutes:1440})}));
       var mrow=document.createElement('div');mrow.className='mm-custom';
-      mrow.innerHTML='<input type="number" min="1" max="43200" step="1" placeholder="Durée (min.)" class="mm-min" aria-label="Durée du mute en minutes"><button type="button" class="mm-go" aria-label="Valider"><i class="fa-solid fa-check"></i></button>';
-      var mIn=mrow.querySelector('.mm-min'),mGo=mrow.querySelector('.mm-go');
-      mrow.addEventListener('click',function(e){e.stopPropagation()});
+      var chips=document.createElement('div');chips.className='mm-chips';
+      [[5,'5 min'],[15,'15 min'],[30,'30 min'],[60,'1 h'],[180,'3 h'],[720,'12 h'],[1440,'24 h'],[10080,'7 j']].forEach(function(o){
+        var c=document.createElement('button');c.type='button';c.className='mm-chip';c.textContent=o[1];
+        c.addEventListener('click',function(e){
+          e.stopPropagation();
+          if(mIn){mIn.value=o[0];mIn.focus();return}
+          box.remove();menuOpenFor=null;doAction('mute',m,{minutes:o[0]});
+        });
+        chips.appendChild(c);
+      });
+      mrow.appendChild(chips);
+      var inrow=document.createElement('div');inrow.className='mm-inrow';
+      inrow.innerHTML='<input type="number" min="1" max="43200" step="1" inputmode="numeric" placeholder="Durée en minutes" class="mm-min" aria-label="Durée du mute en minutes"><button type="button" class="mm-go" aria-label="Valider"><i class="fa-solid fa-check"></i></button>';
+      var mIn=inrow.querySelector('.mm-min'),mGo=inrow.querySelector('.mm-go');
+      inrow.addEventListener('click',function(e){e.stopPropagation()});
       mIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();mGo.click()}});
       mGo.addEventListener('click',function(){
         var v=parseInt(mIn.value,10);
@@ -1249,6 +1262,7 @@ document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*
         box.remove();menuOpenFor=null;
         doAction('mute',m,{minutes:v});
       });
+      mrow.appendChild(inrow);
       box.appendChild(mrow);
     }else{
       box.appendChild(btn(null,'fa-volume-high','Démute',function(){doAction('unmute',m)}));
