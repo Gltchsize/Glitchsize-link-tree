@@ -1,1550 +1,1766 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>LEER</title>
-<link rel="icon" href="https://i.imgur.com/l4fHXmg.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--r:#cc0000;--rl:#ff2222;--rg:#ff6666;--rgb:204,0,0;--rlrgb:255,100,100;--bg:#060000;--bgrgb:6,0,0}
-html,body{width:100%;min-height:100vh;font-family:'Inter',sans-serif;color:#fff;cursor:none;background:var(--bg);overflow-x:hidden}
+  <html lang="fr">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>LEER</title>
+  <link rel="icon" href="https://i.imgur.com/l4fHXmg.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Inter:wght@300;400;500&display=swap"
+  rel="stylesheet">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--r:#cc0000;--rl:#ff2222;--rg:#ff6666;--rgb:204,0,0;--rlrgb:255,100,100;--bg:#060000;--bgrgb:6,0,0}
+  html,body{width:100%;min-height:100vh;font-family:'Inter',sans-serif;color:#fff;cursor:none;background:var(--bg);overf
+  low-x:hidden}
 
-/* CURSOR */
-#cur{position:fixed;width:8px;height:8px;border-radius:50%;background:#fff;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:transform .1s}
-#cur2{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(var(--rgb),.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease}
+  /* CURSOR */
+  #cur{position:fixed;width:8px;height:8px;border-radius:50%;background:#fff;pointer-events:none;z-index:9999;transform:
+  translate(-50%,-50%);mix-blend-mode:difference;transition:transform .1s}
+  #cur2{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid
+  rgba(var(--rgb),.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease}
 
-/* CANVAS */
-#c{position:fixed;inset:0;z-index:0}
+  /* CANVAS */
+  #c{position:fixed;inset:0;z-index:0}
 
-/* INTRO */
-#intro{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px}
-#il{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(3rem,12vw,6rem);letter-spacing:.3em;background:linear-gradient(135deg,#fff 0%,var(--rg) 50%,var(--r) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0}
-#ib-w{width:160px;height:1px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
-#ib{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,transparent,var(--rl),#fff);box-shadow:0 0 20px var(--r)}
+  /* INTRO */
+  #intro{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:28px}
+  #il{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(3rem,12vw,6rem);letter-spacing:.3em;background:l
+  inear-gradient(135deg,#fff 0%,var(--rg) 50%,var(--r)
+  100%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0}
+  #ib-w{width:160px;height:1px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+  #ib{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,transparent,var(--rl),#fff);box-shadow:0 0
+  20px var(--r)}
 
-/* SCENE */
-#scene{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px 110px;opacity:0}
-.wrap{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  /* SCENE */
+  #scene{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40
+  px 20px 110px;opacity:0}
+  .wrap{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:10px}
 
-/* PROFILE */
-.pc{width:100%;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(30px);box-shadow:0 20px 60px rgba(0,0,0,.7);opacity:0;position:relative}
-.pc::before{content:'';position:absolute;inset:0;border-radius:22px;background:linear-gradient(135deg,rgba(var(--rgb),.06) 0%,transparent 60%);pointer-events:none;z-index:1}
-.bn{width:100%;height:120px;object-fit:cover;display:block}
-.av-row{padding:0 16px;margin-top:-36px;position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between}
-.av{width:72px;height:72px;border-radius:50%;border:3px solid var(--bg);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.8)}
-.av img{width:100%;height:100%;object-fit:cover}
-.dot{width:14px;height:14px;border-radius:50%;background:#23a55a;border:3px solid var(--bg);position:absolute;bottom:3px;right:3px}
-.av-wrap{position:relative;display:inline-block}
-.badges-inline{display:flex;gap:6px;padding-bottom:4px}
-.bi{padding:4px 10px;border-radius:20px;background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.2);font-size:.5rem;letter-spacing:1px;color:rgba(var(--rlrgb),.6);text-transform:uppercase}
-.pb{padding:10px 16px 16px;position:relative;z-index:2}
-.pname{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;letter-spacing:2px;margin-bottom:3px}
-.ptag{font-size:.55rem;letter-spacing:2px;color:rgba(255,255,255,.25);margin-bottom:10px}
-.bio{font-size:.75rem;color:rgba(255,255,255,.35);line-height:1.65;font-weight:300}
+  /* PROFILE */
+  .pc{width:100%;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.03);border:1px solid
+  rgba(255,255,255,.07);backdrop-filter:blur(30px);box-shadow:0 20px 60px rgba(0,0,0,.7);opacity:0;position:relative}
+  .pc::before{content:'';position:absolute;inset:0;border-radius:22px;background:linear-gradient(135deg,rgba(var(--rgb),
+  .06) 0%,transparent 60%);pointer-events:none;z-index:1}
+  .bn{width:100%;height:120px;object-fit:cover;display:block}
+  .av-row{padding:0
+  16px;margin-top:-36px;position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between}
+  .av{width:72px;height:72px;border-radius:50%;border:3px solid var(--bg);overflow:hidden;box-shadow:0 4px 24px
+  rgba(0,0,0,.8)}
+  .av img{width:100%;height:100%;object-fit:cover}
+  .dot{width:14px;height:14px;border-radius:50%;background:#23a55a;border:3px solid
+  var(--bg);position:absolute;bottom:3px;right:3px}
+  .av-wrap{position:relative;display:inline-block}
+  .badges-inline{display:flex;gap:6px;padding-bottom:4px}
+  .bi{padding:4px 10px;border-radius:20px;background:rgba(var(--rgb),.12);border:1px solid
+  rgba(var(--rgb),.2);font-size:.5rem;letter-spacing:1px;color:rgba(var(--rlrgb),.6);text-transform:uppercase}
+  .pb{padding:10px 16px 16px;position:relative;z-index:2}
+  .pname{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;letter-spacing:2px;margin-bottom:3px}
+  .ptag{font-size:.55rem;letter-spacing:2px;color:rgba(255,255,255,.25);margin-bottom:10px}
+  .bio{font-size:.75rem;color:rgba(255,255,255,.35);line-height:1.65;font-weight:300}
 
-/* PRESENCE DISCORD */
-.dot{transition:background .4s}
-.pres{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;gap:8px}
-.pres[hidden]{display:none}
-.ps{display:flex;align-items:center;gap:7px;font-size:.48rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.28)}
-.ps i{width:6px;height:6px;border-radius:50%;background:#80848e;flex-shrink:0;transition:background .4s}
-.ps b{font-weight:500;color:rgba(255,255,255,.55)}
-.cst{display:flex;align-items:center;gap:7px;font-size:.7rem;color:rgba(255,255,255,.55);font-weight:300;line-height:1.5;word-break:break-word}
-.cst img{width:18px;height:18px;object-fit:contain;flex-shrink:0}
-.cst:empty,#acts:empty{display:none}
-#acts{display:flex;flex-direction:column;gap:8px}
-.ar{display:flex;align-items:center;gap:11px;padding:9px;border-radius:12px;background:rgba(var(--rgb),.06);border:1px solid rgba(var(--rgb),.14);text-decoration:none;color:inherit;transition:background .3s,border-color .3s}
-a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
-.ai{width:42px;height:42px;border-radius:9px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:.95rem}
-.ai img{width:100%;height:100%;object-fit:cover;display:block}
-.at{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.al{font-size:.44rem;letter-spacing:2.5px;color:rgba(var(--rlrgb),.55);text-transform:uppercase}
-.an{font-size:.68rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.as{font-size:.58rem;color:rgba(255,255,255,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:300}
-.pg{height:2px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden}
-.pg i{display:block;height:100%;width:0;background:var(--rl);border-radius:2px;transition:width 1s linear}
+  /* PRESENCE DISCORD */
+  .dot{transition:background .4s}
+  .pres{margin-top:12px;padding-top:12px;border-top:1px solid
+  rgba(255,255,255,.06);display:flex;flex-direction:column;gap:8px}
+  .pres[hidden]{display:none}
+  .ps{display:flex;align-items:center;gap:7px;font-size:.48rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(
+  255,255,255,.28)}
+  .ps i{width:6px;height:6px;border-radius:50%;background:#80848e;flex-shrink:0;transition:background .4s}
+  .ps b{font-weight:500;color:rgba(255,255,255,.55)}
+  .cst{display:flex;align-items:center;gap:7px;font-size:.7rem;color:rgba(255,255,255,.55);font-weight:300;line-height:1
+  .5;word-break:break-word}
+  .cst img{width:18px;height:18px;object-fit:contain;flex-shrink:0}
+  .cst:empty,#acts:empty{display:none}
+  #acts{display:flex;flex-direction:column;gap:8px}
+  .ar{display:flex;align-items:center;gap:11px;padding:9px;border-radius:12px;background:rgba(var(--rgb),.06);border:1px
+  solid rgba(var(--rgb),.14);text-decoration:none;color:inherit;transition:background .3s,border-color .3s}
+  a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
+  .ai{width:42px;height:42px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.05);display:flex;align-items
+  :center;justify-content:center;color:rgba(255,255,255,.3);font-size:.95rem}
+  .ai img{width:100%;height:100%;object-fit:cover;display:block}
+  .at{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .al{font-size:.44rem;letter-spacing:2.5px;color:rgba(var(--rlrgb),.55);text-transform:uppercase}
+  .an{font-size:.68rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .as{font-size:.58rem;color:rgba(255,255,255,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight
+  :300}
+  .pg{height:2px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden}
+  .pg i{display:block;height:100%;width:0;background:var(--rl);border-radius:2px;transition:width 1s linear}
 
-/* COMMUNAUTE : compteur, chat, livre d'or, comptes */
-.vc{font-size:.5rem;letter-spacing:3px;color:rgba(255,255,255,.28);text-transform:uppercase;text-align:center;padding-top:2px}
-.vc[hidden]{display:none}
-.vc i{margin-right:6px;color:rgba(var(--rlrgb),.5)}
-.cm{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:0}
-.cm[hidden]{display:none}
-.cm,.cm *{cursor:none}
-.cm [hidden]{display:none!important}
-.cm-bg{position:absolute;inset:0;background:rgba(var(--bgrgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.cm-box{position:relative;width:100%;max-width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;border-radius:0;overflow:hidden;background:rgba(var(--bgrgb),.98);border:none;box-shadow:none;animation:cmIn .35s cubic-bezier(.34,1.3,.64,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@keyframes cmIn{from{opacity:0;transform:translateY(16px) scale(.97)}}
-.cm-h{display:flex;align-items:center;gap:8px;padding:12px 12px 12px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
-.cm-tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
-.cm-tabs::-webkit-scrollbar{display:none}
-.cm-tab{background:none;border:1px solid transparent;color:rgba(255,255,255,.4);font:500 .62rem 'Inter',sans-serif;letter-spacing:2px;padding:7px 11px;border-radius:20px;text-transform:uppercase;transition:all .2s;white-space:nowrap}
-.cm-tab:hover{color:#fff}
-.cm-tab.on{color:#fff;background:rgba(var(--rgb),.14);border-color:rgba(var(--rgb),.3)}
-.cm-acc{display:flex;align-items:center;gap:8px;font-size:.66rem;color:rgba(255,255,255,.45);min-width:0}
-.cm-acc b{color:var(--rg);font-weight:500;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cm-acc img{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.cm-sm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);font:500 .6rem 'Inter',sans-serif;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:14px;transition:all .2s;white-space:nowrap}
-.cm-sm:hover{color:#fff;border-color:rgba(var(--rgb),.4)}
-.cm-x{background:none;border:none;color:rgba(255,255,255,.4);font-size:.9rem;padding:8px;border-radius:50%;display:flex;transition:all .2s}
-.cm-x:hover{color:#fff;background:rgba(255,255,255,.08)}
-.cm button:focus-visible{outline:2px solid rgba(var(--rlrgb),.85);outline-offset:2px}
+  /* COMMUNAUTE : compteur, chat, livre d'or, comptes */
+  .vc{font-size:.5rem;letter-spacing:3px;color:rgba(255,255,255,.28);text-transform:uppercase;text-align:center;padding-
+  top:2px}
+  .vc[hidden]{display:none}
+  .vc i{margin-right:6px;color:rgba(var(--rlrgb),.5)}
+  .cm{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:0}
+  .cm[hidden]{display:none}
+  .cm,.cm *{cursor:none}
+  .cm [hidden]{display:none!important}
+  .cm-bg{position:absolute;inset:0;background:rgba(var(--bgrgb),.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:
+  blur(14px)}
+  .cm-box{position:relative;width:100%;max-width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;bord
+  er-radius:0;overflow:hidden;background:rgba(var(--bgrgb),.98);border:none;box-shadow:none;animation:cmIn .35s
+  cubic-bezier(.34,1.3,.64,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  @keyframes cmIn{from{opacity:0;transform:translateY(16px) scale(.97)}}
+  .cm-h{display:flex;align-items:center;gap:8px;padding:12px 12px 12px 14px;border-bottom:1px solid
+  rgba(255,255,255,.06)}
+  .cm-tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .cm-tabs::-webkit-scrollbar{display:none}
+  .cm-tab{background:none;border:1px solid transparent;color:rgba(255,255,255,.4);font:500 .62rem
+  'Inter',sans-serif;letter-spacing:2px;padding:7px 11px;border-radius:20px;text-transform:uppercase;transition:all
+  .2s;white-space:nowrap}
+  .cm-tab:hover{color:#fff}
+  .cm-tab.on{color:#fff;background:rgba(var(--rgb),.14);border-color:rgba(var(--rgb),.3)}
+  .cm-acc{display:flex;align-items:center;gap:8px;font-size:.66rem;color:rgba(255,255,255,.45);min-width:0}
+  .cm-acc b{color:var(--rg);font-weight:500;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cm-acc img{width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0}
+  .cm-sm{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);font:500
+  .6rem 'Inter',sans-serif;letter-spacing:1.5px;text-transform:uppercase;padding:6px
+  10px;border-radius:14px;transition:all .2s;white-space:nowrap}
+  .cm-sm:hover{color:#fff;border-color:rgba(var(--rgb),.4)}
+  .cm-x{background:none;border:none;color:rgba(255,255,255,.4);font-size:.9rem;padding:8px;border-radius:50%;display:fle
+  x;transition:all .2s}
+  .cm-x:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .cm button:focus-visible{outline:2px solid rgba(var(--rlrgb),.85);outline-offset:2px}
 
-/* COURONNE ADMIN */
-.cr{color:#f7c948;text-shadow:0 0 10px rgba(247,201,72,.55);flex-shrink:0}
-.mh .cr{font-size:.66rem;margin-left:-3px}
-.cm-acc .cr{font-size:.62rem}
-.m.adm{box-shadow:inset 0 0 0 1px rgba(247,201,72,.12)}
-.mh .ab{display:inline-flex;align-items:center;gap:4px}
+  /* COURONNE ADMIN */
+  .cr{color:#f7c948;text-shadow:0 0 10px rgba(247,201,72,.55);flex-shrink:0}
+  .mh .cr{font-size:.66rem;margin-left:-3px}
+  .cm-acc .cr{font-size:.62rem}
+  .m.adm{box-shadow:inset 0 0 0 1px rgba(247,201,72,.12)}
+  .mh .ab{display:inline-flex;align-items:center;gap:4px}
 
-/* BOUCLIER MODÉRATEUR */
-.sh{color:#5eead4;text-shadow:0 0 10px rgba(94,234,212,.5);flex-shrink:0}
-.mh .sh{font-size:.62rem;margin-left:-3px}
-.cm-acc .sh{font-size:.6rem}
-.m.mod{background:rgba(94,234,212,.06);border-color:rgba(94,234,212,.18);box-shadow:inset 0 0 0 1px rgba(94,234,212,.1)}
-.mh .mdb{display:inline-flex;align-items:center;gap:4px;font-size:.44rem;letter-spacing:2px;padding:2px 6px;border-radius:10px;background:rgba(94,234,212,.16);color:#5eead4;text-transform:uppercase}
+  /* BOUCLIER MODÉRATEUR */
+  .sh{color:#5eead4;text-shadow:0 0 10px rgba(94,234,212,.5);flex-shrink:0}
+  .mh .sh{font-size:.62rem;margin-left:-3px}
+  .cm-acc .sh{font-size:.6rem}
+  .m.mod{background:rgba(94,234,212,.06);border-color:rgba(94,234,212,.18);box-shadow:inset 0 0 0 1px
+  rgba(94,234,212,.1)}
+  .mh .mdb{display:inline-flex;align-items:center;gap:4px;font-size:.44rem;letter-spacing:2px;padding:2px
+  6px;border-radius:10px;background:rgba(94,234,212,.16);color:#5eead4;text-transform:uppercase}
 
-/* SERVEUR DISCORD */
-.srv{display:flex;align-items:center;gap:10px;margin:12px 12px 0;padding:10px 12px;border-radius:14px;background:rgba(88,101,242,.09);border:1px solid rgba(88,101,242,.22);text-decoration:none;color:inherit;transition:background .2s,border-color .2s;flex-shrink:0}
-.srv:hover{background:rgba(88,101,242,.15);border-color:rgba(88,101,242,.4)}
-.srv[hidden]{display:none}
-.srv-ic{width:38px;height:38px;border-radius:11px;overflow:hidden;flex-shrink:0;background:#5865f2;display:flex;align-items:center;justify-content:center}
-.srv-ic img{width:100%;height:100%;object-fit:cover;display:block}
-.srv-ic img[hidden]{display:none}
-.srv-ic i{color:#fff;font-size:1rem}
-.srv-info{flex:1;min-width:0}
-.srv-name{font-size:.72rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.srv-stats{font-size:.56rem;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-top:3px;display:flex;align-items:center;gap:5px}
-.srv-stats i{width:6px;height:6px;border-radius:50%;background:#23a55a;display:inline-block;flex-shrink:0}
-.srv-join{font-size:.54rem;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:#5865f2;padding:7px 11px;border-radius:20px;flex-shrink:0}
+  /* SERVEUR DISCORD */
+  .srv{display:flex;align-items:center;gap:10px;margin:12px 12px 0;padding:10px
+  12px;border-radius:14px;background:rgba(88,101,242,.09);border:1px solid
+  rgba(88,101,242,.22);text-decoration:none;color:inherit;transition:background .2s,border-color .2s;flex-shrink:0}
+  .srv:hover{background:rgba(88,101,242,.15);border-color:rgba(88,101,242,.4)}
+  .srv[hidden]{display:none}
+  .srv-ic{width:38px;height:38px;border-radius:11px;overflow:hidden;flex-shrink:0;background:#5865f2;display:flex;align-
+  items:center;justify-content:center}
+  .srv-ic img{width:100%;height:100%;object-fit:cover;display:block}
+  .srv-ic img[hidden]{display:none}
+  .srv-ic i{color:#fff;font-size:1rem}
+  .srv-info{flex:1;min-width:0}
+  .srv-name{font-size:.72rem;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srv-stats{font-size:.56rem;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-top:3px;display:flex;align-items:cen
+  ter;gap:5px}
+  .srv-stats i{width:6px;height:6px;border-radius:50%;background:#23a55a;display:inline-block;flex-shrink:0}
+  .srv-join{font-size:.54rem;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:#5865f2;padding:7px
+  11px;border-radius:20px;flex-shrink:0}
 
-.cm-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(var(--rgb),.45) transparent;overscroll-behavior:contain}
-.m{display:flex;gap:9px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);flex-shrink:0}
-.mbody{flex:1;min-width:0}
-.mav{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,.08);margin-top:1px}
-.mav-i{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:#fff;margin-top:1px}
-.m.adm{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.22)}
-.mh{display:flex;align-items:center;gap:8px;margin-bottom:3px}
-.mh b{font-size:.74rem;font-weight:500}
-.mh time{font-size:.58rem;color:rgba(255,255,255,.28)}
-.mh .ab{font-size:.44rem;letter-spacing:2px;padding:2px 6px;border-radius:10px;background:rgba(var(--rgb),.22);color:var(--rg);text-transform:uppercase}
-.mx{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.25);font-size:.7rem;padding:3px 5px;transition:color .2s}
-.mx:hover{color:#f23f43}
-.m p{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.75);white-space:pre-wrap;word-break:break-word;font-weight:300}
-.cm-empty{margin:auto;text-align:center;font-size:.72rem;color:rgba(255,255,255,.32);line-height:1.7;padding:20px}
+  .cm-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollba
+  r-color:rgba(var(--rgb),.45) transparent;overscroll-behavior:contain}
+  .m{display:flex;gap:9px;align-items:flex-start;padding:9px
+  12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);flex-shrink:0}
+  .mbody{flex:1;min-width:0}
+  .mav{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,.08);margin-t
+  op:1px}
+  .mav-i{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;f
+  ont-size:.62rem;font-weight:700;color:#fff;margin-top:1px}
+  .m.adm{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.22)}
+  .mh{display:flex;alignims:center;gap:8px;margin-bottom:3px}
+  .mh b{font-size:.74rem;font-weight:500}
+  .mh time{font-size:.58rem;color:rgba(255,255,255,.28)}
+  .mh .ab{font-size:.44rem;letter-spacing:2px;padding:2px
+  6px;border-radius:10px;background:rgba(var(--rgb),.22);color:var(--rg);text-transform:uppercase}
+  .mx{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.25);font-size:.7rem;padding:3px
+  5px;transition:color .2s}
+  .mx:hover{color:#f23f43}
+  .m p{font-size:.8rem;line-height:1.5;color:rgba(255,255,255,.75);white-space:pre-wrap;word-break:break-word;font-weigh
+  t:300}
+  .cm-empty{margin:auto;text-align:center;font-size:.72rem;color:rgba(255,255,255,.32);line-height:1.7;padding:20px}
 
-.cm-comp{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.06)}
-.cm-comp input,.cm-auth input{flex:1;min-width:0;font:400 16px 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:11px 13px;outline:none;transition:border-color .2s,background .2s}
-.cm-comp input::placeholder,.cm-auth input::placeholder{color:rgba(255,255,255,.3)}
-.cm-comp input:focus,.cm-auth input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.07)}
-.cm-btn{background:var(--r);color:#fff;border:none;border-radius:12px;padding:0 16px;font:500 .72rem 'Inter',sans-serif;letter-spacing:1.5px;transition:background .2s,opacity .2s}
-.cm-btn:hover{background:var(--rl)}
-.cm-btn[disabled]{opacity:.5}
-.cm-btn.ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7)}
-.cm-btn.ghost:hover{background:rgba(255,255,255,.1)}
-.cm-btn.dc{background:#5865f2;display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.cm-btn.dc:hover{background:#4752e0}
-.cm-or{display:flex;align-items:center;gap:10px;font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.22);margin:2px 0}
-.cm-or::before,.cm-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
-.cm-gate{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-top:1px solid rgba(255,255,255,.06);font-size:.72rem;color:rgba(255,255,255,.45)}
-.cm-gate span{flex:1;min-width:120px}
-.cm-gate .cm-btn{padding:10px 14px}
-.cm-auth{flex:1;display:flex;flex-direction:column;gap:10px;padding:18px;overflow-y:auto}
-.cm-at{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.9rem;letter-spacing:3px;margin-bottom:4px}
-.cm-auth .cm-btn{padding:13px}
-.cm-link{background:none;border:none;color:rgba(255,255,255,.4);font:400 .7rem 'Inter',sans-serif;padding:4px 0;text-align:left;transition:color .2s}
-.cm-link:hover{color:var(--rg)}
-.cm-msg{padding:0 14px;font-size:.7rem;line-height:1.5;color:var(--rg)}
-.cm-msg:not(:empty){padding:8px 14px 10px}
-.cm-slow{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center}
-.cm-slow[hidden]{display:none}
-.cm-slow i{font-size:1.8rem;color:var(--rg)}
-.cm-slow p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.6);font-weight:300}
-.cm-slow .cm-btn{padding:11px 20px}
-@media (prefers-reduced-motion:reduce){.cm-box{animation:none}}
+  .cm-comp{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.06)}
+  .cm-comp input,.cm-auth input{flex:1;min-width:0;font:400 16px
+  'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.05);border:1px solid
+  rgba(255,255,255,.09);border-radius:12px;padding:11px 13px;outline:none;transition:border-color .2s,background .2s}
+  .cm-comp input::placeholder,.cm-auth input::placeholder{color:rgba(255,255,255,.3)}
+  .cm-comp input:focus,.cm-auth input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.07)}
+  .cm-btn{background:var(--r);color:#fff;border:none;border-radius:12px;padding:0 16px;font:500 .72rem
+  'Inter',sans-serif;letter-spacing:1.5px;transition:background .2s,opacity .2s}
+  .cm-btn:hover{background:var(--rl)}
+  .cm-btn[disabled]{opacity:.5}
+  .cm-btn.ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7)}
+  .cm-btn.ghost:hover{background:rgba(255,255,255,.1)}
+  .cm-btn.dc{background:#5865f2;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .cm-btn.dc:hover{background:#4752e0}
+  .cm-or{display:flex;alignipsis:center;gap:10px;font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:rgba
+  (255,255,255,.22);margin:2px 0}
+  .cm-or::before,.cm-or::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+  .cm-gate{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px;border-top:1px solid
+  rgba(255,255,255,.06);font-size:.72rem;color:rgba(255,255,255,.45)}
+  .cm-gate span{flex:1;min-width:120px}
+  .cm-gate .cm-btn{padding:10px 14px}
+  .cm-auth{flex:1;display:flex;flex-direction:column;gap:10px;padding:18px;overflow-y:auto}
+  .cm-at{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.9rem;letter-spacing:3px;margin-bottom:4px}
+  .cm-auth .cm-btn{padding:13px}
+  .cm-link{background:none;border:none;color:rgba(255,255,255,.4);font:400 .7rem 'Inter',sans-serif;padding:4px
+  0;text-align:left;transition:color .2s}
+  .cm-link:hover{color:var(--rg)}
+  .cm-msg{padding:0 14px;font-size:.7rem;line-height:1.5;color:var(--rg)}
+  .cm-msg:not(:empty){padding:8px 14px 10px}
+  .cm-slow{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;tex
+  t-align:center}
+  .cm-slow[hidden]{display:none}
+  .cm-slow i{font-size:1.8rem;color:var(--rg)}
+  .cm-slow p{font-size:.78rem;line-height:1.6;color:rgba(255,255,255,.6);font-weight:300}
+  .cm-slow .cm-btn{padding:11px 20px}
+  @media (prefers-reduced-motion:reduce){.cm-box{animation:none}}
 
-.cm-box:focus{outline:none}
+  .cm-box:focus{outline:none}
 
-/* PANEL MEMBRES (admin/modo) */
-.mrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);position:relative}
-.mrow.b{opacity:.5}
-.mrow .mav,.mrow .mav-i{width:30px;height:30px}
-.mrow .mname{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.mrow .mname b{font-size:.76rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mrow .mtags{display:flex;gap:5px;flex-wrap:wrap}
-.mrow .mtag{font-size:.42rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4)}
-.mrow .mtag.adm{background:rgba(247,201,72,.16);color:#f7c948}
-.mrow .mtag.mod{background:rgba(94,234,212,.16);color:#5eead4}
-.mrow .mtag.ban{background:rgba(242,63,67,.18);color:#f23f43}
-.mrow .mtag.mute{background:rgba(240,178,50,.18);color:#f0b232}
-.mdots{background:none;border:none;color:rgba(255,255,255,.35);font-size:.9rem;padding:8px;border-radius:50%;flex-shrink:0;transition:all .2s}
-.mdots:hover{color:#fff;background:rgba(255,255,255,.08)}
-.mmenu{position:absolute;top:100%;right:8px;left:8px;z-index:5;margin-top:4px;min-width:190px;max-width:280px;background:rgba(10,4,4,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);overflow:hidden;backdrop-filter:blur(20px)}
-.mmenu[hidden]{display:none}
-.mmenu button{width:100%;text-align:left;background:none;border:none;color:rgba(255,255,255,.75);font:400 .68rem 'Inter',sans-serif;padding:10px 13px;display:flex;align-items:center;gap:9px;transition:background .15s}
-.mmenu button:hover{background:rgba(var(--rgb),.12)}
-.mmenu button i{width:14px;text-align:center;color:rgba(255,255,255,.4);font-size:.72rem}
-.mmenu button.danger{color:#f23f43}
-.mmenu button.danger i{color:#f23f43}
-.mmenu hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
-.mmenu .mmlabel{padding:8px 13px 4px;font-size:.42rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
-.mm-custom{display:flex;flex-direction:column;gap:8px;padding:4px 13px 12px}
-.mm-chips{display:flex;flex-wrap:wrap;gap:6px}
-.mm-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65);font:500 .62rem 'Inter',sans-serif;letter-spacing:.5px;padding:6px 11px;border-radius:20px;transition:all .2s;white-space:nowrap}
-.mm-chip:hover{background:rgba(var(--rgb),.18);border-color:rgba(var(--rgb),.4);color:#fff}
-.mm-inrow{display:flex;gap:8px}
-.mm-custom input{flex:1;min-width:0;font:600 .9rem 'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:12px 13px;outline:none}
-.mm-custom input::placeholder{color:rgba(255,255,255,.32);font-weight:400}
-.mm-custom input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.1)}
-.mm-custom .mm-go{background:var(--r);color:#fff;border:none;border-radius:11px;padding:0 18px;font-size:1rem;flex-shrink:0;min-width:48px;transition:background .2s}
-.mm-custom .mm-go:hover{background:var(--rl)}
-.gear{background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;padding:8px;border-radius:50%;transition:all .2s;flex-shrink:0}
-.gear:hover{color:#fff;background:rgba(255,255,255,.08)}
-.gear[hidden]{display:none}
-.bot-badge{background:rgba(94,110,255,.18);color:#8f9bff}
+  /* PANEL MEMBRES (admin/modo) */
+  .mrow{display:flex;alignients:center;gap:10px;padding:9px
+  10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);position:relative}
+  .mrow.b{opacity:.5}
+  .mrow .mav,.mrow .mav-i{width:30px;height:30px}
+  .mrow .mname{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .mrow .mname b{font-size:.76rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mrow .mtags{display:flex;gap:5px;flex-wrap:wrap}
+  .mrow .mtag{font-size:.42rem;letter-spacing:1.5px;text-transform:uppercase;padding:2px
+  6px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4)}
+  .mrow .mtag.adm{background:rgba(247,201,72,.16);color:#f7c948}
+  .mrow .mtag.mod{background:rgba(94,234,212,.16);color:#5eead4}
+  .mrow .mtag.ban{background:rgba(242,63,67,.18);color:#f23f43}
+  .mrow .mtag.mute{background:rgba(240,178,50,.18);color:#f0b232}
+  .mdots{background:none;border:none;color:rgba(255,255,255,.35);font-size:.9rem;padding:8px;border-radius:50%;flex-shri
+  nk:0;transition:all .2s}
+  .mdots:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .mmenu{position:absolute;top:100%;right:8px;left:8px;z-index:5;margin-top:4px;min-width:190px;max-width:280px;backgrou
+  nd:rgba(10,4,4,.98);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px
+  rgba(0,0,0,.6);overflow:hidden;backdrop-filter:blur(20px)}
+  .mmenu[hidden]{display:none}
+  .mmenu button{width:100%;text-align:left;background:none;border:none;color:rgba(255,255,255,.75);font:400 .68rem
+  'Inter',sans-serif;padding:10px 13px;display:flex;align-items:center;gap:9px;transition:background .15s}
+  .mmenu button:hover{background:rgba(var(--rgb),.12)}
+  .mmenu button i{width:14px;text-align:center;color:rgba(255,255,255,.4);font-size:.72rem}
+  .mmenu button.danger{color:#f23f43}
+  .mmenu button.danger i{color:#f23f43}
+  .mmenu hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
+  .mmenu .mmlabel{padding:8px 13px
+  4px;font-size:.42rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
+  .mm-custom{display:flex;flex-direction:column;gap:8px;padding:4px 13px 12px}
+  .mm-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .mm-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.65);font:500
+  .62rem 'Inter',sans-serif;letter-spacing:.5px;padding:6px 11px;border-radius:20px;transition:all
+  .2s;white-space:nowrap}
+  .mm-chip:hover{background:rgba(var(--rgb),.18);border-color:rgba(var(--rgb),.4);color:#fff}
+  .mm-inrow{display:flex;gap:8px}
+  .mm-custom input{flex:1;min-width:0;font:600 .9rem
+  'Inter',sans-serif;color:#fff;background:rgba(255,255,255,.08);border:1px solid
+  rgba(255,255,255,.14);border-radius:11px;padding:12px 13px;outline:none}
+  .mm-custom input::placeholder{color:rgba(255,255,255,.32);font-weight:400}
+  .mm-custom input:focus{border-color:rgba(var(--rgb),.65);background:rgba(255,255,255,.1)}
+  .mm-custom .mm-go{background:var(--r);color:#fff;border:none;border-radius:11px;padding:0
+  18px;font-size:1rem;flex-shrink:0;min-width:48px;transition:background .2s}
+  .mm-custom .mm-go:hover{background:var(--rl)}
+  .gear{background:none;border:none;color:rgba(255,255,255,.4);font-size:.85rem;padding:8px;border-radius:50%;transition
+  :all .2s;flex-shrink:0}
+  .gear:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .gear[hidden]{display:none}
+  .bot-badge{background:rgba(94,110,255,.18);color:#8f9bff}
 
-/* DIVIDER */
-.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.25),rgba(255,255,255,.08),transparent);margin:2px 0;opacity:0}
+  /* DIVIDER */
+  .div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.25),rgba(255,255,255,.08),tra
+  nsparent);margin:2px 0;opacity:0}
 
-/* CARDS */
-.card{width:100%;display:flex;align-items:center;text-decoration:none;color:#fff;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);transition:all .3s cubic-bezier(.34,1.56,.64,1);cursor:none;position:relative;overflow:hidden;opacity:0}
-.card::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.04) 50%,transparent 65%);transform:translateX(-100%);transition:transform .5s}
-.card:hover::after{transform:translateX(100%)}
-.card:hover{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.25);transform:translateX(4px);box-shadow:-3px 0 20px rgba(var(--rgb),.08)}
-.ci{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.95rem;color:rgba(255,255,255,.35);margin-right:13px;flex-shrink:0;transition:all .3s}
-.gi{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.82rem;transform:rotate(-10deg) skewX(-5deg);display:block}
-.card:hover .ci{background:rgba(var(--rgb),.15);border-color:rgba(var(--rgb),.3);color:var(--rg)}
-.ct{flex:1}
-.cs{font-size:.44rem;letter-spacing:3px;color:rgba(255,255,255,.2);text-transform:uppercase;display:block;margin-bottom:2px;transition:color .3s}
-.cn{font-size:.65rem;font-weight:500;letter-spacing:3px;color:rgba(255,255,255,.6);transition:all .3s}
-.card:hover .cs{color:rgba(var(--rlrgb),.4)}
-.card:hover .cn{color:#fff}
-.ca{margin-left:auto;color:rgba(255,255,255,.15);font-size:.55rem;transition:all .3s;transform:translateX(-3px)}
-.card:hover .ca{color:rgba(var(--rgb),.6);transform:translateX(3px)}
+  /* CARDS */
+  .card{width:100%;display:flex;align-items:center;text-decoration:none;color:#fff;padding:14px
+  16px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid
+  rgba(255,255,255,.06);backdrop-filter:blur(20px);transition:all .3s
+  cubic-bezier(.34,1.56,.64,1);cursor:none;position:relative;overflow:hidden;opacity:0}
+  .card::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent
+  35%,rgba(255,255,255,.04) 50%,transparent 65%);transform:translateX(-100%);transition:transform .5s}
+  .card:hover::after{transform:translateX(100%)}
+  .card:hover{background:rgba(var(--rgb),.08);border-color:rgba(var(--rgb),.25);transform:translateX(4px);box-shadow:-3p
+  x 0 20px rgba(var(--rgb),.08)}
+  .ci{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid
+  rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.95rem;color:rgba(255,255,255,.
+  35);margin-right:13px;flex-shrink:0;transition:all .3s}
+  .gi{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.82rem;transform:rotate(-10deg)
+  skewX(-5deg);display:block}
+  .card:hover .ci{background:rgba(var(--rgb),.15);border-color:rgba(var(--rgb),.3);color:var(--rg)}
+  .ct{flex:1}
+  .cs{font-size:.44rem;letter-spacing:3px;color:rgba(255,255,255,.2);text-transform:uppercase;display:block;margin-botto
+  m:2px;transition:color .3s}
+  .cn{font-size:.65rem;font-weight:500;letter-spacing:3px;color:rgba(255,255,255,.6);transition:all .3s}
+  .card:hover .cs{color:rgba(var(--rlrgb),.4)}
+  .card:hover .cn{color:#fff}
+  .ca{margin-left:auto;color:rgba(255,255,255,.15);font-size:.55rem;transition:all .3s;transform:translateX(-3px)}
+  .card:hover .ca{color:rgba(var(--rgb),.6);transform:translateX(3px)}
 
-/* FOOTER */
-.ft{font-size:.42rem;letter-spacing:5px;color:rgba(255,255,255,.1);text-transform:uppercase;text-align:center;opacity:0;padding-top:4px}
+  /* FOOTER */
+  .ft{font-size:.42rem;letter-spacing:5px;color:rgba(255,255,255,.1);text-transform:uppercase;text-align:center;opacity:
+  0;padding-top:4px}
 
-/* MUSIC */
-#mp{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:14px;padding:14px 24px calc(14px + env(safe-area-inset-bottom,0px)) 24px;background:rgba(var(--bgrgb),.9);border-top:1px solid rgba(255,255,255,.06);backdrop-filter:blur(40px);opacity:0;transition:opacity .4s}
-#mp::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.5),transparent)}
-.ma{width:38px;height:38px;border-radius:8px;overflow:hidden;flex-shrink:0}
-.ma img{width:100%;height:100%;object-fit:cover}
-.mi{flex:1;min-width:0}
-.mt{font-size:.58rem;letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
-.ms{font-size:.42rem;letter-spacing:2px;color:rgba(255,255,255,.2);margin-top:2px}
-.mc{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.mb{background:none;border:none;color:rgba(255,255,255,.3);cursor:none;font-size:.85rem;transition:all .2s;padding:7px;border-radius:50%;display:flex;align-items:center}
-.mb:hover{color:#fff;background:rgba(255,255,255,.08)}
-.mb.main{width:34px;height:34px;background:var(--r);color:#fff;font-size:.85rem;justify-content:center;border-radius:50%;box-shadow:0 0 20px rgba(var(--rgb),.4)}
-.mb.main:hover{background:var(--rl);box-shadow:0 0 30px rgba(255,34,34,.5)}
-.meq{display:flex;align-items:flex-end;gap:2px;height:14px;margin-left:6px}
-.meq span{display:block;width:2px;background:var(--r);border-radius:1px;opacity:0;transition:opacity .3s;animation:eq .7s ease-in-out infinite alternate}
-.meq span:nth-child(1){height:5px}.meq span:nth-child(2){height:11px;animation-delay:.1s}.meq span:nth-child(3){height:7px;animation-delay:.2s}.meq span:nth-child(4){height:13px;animation-delay:.08s}.meq span:nth-child(5){height:4px;animation-delay:.18s}
-.meq.on span{opacity:.8}
-@keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
-#player{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
+  /* MUSIC */
+  #mp{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;alignients:center;gap:14px;padding:14px 24px
+  calc(14px + env(safe-area-inset-bottom,0px)) 24px;background:rgba(var(--bgrgb),.9);border-top:1px solid
+  rgba(255,255,255,.06);backdrop-filter:blur(40px);opacity:0;transition:opacity .4s}
+  #mp::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transpar
+  ent,rgba(var(--rgb),.5),transparent)}
+  .ma{width:38px;height:38px;border-radius:8px;overflow:hidden;flex-shrink:0}
+  .ma img{width:100%;height:100%;object-fit:cover}
+  .mi{flex:1;min-width:0}
+  .mt{font-size:.58rem;letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weig
+  ht:500}
+  .ms{font-size:.42rem;letter-spacing:2px;color:rgba(255,255,255,.2);margin-top:2px}
+  .mc{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .mb{background:none;border:none;color:rgba(255,255,255,.3);cursor:none;font-size:.85rem;transition:all
+  .2s;padding:7px;border-radius:50%;display:flex;align-items:center}
+  .mb:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .mb.main{width:34px;height:34px;background:var(--r);color:#fff;font-size:.85rem;justify-content:center;border-radius:5
+  0%;box-shadow:0 0 20px rgba(var(--rgb),.4)}
+  .mb.main:hover{background:var(--rl);box-shadow:0 0 30px rgba(255,34,34,.5)}
+  .meq{display:flex;align-items:flex-end;gap:2px;height:14px;margin-left:6px}
+  .meq span{display:block;width:2px;background:var(--r);border-radius:1px;opacity:0;transition:opacity .3s;animation:eq
+  .7s ease-in-out infinite alternate}
+  .meq span:nth-child(1){height:5px}.meq span:nth-child(2){height:11px;animation-delay:.1s}.meq
+  span:nth-child(3){height:7px;animation-delay:.2s}.meq span:nth-child(4){height:13px;animation-delay:.08s}.meq
+  span:nth-child(5){height:4px;animation-delay:.18s}
+  .meq.on span{opacity:.8}
+  @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+  #player{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
 
-/* PANEL ADMIN (stats + membres) */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
-.stat-card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
-.stat-card .sv{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;display:flex;align-items:center;gap:7px}
-.stat-card .sv .live{width:7px;height:7px;border-radius:50%;background:#23a55a;box-shadow:0 0 8px #23a55a;flex-shrink:0;animation:pulse 1.6s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.stat-card .sl{font-size:.48rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35)}
-.panel-sec-title{padding:2px 14px 6px;font-size:.5rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
+  /* PANEL ADMIN (stats + membres) */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+  .stat-card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px
+  14px;display:flex;flex-direction:column;gap:4px}
+  .stat-card .sv{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;display:flex;align-items:
+  center;gap:7px}
+  .stat-card .sv .live{width:7px;height:7px;border-radius:50%;background:#23a55a;box-shadow:0 0 8px
+  #23a55a;flex-shrink:0;animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .stat-card .sl{font-size:.48rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+  .panel-sec-title{padding:2px 14px
+  6px;font-size:.5rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3)}
 
-/* MOBILE / TACTILE */
-a,button{-webkit-tap-highlight-color:transparent}
-@media (hover:none),(pointer:coarse){
-  *{cursor:auto!important}
-  #cur,#cur2{display:none!important}
-}
-</style>
-</head>
-<body>
-<canvas id="c"></canvas>
-<div id="cur"></div><div id="cur2"></div>
+  /* MOBILE / TACTILE */
+  a,button{-webkit-tap-highlight-color:transparent}
+  @media (hover:none),(pointer:coarse){
+    *{cursor:auto!important}
+    #cur,#cur2{display:none!important}
+  }
+  </style>
+  </head>
+  <body>
+  <canvas id="c"></canvas>
+  <div id="cur"></div><div id="cur2"></div>
 
-<div id="intro">
-  <div id="il">LEER</div>
-  <div id="ib-w"><div id="ib"></div></div>
-</div>
+  <div id="intro">
+    <div id="il">LEER</div>
+    <div id="ib-w"><div id="ib"></div></div>
+  </div>
 
-<div id="scene">
-  <div class="wrap">
+  <div id="scene">
+    <div class="wrap">
 
-    <div class="pc" id="ePC">
-      <img class="bn" id="dBanner" src="https://i.imgur.com/Avq5xsP.png" alt="">
-      <div class="av-row">
-        <div class="av-wrap">
-          <div class="av"><img id="dAv" src="https://i.imgur.com/j5WwXDA.jpg" alt="LEER"></div>
-          <div class="dot" id="dDot"></div>
+      <div class="pc" id="ePC">
+        <img class="bn" id="dBanner" src="https://i.imgur.com/Avq5xsP.png" alt="">
+        <div class="av-row">
+          <div class="av-wrap">
+            <div class="av"><img id="dAv" src="https://i.imgur.com/j5WwXDA.jpg" alt="LEER"></div>
+            <div class="dot" id="dDot"></div>
+          </div>
+          <div class="badges-inline">
+            <div class="bi"><i class="fa-solid fa-bolt"></i> Live</div>
+            <div class="bi"><i class="fa-solid fa-fire"></i> 2026</div>
+          </div>
         </div>
-        <div class="badges-inline">
-          <div class="bi"><i class="fa-solid fa-bolt"></i> Live</div>
-          <div class="bi"><i class="fa-solid fa-fire"></i> 2026</div>
+        <div class="pb">
+          <div class="pname" id="dName">LEER</div>
+          <div class="ptag" id="dTag">@glitchsize</div>
+          <div class="bio">Streamer &amp; cr&eacute;ateur de contenu &mdash; gaming, clips &amp; live.</div>
+          <div class="pres" id="pres" hidden>
+            <div class="ps"><i id="psd"></i><b id="pst">Hors ligne</b><span id="psp"></span></div>
+            <div class="cst" id="cst"></div>
+            <div id="acts"></div>
+          </div>
         </div>
       </div>
-      <div class="pb">
-        <div class="pname" id="dName">LEER</div>
-        <div class="ptag" id="dTag">@glitchsize</div>
-        <div class="bio">Streamer &amp; cr&eacute;ateur de contenu &mdash; gaming, clips &amp; live.</div>
-        <div class="pres" id="pres" hidden>
-          <div class="ps"><i id="psd"></i><b id="pst">Hors ligne</b><span id="psp"></span></div>
-          <div class="cst" id="cst"></div>
-          <div id="acts"></div>
+
+      <div class="div" id="eDiv"></div>
+
+      <a href="https://czone-free-crack-premium.netlify.app/" class="card" target="_blank">
+        <div class="ci"><span class="gi">G</span></div>
+        <div class="ct"><span class="cs">Acc&egrave;s</span><span class="cn">C-ZONE</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+      <a href="https://discord.gg/vBHvgKMDFu" class="card" target="_blank">
+        <div class="ci"><i class="fa-brands fa-discord"></i></div>
+        <div class="ct"><span class="cs">Rejoins</span><span class="cn">MON SERVEUR DISCORD</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+      <a href="https://www.twitch.tv/leer0610" class="card" target="_blank">
+        <div class="ci"><i class="fa-brands fa-twitch"></i></div>
+        <div class="ct"><span class="cs">Live</span><span class="cn">TWITCH</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+      <a href="https://www.youtube.com/@LEER0610" class="card" target="_blank">
+        <div class="ci"><i class="fa-brands fa-youtube"></i></div>
+        <div class="ct"><span class="cs">Vid&eacute;os</span><span class="cn">YOUTUBE</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+      <a href="https://www.instagram.com/glitchsize_fr" class="card" target="_blank">
+        <div class="ci"><i class="fa-brands fa-instagram"></i></div>
+        <div class="ct"><span class="cs">Photos</span><span class="cn">INSTAGRAM</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+      <a href="https://x.com/PalermLeer59724" class="card" target="_blank">
+        <div class="ci"><i class="fa-brands fa-x-twitter"></i></div>
+        <div class="ct"><span class="cs">Actu</span><span class="cn">TWITTER</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+          <a href="#" class="card" id="openCm" role="button">
+        <div class="ci"><i class="fa-solid fa-comments"></i></div>
+        <div class="ct"><span class="cs">Messages</span><span class="cn">CHAT</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <a href="#" class="card" id="openPanel" role="button" hidden>
+        <div class="ci"><i class="fa-solid fa-gauge-high"></i></div>
+        <div class="ct"><span class="cs">Administration</span><span class="cn">PANEL ADMIN</span></div>
+        <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
+      </a>
+
+      <div class="ft" id="eFT">2026 &middot; LEER &middot; glitchsize</div>
+      <div class="vc" id="vcW" hidden><i class="fa-solid fa-eye"></i><span id="vN">0</span> visites</div>
+    </div>
+  </div>
+
+  <div class="cm" id="cm" hidden>
+    <div class="cm-bg" data-close></div>
+    <div class="cm-box" role="dialog" aria-modal="true" aria-label="Chat et livre d'or">
+      <div class="cm-h">
+        <div class="cm-tabs" role="tablist">
+          <button type="button" class="cm-tab on" data-tab="general" role="tab" aria-selected="true"># général</button>
+          <button type="button" class="cm-tab" data-tab="annonce" role="tab" aria-selected="false"># annonce</button>
         </div>
+        <div class="cm-acc" id="cmAcc"></div>
+        <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
       </div>
-    </div>
 
-    <div class="div" id="eDiv"></div>
+      <a class="srv" id="srvCard" href="https://discord.gg/vBHvgKMDFu" target="_blank" rel="noopener" hidden>
+        <div class="srv-ic"><img id="srvIcon" alt="" src="https://i.imgur.com/32DYhWA.png"></div>
+        <div class="srv-info">
+          <div class="srv-name" id="srvName">Serveur Discord</div>
+          <div class="srv-stats"><i></i><span id="srvOn">0</span> en ligne &middot; <span id="srvMem">0</span>
+  membres</div>
+        </div>
+        <div class="srv-join">Rejoindre</div>
+      </a>
 
-    <a href="https://czone-free-crack-premium.netlify.app/" class="card" target="_blank">
-      <div class="ci"><span class="gi">G</span></div>
-      <div class="ct"><span class="cs">Acc&egrave;s</span><span class="cn">C-ZONE</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://discord.gg/vBHvgKMDFu" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-discord"></i></div>
-      <div class="ct"><span class="cs">Rejoins</span><span class="cn">MON SERVEUR DISCORD</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://www.twitch.tv/leer0610" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-twitch"></i></div>
-      <div class="ct"><span class="cs">Live</span><span class="cn">TWITCH</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://www.youtube.com/@LEER0610" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-youtube"></i></div>
-      <div class="ct"><span class="cs">Vid&eacute;os</span><span class="cn">YOUTUBE</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://www.instagram.com/glitchsize_fr" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-instagram"></i></div>
-      <div class="ct"><span class="cs">Photos</span><span class="cn">INSTAGRAM</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-    <a href="https://x.com/PalermLeer59724" class="card" target="_blank">
-      <div class="ci"><i class="fa-brands fa-x-twitter"></i></div>
-      <div class="ct"><span class="cs">Actu</span><span class="cn">TWITTER</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-
-        <a href="#" class="card" id="openCm" role="button">
-      <div class="ci"><i class="fa-solid fa-comments"></i></div>
-      <div class="ct"><span class="cs">Messages</span><span class="cn">CHAT</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-
-    <a href="#" class="card" id="openPanel" role="button" hidden>
-      <div class="ci"><i class="fa-solid fa-gauge-high"></i></div>
-      <div class="ct"><span class="cs">Administration</span><span class="cn">PANEL ADMIN</span></div>
-      <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
-    </a>
-
-    <div class="ft" id="eFT">2026 &middot; LEER &middot; glitchsize</div>
-    <div class="vc" id="vcW" hidden><i class="fa-solid fa-eye"></i><span id="vN">0</span> visites</div>
-  </div>
-</div>
-
-<div class="cm" id="cm" hidden>
-  <div class="cm-bg" data-close></div>
-  <div class="cm-box" role="dialog" aria-modal="true" aria-label="Chat et livre d'or">
-    <div class="cm-h">
-      <div class="cm-tabs" role="tablist">
-        <button type="button" class="cm-tab on" data-tab="general" role="tab" aria-selected="true"># général</button>
-        <button type="button" class="cm-tab" data-tab="annonce" role="tab" aria-selected="false"># annonce</button>
+      <div class="cm-list" id="cmList" aria-live="polite"></div>
+      <form class="cm-comp" id="cmComp" hidden>
+        <input id="cmIn" type="text" maxlength="300" autocomplete="off" placeholder="Écris un message…"
+  aria-label="Message">
+        <button type="submit" class="cm-btn" id="cmSend" aria-label="Envoyer"><i class="fa-solid
+  fa-paper-plane"></i></button>
+      </form>
+      <div class="cm-gate" id="cmLocked" hidden>
+        <span><i class="fa-solid fa-lock"></i> Seul le propriétaire peut publier dans ce salon.</span>
       </div>
-      <div class="cm-acc" id="cmAcc"></div>
-      <button type="button" class="cm-x" data-close aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <a class="srv" id="srvCard" href="https://discord.gg/vBHvgKMDFu" target="_blank" rel="noopener" hidden>
-      <div class="srv-ic"><img id="srvIcon" alt="" src="https://i.imgur.com/32DYhWA.png"></div>
-      <div class="srv-info">
-        <div class="srv-name" id="srvName">Serveur Discord</div>
-        <div class="srv-stats"><i></i><span id="srvOn">0</span> en ligne &middot; <span id="srvMem">0</span> membres</div>
+      <div class="cm-gate" id="cmGate" hidden>
+        <span>Connecte-toi pour écrire.</span>
+        <button type="button" class="cm-btn dc" id="gDiscord"><i class="fa-brands fa-discord"></i> Discord</button>
+        <button type="button" class="cm-btn" id="gLogin">Connexion</button>
+        <button type="button" class="cm-btn ghost" id="gSign">Créer un compte</button>
       </div>
-      <div class="srv-join">Rejoindre</div>
-    </a>
 
-    <div class="cm-list" id="cmList" aria-live="polite"></div>
-    <form class="cm-comp" id="cmComp" hidden>
-      <input id="cmIn" type="text" maxlength="300" autocomplete="off" placeholder="Écris un message…" aria-label="Message">
-      <button type="submit" class="cm-btn" id="cmSend" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button>
-    </form>
-    <div class="cm-gate" id="cmLocked" hidden>
-      <span><i class="fa-solid fa-lock"></i> Seul le propriétaire peut publier dans ce salon.</span>
-    </div>
-    <div class="cm-gate" id="cmGate" hidden>
-      <span>Connecte-toi pour écrire.</span>
-      <button type="button" class="cm-btn dc" id="gDiscord"><i class="fa-brands fa-discord"></i> Discord</button>
-      <button type="button" class="cm-btn" id="gLogin">Connexion</button>
-      <button type="button" class="cm-btn ghost" id="gSign">Créer un compte</button>
-    </div>
+      <form class="cm-auth" id="cmAuth" hidden novalidate>
+        <div class="cm-at" id="cmAt">CONNEXION</div>
+        <button type="button" class="cm-btn dc" id="aDiscord"><i class="fa-brands fa-discord"></i> Continuer avec
+  Discord</button>
+        <div class="cm-or">ou</div>
+        <input id="aEmail" type="email" placeholder="Email" autocomplete="email" aria-label="Email">
+        <input id="aUser" type="text" placeholder="Pseudo (3 à 20 : lettres, chiffres, _)" autocomplete="username"
+  maxlength="20" aria-label="Pseudo" hidden>
+        <input id="aPass" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="current-password"
+  aria-label="Mot de passe">
+        <button type="submit" class="cm-btn" id="aGo">Se connecter</button>
+        <button type="button" class="cm-link" id="aSwap">Pas de compte ? Créer un compte</button>
+        <button type="button" class="cm-link" id="aBack">Retour</button>
+      </form>
 
-    <form class="cm-auth" id="cmAuth" hidden novalidate>
-      <div class="cm-at" id="cmAt">CONNEXION</div>
-      <button type="button" class="cm-btn dc" id="aDiscord"><i class="fa-brands fa-discord"></i> Continuer avec Discord</button>
-      <div class="cm-or">ou</div>
-      <input id="aEmail" type="email" placeholder="Email" autocomplete="email" aria-label="Email">
-      <input id="aUser" type="text" placeholder="Pseudo (3 à 20 : lettres, chiffres, _)" autocomplete="username" maxlength="20" aria-label="Pseudo" hidden>
-      <input id="aPass" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="current-password" aria-label="Mot de passe">
-      <button type="submit" class="cm-btn" id="aGo">Se connecter</button>
-      <button type="button" class="cm-link" id="aSwap">Pas de compte ? Créer un compte</button>
-      <button type="button" class="cm-link" id="aBack">Retour</button>
-    </form>
-
-    <div class="cm-slow" id="cmSlow" hidden>
-      <i class="fa-solid fa-hourglass-half"></i>
-      <p>Doucement ! Tu envoies des messages trop vite.<br>Prends une pause quelques secondes.</p>
-      <button type="button" class="cm-btn" id="slowOk">OK, je continue</button>
-    </div>
-
-    <div class="cm-msg" id="cmMsg" role="status"></div>
-  </div>
-</div>
-
-<div class="cm" id="panel" hidden>
-  <div class="cm-bg" data-close-panel></div>
-  <div class="cm-box" role="dialog" aria-modal="true" aria-label="Panel administrateur">
-    <div class="cm-h">
-      <div class="cm-tabs" role="tablist">
-        <button type="button" class="cm-tab on" data-ptab="stats" role="tab" aria-selected="true">Statistiques</button>
-        <button type="button" class="cm-tab" data-ptab="membres" role="tab" aria-selected="false">Membres</button>
+      <div class="cm-slow" id="cmSlow" hidden>
+        <i class="fa-solid fa-hourglass-half"></i>
+        <p>Doucement ! Tu envoies des messages trop vite.<br>Prends une pause quelques secondes.</p>
+        <button type="button" class="cm-btn" id="slowOk">OK, je continue</button>
       </div>
-      <div class="cm-acc" id="panelAcc"></div>
-      <button type="button" class="cm-x" data-close-panel aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="cm-msg" id="cmMsg" role="status"></div>
     </div>
-    <div class="cm-list" id="panelBody" aria-live="polite"></div>
   </div>
-</div>
 
-<div id="mp">
-  <div class="ma"><img src="https://i.imgur.com/j5WwXDA.jpg" alt=""></div>
-  <div class="mi">
-    <div class="mt" id="mpT">Chargement...</div>
-    <div class="ms">LEER PLAYLIST</div>
+  <div class="cm" id="panel" hidden>
+    <div class="cm-bg" data-close-panel></div>
+    <div class="cm-box" role="dialog" aria-modal="true" aria-label="Panel administrateur">
+      <div class="cm-h">
+        <div class="cm-tabs" role="tablist">
+          <button type="button" class="cm-tab on" data-ptab="stats" role="tab"
+  aria-selected="true">Statistiques</button>
+          <button type="button" class="cm-tab" data-ptab="membres" role="tab" aria-selected="false">Membres</button>
+        </div>
+        <div class="cm-acc" id="panelAcc"></div>
+        <button type="button" class="cm-x" data-close-panel aria-label="Fermer"><i class="fa-solid
+  fa-xmark"></i></button>
+      </div>
+      <div class="cm-list" id="panelBody" aria-live="polite"></div>
+    </div>
   </div>
-  <div class="mc">
-    <button class="mb" onclick="prevTrack()"><i class="fa-solid fa-backward-step"></i></button>
-    <button class="mb main" onclick="toggleMusic()"><i class="fa-solid fa-play" id="mpI"></i></button>
-    <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
-    <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div id="mp">
+    <div class="ma"><img src="https://i.imgur.com/j5WwXDA.jpg" alt=""></div>
+    <div class="mi">
+      <div class="mt" id="mpT">Chargement...</div>
+      <div class="ms">LEER PLAYLIST</div>
+    </div>
+    <div class="mc">
+      <button class="mb" onclick="prevTrack()"><i class="fa-solid fa-backward-step"></i></button>
+      <button class="mb main" onclick="toggleMusic()"><i class="fa-solid fa-play" id="mpI"></i></button>
+      <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
+      <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span></div>
+    </div>
   </div>
-</div>
-<div id="player"></div>
+  <div id="player"></div>
 
-<script>
-/* EASING */
-var E={
-  oE:function(t){return t>=1?1:1-Math.pow(2,-10*t)},
-  oB:function(t){var c=2.70158;return 1+c*Math.pow(t-1,3)+(c-1)*Math.pow(t-1,2)},
-  oEl:function(t){return t===0?0:t===1?1:Math.pow(2,-10*t)*Math.sin((t*10-.75)*(2*Math.PI/3))+1},
-  oQ:function(t){return 1-Math.pow(1-t,4)},
-  oC:function(t){return 1-Math.pow(1-t,3)},
-  iOQ:function(t){return t<.5?8*t*t*t*t:1-Math.pow(-2*t+2,4)/2},
-  iE:function(t){return t===0?0:Math.pow(2,10*t-10)},
-  iOC:function(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
-};
-function an(c){
-  var f=c.from,to=c.to,ms=c.ms,ea=c.ease||E.oE,dl=c.delay||0,tk=c.tick,dn=c.done;
-  var t0=performance.now()+dl;
-  function r(n){if(n<t0){requestAnimationFrame(r);return}var p=Math.min((n-t0)/ms,1);tk(f+(to-f)*ea(p),p);if(p<1)requestAnimationFrame(r);else if(dn)dn()}
-  requestAnimationFrame(r)
-}
-function S(el,o){Object.assign(el.style,o)}
-
-/* THEME DYNAMIQUE — les couleurs du site suivent ton profil Discord */
-var T={h:0,s:100,rgb:'204,0,0',lrgb:'255,100,100',bg:'6,0,0'};
-function h2r(h,s,l){s/=100;l/=100;var a=s*Math.min(l,1-l);function f(n){var k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))))}return [f(0),f(8),f(4)]}
-function rgb2h(r,g,b){r/=255;g/=255;b/=255;var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360}return [h,s,l]}
-function setTheme(h,s){
-  h=((h%360)+360)%360;s=Math.max(55,Math.min(100,s));
-  T.h=h;T.s=s;
-  var c=h2r(h,s,40),l=h2r(h,s,57),g=h2r(h,s,70),b=h2r(h,Math.min(s,80),1.2);
-  T.rgb=c.join(',');T.lrgb=g.join(',');T.bg=b.join(',');
-  var st=document.documentElement.style;
-  st.setProperty('--r','rgb('+T.rgb+')');st.setProperty('--rl','rgb('+l.join(',')+')');st.setProperty('--rg','rgb('+T.lrgb+')');
-  st.setProperty('--rgb',T.rgb);st.setProperty('--rlrgb',T.lrgb);
-  st.setProperty('--bg','rgb('+T.bg+')');st.setProperty('--bgrgb',T.bg);
-}
-var _tw=0;
-function shiftTheme(h,s){
-  var h0=T.h,s0=T.s,dh=((h-h0+540)%360)-180,ds=Math.max(55,Math.min(100,s))-s0,id=++_tw;
-  an({from:0,to:1,ms:900,ease:E.oC,tick:function(v){if(id===_tw)setTheme(h0+dh*v,s0+ds*v)}});
-  try{localStorage.setItem('leerTheme',JSON.stringify({h:h,s:s}))}catch(e){}
-}
-/* dernier thème connu : pas de flash rouge au chargement */
-try{var _ct=JSON.parse(localStorage.getItem('leerTheme')||'null');if(_ct&&isFinite(_ct.h)&&isFinite(_ct.s))setTheme(_ct.h,_ct.s)}catch(e){}
-
-/* CURSOR */
-var cA=document.getElementById('cur'),cB=document.getElementById('cur2'),mx=0,my=0,lx=0,ly=0;
-document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cA.style.left=mx+'px';cA.style.top=my+'px'});
-(function lp(){lx+=(mx-lx)*.1;ly+=(my-ly)*.1;cB.style.left=lx+'px';cB.style.top=ly+'px';requestAnimationFrame(lp)})();
-document.querySelectorAll('.card,.pc').forEach(function(el){
-  el.addEventListener('mouseenter',function(){S(cB,{width:'50px',height:'50px',borderColor:'rgba(var(--rgb),.6)'})});
-  el.addEventListener('mouseleave',function(){S(cB,{width:'36px',height:'36px',borderColor:'rgba(var(--rgb),.4)'})});
-});
-
-/* CANVAS */
-(function(){
-  var cv=document.getElementById('c'),ctx=cv.getContext('2d');
-  function rsz(){cv.width=innerWidth;cv.height=innerHeight}rsz();window.addEventListener('resize',rsz);
-  /* Particles */
-  var pts=Array.from({length:280},function(){return{
-    x:Math.random(),y:Math.random(),
-    r:.1+Math.random()*1.2,
-    op:.05+Math.random()*.7,
-    tw:1+Math.random()*3.5,tp:Math.random()*Math.PI*2,
-    sp:.00003+Math.random()*.00015,
-    red:Math.random()>.65
-  }});
-  /* Shooting stars */
-  function mk(){return{x:Math.random()*.7,y:Math.random()*.45,t:0,len:80+Math.random()*130,spd:.002+Math.random()*.004,delay:Math.random()*500}}
-  var sh=[mk(),mk(),mk()];
-  /* Glow blobs */
-  var blobs=[
-    {x:.15,y:.2,r:.3,h:0,op:.06,vx:.0001,vy:.00008},
-    {x:.8,y:.75,r:.25,h:5,op:.05,vx:-.00009,vy:.00007},
-    {x:.5,y:.5,r:.18,h:355,op:.04,vx:.00007,vy:-.0001}
-  ];
-  var rv=0,t=0,mX=.5,mY=.5;
-  window._rv=function(v){rv=v};
-  document.addEventListener('mousemove',function(e){mX=e.clientX/innerWidth;mY=e.clientY/innerHeight});
-  function fr(){
-    t+=.011;var W=cv.width,H=cv.height;
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='rgb('+T.bg+')';ctx.fillRect(0,0,W,H);
-    /* blobs */
-    blobs.forEach(function(b){
-      b.x+=b.vx;b.y+=b.vy;
-      if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
-      var R=b.r*Math.max(W,H);
-      var g=ctx.createRadialGradient(b.x*W,b.y*H,0,b.x*W,b.y*H,R);
-      g.addColorStop(0,'hsla('+(T.h+b.h)+','+Math.min(T.s,90)+'%,25%,'+(b.op*rv)+')');
-      g.addColorStop(1,'transparent');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x*W,b.y*H,R,0,Math.PI*2);ctx.fill();
-    });
-    /* mouse glow */
-    var mg=ctx.createRadialGradient(mX*W,mY*H,0,mX*W,mY*H,Math.max(W,H)*.18);
-    mg.addColorStop(0,'rgba('+T.rgb+','+(0.04*rv)+')');mg.addColorStop(1,'transparent');
-    ctx.fillStyle=mg;ctx.fillRect(0,0,W,H);
-    /* stars */
-    pts.forEach(function(s){
-      s.y+=s.sp;if(s.y>1){s.y=0;s.x=Math.random()}
-      var tw=.5+.5*Math.sin(t*s.tw+s.tp),op=s.op*(.55+.45*tw)*rv,r=s.r*(1+.18*tw);
-      ctx.beginPath();ctx.arc((s.x+(mX-.5)*.015)*W,(s.y+(mY-.5)*.01)*H,r,0,Math.PI*2);
-      ctx.fillStyle=s.red?'rgba('+T.lrgb+','+op+')':'rgba(255,255,255,'+op+')';ctx.fill();
-    });
-    /* shooting */
-    sh.forEach(function(s,i){
-      if(s.delay>0){s.delay--;return}
-      s.t+=s.spd;
-      var px=(s.x+s.t)*W,py=(s.y+s.t*.15)*H;
-      var op=s.t<.4?Math.min(1,s.t*5):Math.max(0,1-(s.t-.4)*3);
-      if(s.t>1||op<=0){sh[i]=mk();return}
-      var g=ctx.createLinearGradient(px-s.len,py-s.len*.15,px,py);
-      g.addColorStop(0,'transparent');g.addColorStop(.5,'rgba('+T.rgb+','+(op*.25*rv)+')');
-      g.addColorStop(1,'rgba('+T.lrgb+','+(op*.5*rv)+')');
-      ctx.save();ctx.strokeStyle=g;ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(px-s.len,py-s.len*.15);ctx.lineTo(px,py);ctx.stroke();ctx.restore();
-    });
-    requestAnimationFrame(fr);
-  }fr();
-})();
-
-/* INTRO */
-(function(){
-  var IN=document.getElementById('intro'),il=document.getElementById('il'),ib=document.getElementById('ib');
-  var sc=document.getElementById('scene'),ePC=document.getElementById('ePC'),eDiv=document.getElementById('eDiv'),eFT=document.getElementById('eFT');
-  var cards=document.querySelectorAll('.card');
-  S(ePC,{opacity:'0'});S(eDiv,{opacity:'0'});S(eFT,{opacity:'0'});
-  cards.forEach(function(c){S(c,{opacity:'0'})});
-
-  an({from:0,to:1,ms:800,delay:0,ease:E.oC,tick:function(v){window._rv(v)}});
-  an({from:0,to:100,ms:900,delay:100,ease:E.iOC,tick:function(v){ib.style.width=v+'%'}});
-  an({from:0,to:1,ms:800,delay:150,ease:E.oB,tick:function(v){
-    il.style.opacity=v;
-    il.style.letterSpacing=(.3+(1-v)*.25)+'em';
-    il.style.transform='translateY('+(-20*(1-E.oQ(v)))+'px)';
-  }});
-  /* glow pulse */
-  an({from:0,to:1,ms:400,delay:900,ease:E.oE,tick:function(v){il.style.filter='drop-shadow(0 0 '+(80*v)+'px rgba(204,0,0,'+(.8*v)+'})'}});
-  an({from:1,to:0,ms:300,delay:1300,ease:E.iE,tick:function(v){il.style.filter='drop-shadow(0 0 '+(80*v)+'px rgba(204,0,0,'+(v*v)+'})'}});
-
-  /* wipe out */
-  an({from:0,to:1,ms:600,delay:1200,ease:E.iOQ,
-    tick:function(v){IN.style.clipPath='circle('+(100-v*145)+'% at 50% 45%)';IN.style.opacity=1-v},
-    done:function(){IN.style.display='none'}
-  });
-  an({from:0,to:1,ms:500,delay:1200,ease:E.oC,tick:function(v){sc.style.opacity=v}});
-
-  /* profile card drops */
-  an({from:0,to:1,ms:1000,delay:1500,ease:E.oEl,
-    tick:function(v){S(ePC,{opacity:Math.min(v*3,1).toString(),transform:'perspective(800px) rotateX('+(-25*(1-E.oQ(v)))+'deg) translateY('+(-50*(1-v))+'px) scale('+(0.9+0.1*E.oB(v))+')'})},
-    done:function(){S(ePC,{transform:'',opacity:'1'})}
-  });
-
-  /* divider */
-  an({from:0,to:1,ms:500,delay:2000,ease:E.oC,tick:function(v){S(eDiv,{opacity:v.toString()})}});
-
-  /* cards stagger */
-  cards.forEach(function(c,i){
-    var dir=i%2===0?-1:1;
-    S(c,{opacity:'0',transform:'translateX('+(dir*50)+'px) translateY(20px)'});
-    an({from:0,to:1,ms:600,delay:2100+i*70,ease:E.oB,
-      tick:function(v){S(c,{opacity:Math.min(v*3,1).toString(),transform:'translateX('+(dir*50*(1-v))+'px) translateY('+(20*(1-v))+'px)'})},
-      done:function(){S(c,{transform:'',opacity:'1'})}
-    });
-  });
-
-  an({from:0,to:1,ms:500,delay:2800,ease:E.oC,tick:function(v){S(eFT,{opacity:v.toString()})}});
-})();
-
-/* 3D TILT CARDS */
-document.querySelectorAll('.card').forEach(function(c){
-  c.addEventListener('mousemove',function(e){
-    var r=c.getBoundingClientRect(),rx=((e.clientY-r.top)/r.height-.5)*10,ry=-((e.clientX-r.left)/r.width-.5)*14;
-    S(c,{transform:'perspective(600px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateZ(8px)'});
-  });
-  c.addEventListener('mouseleave',function(){S(c,{transform:''})});
-});
-
-/* PROFILE CARD SUBTLE TILT */
-var pc=document.querySelector('.pc');
-if(pc){
-  pc.addEventListener('mousemove',function(e){
-    var r=pc.getBoundingClientRect(),rx=((e.clientY-r.top)/r.height-.5)*4,ry=-((e.clientX-r.left)/r.width-.5)*5;
-    S(pc,{transform:'perspective(1000px) rotateX('+rx+'deg) rotateY('+ry+'deg)'});
-  });
-  pc.addEventListener('mouseleave',function(){S(pc,{transform:''})});
-}
-
-/* PARALLAX */
-var wrap=document.querySelector('.wrap'),ptx=0,pty=0,stx=0,sty=0;
-document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*3;pty=(e.clientY/innerHeight-.5)*2});
-(function lp(){stx+=(ptx-stx)*.05;sty+=(pty-sty)*.05;wrap.style.transform='rotateY('+stx+'deg) rotateX('+(-sty)+'deg)';requestAnimationFrame(lp)})();
-
-/* DISCORD PRESENCE — Lanyard (WebSocket temps réel + REST en secours) */
-(function(){
-  var ID='1220391265082933311',CDN='https://cdn.discordapp.com';
-  var API='https://api.lanyard.rest/v1/users/'+ID,WS='wss://api.lanyard.rest/socket';
-  var ST={online:['#23a55a','En ligne'],idle:['#f0b232','Absent'],dnd:['#f23f43','Ne pas déranger'],offline:['#80848e','Hors ligne']};
-  var TYPE={0:'Joue à',1:'En live sur',2:'Écoute',3:'Regarde',5:'Participe à'};
-  var $=function(i){return document.getElementById(i)};
-  var DEF_AV=$('dAv').src,DEF_BN=$('dBanner').src;
-  var last={av:null,pf:0},wsOk=false,lastUser=null;
-
-  function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
-  function avUrl(u,size,anim){return CDN+'/avatars/'+u.id+'/'+u.avatar+((anim&&u.avatar.indexOf('a_')===0)?'.gif':'.png')+'?size='+size}
-
-  /* précharge l'image puis la remplace (pas de flash, pas d'image cassée) */
-  function swap(img,url,fb){
-    if(img.dataset.u===url)return;img.dataset.u=url;
-    var n=new Image();
-    n.onload=function(){if(img.dataset.u===url)img.src=url};
-    n.onerror=function(){if(img.dataset.u===url&&fb){img.dataset.u=fb;img.src=fb}};
-    n.src=url;
-  }
-
-  /* ---------- PROFIL : bannière + couleurs ---------- */
-  function toInt(c){if(typeof c==='string')c=parseInt(c.replace('#',''),16);return (typeof c==='number'&&isFinite(c))?c:null}
-  function profile(id){
-    return getJSON('https://dcdn.dstn.to/profile/'+id).then(function(p){
-      var u=p.user||{},tc=(p.user_profile&&p.user_profile.theme_colors)||[];
-      return {banner:u.banner||null,colors:tc.concat([u.accent_color,u.banner_color])};
-    }).catch(function(){
-      return getJSON('https://discordlookup.mesalytic.moe/v1/user/'+id).then(function(p){
-        var b=p.banner||{};
-        return {bannerUrl:b.link||null,colors:[p.accent_color,b.color]};
-      });
-    }).catch(function(){return null});
-  }
-  function fromName(u){
-    var c=u.display_name_styles&&u.display_name_styles.colors;
-    if(c&&c.length){var x=toInt(c[0]);if(x!==null){var p=rgb2h(x>>16&255,x>>8&255,x&255);if(p[1]>.15)shiftTheme(p[0],p[1]*100)}}
-  }
-  function dominant(im){
-    var c=document.createElement('canvas');c.width=c.height=48;var x=c.getContext('2d'),d;
-    try{x.drawImage(im,0,0,48,48);d=x.getImageData(0,0,48,48).data}catch(e){return null}
-    var w=new Array(24).fill(0),hs=new Array(24).fill(0),ss=new Array(24).fill(0),tot=0;
-    for(var i=0;i<d.length;i+=4){
-      if(d[i+3]<200)continue;
-      var p=rgb2h(d[i],d[i+1],d[i+2]),v=p[1]*(1-Math.abs(2*p[2]-1));
-      if(v<.08)continue;
-      var b=Math.floor(p[0]/15)%24;w[b]+=v;hs[b]+=v*p[0];ss[b]+=v*p[1];tot+=v;
-    }
-    var m=0;for(var k=1;k<24;k++)if(w[k]>w[m])m=k;
-    if(tot<20||!w[m])return null;
-    return [hs[m]/w[m],ss[m]/w[m]*100];
-  }
-  /* ordre : couleur du profil Discord > couleur dominante de la pdp > couleurs du pseudo */
-  function pickTheme(cols,u){
-    for(var i=0;i<cols.length;i++){
-      var c=toInt(cols[i]);if(c===null)continue;
-      var p=rgb2h(c>>16&255,c>>8&255,c&255);
-      if(p[1]>.2&&p[2]>.08&&p[2]<.95)return shiftTheme(p[0],p[1]*100);
-    }
-    if(!u.avatar)return fromName(u);
-    var im=new Image();im.crossOrigin='anonymous';
-    im.onload=function(){var r=dominant(im);if(r)shiftTheme(r[0],r[1]);else fromName(u)};
-    im.onerror=function(){fromName(u)};
-    im.src=avUrl(u,64,false);
-  }
-  function refresh(u){
-    last.pf=Date.now();last.av=u.avatar;
-    profile(u.id).then(function(p){
-      var bn=DEF_BN,cols=[];
-      if(p){
-        if(p.banner)bn=CDN+'/banners/'+u.id+'/'+p.banner+(p.banner.indexOf('a_')===0?'.gif':'.png')+'?size=600';
-        else if(p.bannerUrl)bn=p.bannerUrl;
-        cols=p.colors||[];
-      }
-      swap($('dBanner'),bn,DEF_BN);
-      pickTheme(cols,u);
-    });
-  }
-
-  /* ---------- ACTIVITÉS ---------- */
-  function icon(sp){var i=document.createElement('i');i.className=sp?'fa-brands fa-spotify':'fa-solid fa-gamepad';return i}
-  function actImg(a,d){
-    var im=a.assets&&a.assets.large_image;
-    if(a.id&&a.id.indexOf('spotify:')===0){
-      if(d.spotify&&d.spotify.album_art_url)return d.spotify.album_art_url;
-      return (im&&im.indexOf('spotify:')===0)?'https://i.scdn.co/image/'+im.slice(8):null;
-    }
-    if(!im)return null;
-    if(im.indexOf('mp:')===0)return 'https://media.discordapp.net/'+im.slice(3);
-    if(im.indexOf('spotify:')===0)return 'https://i.scdn.co/image/'+im.slice(8);
-    return a.application_id?CDN+'/app-assets/'+a.application_id+'/'+im+'.png?size=128':null;
-  }
-  function line(cls,txt){var e=document.createElement('span');e.className=cls;e.textContent=txt;return e}
-  function renderCustom(a){
-    var el=$('cst');el.textContent='';
-    if(!a||(!a.state&&!a.emoji))return;
-    var e=a.emoji;
-    if(e&&e.id){var im=new Image();im.alt='';im.src=CDN+'/emojis/'+e.id+(e.animated?'.gif':'.webp')+'?size=48';el.appendChild(im)}
-    else if(e&&e.name)el.appendChild(document.createTextNode(e.name+' '));
-    if(a.state)el.appendChild(line('',a.state));
-  }
-  function renderActs(list,d){
-    var box=$('acts');box.textContent='';
-    list.slice(0,2).forEach(function(a){
-      var sp=!!(a.id&&a.id.indexOf('spotify:')===0),link=sp&&d.spotify&&d.spotify.track_id;
-      var row=document.createElement(link?'a':'div');row.className='ar';
-      if(link){row.href='https://open.spotify.com/track/'+encodeURIComponent(d.spotify.track_id);row.target='_blank';row.rel='noopener'}
-      var ai=document.createElement('div');ai.className='ai';
-      var src=actImg(a,d);
-      if(src){var im=new Image();im.alt='';im.onerror=function(){ai.textContent='';ai.appendChild(icon(sp))};im.src=src;ai.appendChild(im)}
-      else ai.appendChild(icon(sp));
-      var at=document.createElement('div');at.className='at';
-      at.appendChild(line('al',sp?'Écoute sur Spotify':(TYPE[a.type]||'Activité')));
-      if(sp){
-        at.appendChild(line('an',a.details||(d.spotify&&d.spotify.song)||'Spotify'));
-        var art=(d.spotify&&d.spotify.artist)||a.state||'';
-        if(art)at.appendChild(line('as',art.replace(/;\s*/g,', ')));
-        if(a.timestamps&&a.timestamps.start&&a.timestamps.end){
-          var pg=document.createElement('div'),bar=document.createElement('i');pg.className='pg';
-          bar.dataset.s=a.timestamps.start;bar.dataset.e=a.timestamps.end;pg.appendChild(bar);at.appendChild(pg);
-        }
-      }else{
-        at.appendChild(line('an',a.name||'Activité'));
-        if(a.details)at.appendChild(line('as',a.details));
-        if(a.state)at.appendChild(line('as',a.state));
-        if(a.timestamps&&a.timestamps.start&&!a.timestamps.end){var t=line('as','');t.dataset.since=a.timestamps.start;at.appendChild(t)}
-      }
-      row.appendChild(ai);row.appendChild(at);box.appendChild(row);
-    });
-    tick();
-  }
-  function fmt(ms){var m=Math.floor(ms/60000);if(m<1)return 'Vient de commencer';var h=Math.floor(m/60);return 'Depuis '+(h?h+' h '+('0'+(m%60)).slice(-2):m+' min')}
-  function tick(){
-    var now=Date.now();
-    document.querySelectorAll('#acts [data-since]').forEach(function(e){var t=now-(+e.dataset.since);if(t>=0)e.textContent=fmt(t)});
-    document.querySelectorAll('#acts .pg i').forEach(function(e){var s=+e.dataset.s,en=+e.dataset.e;e.style.width=(Math.max(0,Math.min(1,(now-s)/(en-s)))*100)+'%'});
-  }
-  setInterval(tick,1000);
-
-  /* ---------- MISE À JOUR ---------- */
-  function update(d){
-    if(!d||!d.discord_user)return;
-    var u=d.discord_user;lastUser=u;
-    swap($('dAv'),u.avatar?avUrl(u,256,true):DEF_AV,DEF_AV);
-    $('dName').textContent=u.global_name||u.display_name||u.username||'LEER';
-    $('dTag').textContent='@'+(u.username||'glitchsize');
-    var s=ST[d.discord_status]||ST.offline;
-    $('dDot').style.background=s[0];$('dDot').title=s[1];
-    $('psd').style.background=s[0];$('pst').textContent=s[1];
-    var pl=[];
-    if(d.active_on_discord_desktop)pl.push('PC');
-    if(d.active_on_discord_web)pl.push('Web');
-    if(d.active_on_discord_mobile)pl.push('Mobile');
-    $('psp').textContent=pl.join(' · ');
-    var cs=null,list=[];
-    (d.activities||[]).forEach(function(a){if(a.type===4)cs=a;else list.push(a)});
-    renderCustom(cs);renderActs(list,d);
-    $('pres').hidden=false;
-    if(u.avatar!==last.av||Date.now()-last.pf>300000)refresh(u);
-  }
-
-  /* ---------- CONNEXION ---------- */
-  function poll(){getJSON(API).then(function(r){if(r.success)update(r.data)}).catch(function(){})}
-  poll();
-  setInterval(function(){if(!wsOk)poll()},15000);
-  setInterval(function(){if(lastUser)refresh(lastUser)},60000);
-
-  var retry=0;
-  function connect(){
-    var ws,hb;
-    try{ws=new WebSocket(WS)}catch(e){return}
-    ws.onmessage=function(m){
-      var p;try{p=JSON.parse(m.data)}catch(e){return}
-      if(p.op===1){
-        ws.send(JSON.stringify({op:2,d:{subscribe_to_id:ID}}));
-        clearInterval(hb);
-        hb=setInterval(function(){if(ws.readyState===1)ws.send(JSON.stringify({op:3}))},p.d.heartbeat_interval);
-      }else if(p.op===0&&(p.t==='INIT_STATE'||p.t==='PRESENCE_UPDATE')){wsOk=true;retry=0;update(p.d)}
-    };
-    ws.onclose=function(){wsOk=false;clearInterval(hb);setTimeout(connect,Math.min(30000,2000*Math.pow(2,retry++)))};
-    ws.onerror=function(){try{ws.close()}catch(e){}};
-  }
-  connect();
-})();
-
-/* COMMUNAUTE — compteur, comptes, chat, livre d'or, panel admin (Supabase) */
-(function(){
-  var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
-  var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
-  var INVITE='vBHvgKMDFu';
-  var $=function(i){return document.getElementById(i)};
-  var COLS='id,user_id,username,is_admin,is_mod,avatar_url,content,created_at,channel';
-  /* Remplace par ton UUID Supabase (Authentication > Users) : seul ce compte peut écrire dans #annonce */
-  var OWNER_ID='a7adc335-134f-456e-92d9-e09796b7808f';
-  /* Edge Functions (voir fichiers admin-action et ai-chat fournis à côté) */
-  var FN_ADMIN=SB_URL+'/functions/v1/admin-action';
-  var FN_AI=SB_URL+'/functions/v1/ai-chat';
-  var membersCache=null,menuOpenFor=null;
-  var CFG={
-    general:{table:'chat_messages',channel:'general',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a encore écrit.<br>Lance la conversation.',locked:false},
-    annonce:{table:'chat_messages',channel:'annonce',max:500,ph:'Nouvelle annonce…',dir:1,limit:40,empty:'Aucune annonce pour le moment.',locked:true}
+  <script>
+  /* EASING */
+  var E={
+    oE:function(t){return t>=1?1:1-Math.pow(2,-10*t)},
+    oB:function(t){var c=2.70158;return 1+c*Math.pow(t-1,3)+(c-1)*Math.pow(t-1,2)},
+    oEl:function(t){return t===0?0:t===1?1:Math.pow(2,-10*t)*Math.sin((t*10-.75)*(2*Math.PI/3))+1},
+    oQ:function(t){return 1-Math.pow(1-t,4)},
+    oC:function(t){return 1-Math.pow(1-t,3)},
+    iOQ:function(t){return t<.5?8*t*t*t*t:1-Math.pow(-2*t+2,4)/2},
+    iE:function(t){return t===0?0:Math.pow(2,10*t-10)},
+    iOC:function(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
   };
-  var sb=null,sbP=null,user=null,profile=null,isAdmin=false,isMod=false,isOwner=false;
-  var tab='general',view='main',mode='login';
-  var data={general:null,annonce:null},chan=null,pollT=null,msgT=null,lastFocus=null;
+  function an(c){
+    var f=c.from,to=c.to,ms=c.ms,ea=c.ease||E.oE,dl=c.delay||0,tk=c.tick,dn=c.done;
+    var t0=performance.now()+dl;
+    function r(n){if(n<t0){requestAnimationFrame(r);return}var
+  p=Math.min((n-t0)/ms,1);tk(f+(to-f)*ea(p),p);if(p<1)requestAnimationFrame(r);else if(dn)dn()}
+    requestAnimationFrame(r)
+  }
+  function S(el,o){Object.assign(el.style,o)}
 
-  /* ---------- COMPTEUR DE VISITES (sans SDK : simple appel REST) ---------- */
-  function counter(){
-    var el=$('vN'),now=Date.now(),lv=0,h={apikey:SB_KEY,'Content-Type':'application/json'};
-    try{lv=+localStorage.getItem('leerVisit')||0}catch(e){}
-    var fresh=now-lv>12*3600*1000;   /* une visite comptée max. toutes les 12 h par navigateur */
-    var p=fresh
-      ?fetch(SB_URL+'/rest/v1/rpc/increment_views',{method:'POST',headers:h,body:'{}'}).then(function(r){return r.json()})
-      :fetch(SB_URL+'/rest/v1/site_stats?select=views&id=eq.1',{headers:h}).then(function(r){return r.json()}).then(function(a){return a[0].views});
-    p.then(function(n){
-      if(typeof n!=='number')throw new Error('bad');
-      el.textContent=n.toLocaleString('fr-FR');$('vcW').hidden=false;
-      panelStats.visits=n;renderStats();
-      if(fresh)try{localStorage.setItem('leerVisit',String(now))}catch(e){}
-    }).catch(function(){$('vcW').hidden=true});
+  /* THEME DYNAMIQUE — les couleurs du site suivent ton profil Discord */
+  var T={h:0,s:100,rgb:'204,0,0',lrgb:'255,100,100',bg:'6,0,0'};
+  function h2r(h,s,l){s/=100;l/=100;var a=s*Math.min(l,1-l);function f(n){var k=(n+h/30)%12;return
+  Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1))))}return [f(0),f(8),f(4)]}
+  function rgb2h(r,g,b){r/=255;g/=255;b/=255;var mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,h=0,s=0;if(d)
+  {s=d/(1-Math.abs(2*l-1));if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else
+  h=(r-g)/d+4;h*=60;if(h<0)h+=360}return [h,s,l]}
+  function setTheme(h,s){
+    h=((h%360)+360)%360;s=Math.max(55,Math.min(100,s));
+    T.h=h;T.s=s;
+    var c=h2r(h,s,40),l=h2r(h,s,57),g=h2r(h,s,70),b=h2r(h,Math.min(s,80),1.2);
+    T.rgb=c.join(',');T.lrgb=g.join(',');T.bg=b.join(',');
+    var st=document.documentElement.style;
+    st.setProperty('--r','rgb('+T.rgb+')');st.setProperty('--rl','rgb('+l.join(',')+')');st.setProperty('--rg','rgb('+T.
+  lrgb+')');
+    st.setProperty('--rgb',T.rgb);st.setProperty('--rlrgb',T.lrgb);
+    st.setProperty('--bg','rgb('+T.bg+')');st.setProperty('--bgrgb',T.bg);
   }
+  var _tw=0;
+  function shiftTheme(h,s){
+    var h0=T.h,s0=T.s,dh=((h-h0+540)%360)-180,ds=Math.max(55,Math.min(100,s))-s0,id=++_tw;
+    an({from:0,to:1,ms:900,ease:E.oC,tick:function(v){if(id===_tw)setTheme(h0+dh*v,s0+ds*v)}});
+    try{localStorage.setItem('leerTheme',JSON.stringify({h:h,s:s}))}catch(e){}
+  }
+  /* dernier thème connu : pas de flash rouge au chargement */
+  try{var _ct=JSON.parse(localStorage.getItem('leerTheme')||'null');if(_ct&&isFinite(_ct.h)&&isFinite(_ct.s))setTheme(_c
+  t.h,_ct.s)}catch(e){}
 
-  /* ---------- SERVEUR DISCORD (aperçu, via l'invite, sans bot) ---------- */
-  var srvLoaded=false;
-  function loadServer(){
-    if(srvLoaded)return;
-    fetch('https://discord.com/api/v10/invites/'+INVITE+'?with_counts=true').then(function(r){
-      if(!r.ok)throw new Error('bad');return r.json();
-    }).then(function(d){
-      srvLoaded=true;
-      var g=d.guild||{};
-      $('srvName').textContent=g.name||'Serveur Discord';
-      $('srvMem').textContent=(d.approximate_member_count||0).toLocaleString('fr-FR');
-      $('srvOn').textContent=(d.approximate_presence_count||0).toLocaleString('fr-FR');
-      $('srvCard').hidden=false;
-    }).catch(function(){/* invite indisponible : la carte reste masquée, le reste du chat fonctionne */});
-  }
-
-  /* ---------- AVATAR + NOM D'AFFICHAGE DISCORD ---------- */
-  function discordAvatar(u){
-    if(!u)return null;
-    var m=u.user_metadata||{};
-    return m.avatar_url||m.picture||null;
-  }
-  function discordDisplayName(u){
-    if(!u)return null;
-    var m=u.user_metadata||{};
-    var n=(m.custom_claims&&m.custom_claims.global_name)||m.global_name||m.full_name||m.name||null;
-    return n?String(n).trim().slice(0,32):null;
-  }
-  function syncAvatar(){
-    if(!user||!profile||!sb)return Promise.resolve();
-    var av=discordAvatar(user);
-    if(av&&profile.avatar_url!==av){
-      return sb.from('profiles').update({avatar_url:av}).eq('id',user.id).then(function(r){if(!r.error)profile.avatar_url=av});
-    }
-    return Promise.resolve();
-  }
-  function syncName(){
-    if(!user||!profile||!sb)return Promise.resolve();
-    var dn=discordDisplayName(user);
-    if(dn&&dn!==profile.username){
-      return sb.from('profiles').update({username:dn}).eq('id',user.id).then(function(r){if(!r.error)profile.username=dn});
-    }
-    return Promise.resolve();
-  }
-
-  /* ---------- SDK + SESSION ---------- */
-  function loadSB(){
-    if(sbP)return sbP;
-    sbP=new Promise(function(res,rej){
-      if(window.supabase)return res(window.supabase);
-      var s=document.createElement('script');s.src=SDK;
-      s.onload=function(){res(window.supabase)};
-      s.onerror=function(){sbP=null;rej(new Error('sdk'))};
-      document.head.appendChild(s);
-    }).then(function(lib){
-      sb=lib.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:'pkce'}});
-      sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){setSession(session)},0)});
-      return sb.auth.getSession().then(function(r){return setSession(r.data.session)});
-    }).then(function(){return sb},function(e){sbP=null;throw e});
-    return sbP;
-  }
-
-  /* pseudo automatique pour les comptes Discord (métadonnées OAuth) */
-  function pickName(u){
-    var m=u.user_metadata||{};
-    var n=m.username||m.user_name||m.preferred_username||m.custom_claims&&m.custom_claims.global_name||m.global_name||m.full_name||m.name||(u.email||'').split('@')[0]||'user';
-    n=String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9_]/g,'');
-    if(n.length<3)n=(n+'user');
-    return n.slice(0,20);
-  }
-  /* si le compte n'a pas encore de profil (1re connexion Discord), on le crée avec sa photo Discord */
-  function ensureProfile(){
-    if(!user||profile)return Promise.resolve();
-    var base=pickName(user),av=discordAvatar(user);
-    function attempt(n,i){
-      return sb.from('profiles').insert({id:user.id,username:n,avatar_url:av}).select('username,avatar_url').single().then(function(r){
-        if(!r.error){profile=r.data;return}
-        if(i<3)return attempt(base.slice(0,15)+Math.floor(1000+Math.random()*9000),i+1);
-      });
-    }
-    return attempt(base,0).catch(function(){});
-  }
-
-  function setSession(session){
-    user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;isOwner=false;
-    if(!user){
-      $('openPanel').hidden=true;
-      renderAcc();renderList();return Promise.resolve();
-    }
-    return Promise.all([
-      sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
-      sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle(),
-      sb.from('moderators').select('user_id').eq('user_id',user.id).maybeSingle()
-    ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data;isMod=!!r[2].data;isOwner=!!(OWNER_ID&&user.id===OWNER_ID)})
-     .then(function(){return ensureProfile()})
-     .then(function(){return syncAvatar()})
-     .then(function(){return syncName()})
-     .catch(function(){}).then(function(){
-        $('openPanel').hidden=!isOwner;
-        renderAcc();renderList();
-        if(isOwner)initPresence();
-      });
-  }
-
-  /* ---------- MESSAGES D'ERREUR ---------- */
-  function flash(t){var e=$('cmMsg');e.textContent=t||'';clearTimeout(msgT);if(t)msgT=setTimeout(function(){e.textContent=''},5000)}
-  function errTxt(e){
-    var m=(e&&e.message)||'';
-    if(m==='trop_rapide')return 'Doucement : attends quelques secondes avant de renvoyer un message.';
-    if(m==='non_connecte'||(e&&e.code==='42501'))return 'Connecte-toi pour écrire.';
-    if(m==='profil_introuvable')return 'Profil introuvable. Déconnecte-toi puis reconnecte-toi.';
-    if(e&&e.code==='23514')return 'Message vide ou trop long.';
-    return 'Envoi impossible. Réessaie.';
-  }
-  function authErr(e){
-    var m=((e&&e.message)||'').toLowerCase();
-    if(m.indexOf('invalid login')>-1)return 'Email ou mot de passe incorrect.';
-    if(m.indexOf('not confirmed')>-1)return 'Confirme d’abord ton adresse email (lien reçu par mail).';
-    if(m.indexOf('already')>-1)return 'Un compte existe déjà avec cet email.';
-    if(m.indexOf('rate')>-1||m.indexOf('too many')>-1)return 'Trop de tentatives. Réessaie dans quelques minutes.';
-    if(m.indexOf('password')>-1)return 'Mot de passe refusé (8 caractères minimum).';
-    if(m.indexOf('email')>-1)return 'Adresse email invalide.';
-    if(m.indexOf('provider')>-1)return 'Connexion Discord non activée côté Supabase.';
-    return 'Connexion impossible. Réessaie.';
-  }
-
-  /* ---------- CONNEXION DISCORD (OAuth) ---------- */
-  function oauth(){
-    flash('Redirection vers Discord…');
-    loadSB().then(function(){
-      return sb.auth.signInWithOAuth({
-        provider:'discord',
-        options:{redirectTo:'https://leer6.netlify.app/',scopes:'identify email'}
-      });
-    }).then(function(r){if(r&&r.error)flash(authErr(r.error))})
-      .catch(function(){flash('Service indisponible. Réessaie plus tard.')});
-  }
-
-  /* ---------- AFFICHAGE ---------- */
-  function crown(){var i=document.createElement('i');i.className='fa-solid fa-crown cr';i.title='Administrateur';return i}
-  function shield(){var i=document.createElement('i');i.className='fa-solid fa-shield-halved sh';i.title='Modérateur';return i}
-  function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
-  function avatarEl(m){
-    if(m.avatar_url){
-      var im=document.createElement('img');im.className='mav';im.alt='';im.loading='lazy';
-      im.onerror=function(){im.replaceWith(initEl(m.username))};
-      im.src=m.avatar_url;return im;
-    }
-    return initEl(m.username);
-  }
-  function initEl(name){
-    var d=document.createElement('div');d.className='mav-i';
-    d.style.background='hsl('+hue(name||'?')+',55%,38%)';
-    d.textContent=(name||'?').slice(0,1).toUpperCase();
-    return d;
-  }
-  function fmtT(iso){
-    var d=new Date(iso),n=new Date(),hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    return d.toDateString()===n.toDateString()?hm:d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' '+hm;
-  }
-  function msgEl(t,m){
-    var d=document.createElement('div');d.className='m'+(m.is_admin?' adm':(m.is_mod?' mod':''));
-    d.appendChild(avatarEl(m));
-    var body=document.createElement('div');body.className='mbody';
-    var h=document.createElement('div');h.className='mh';
-    if(m.is_admin)h.appendChild(crown());else if(m.is_mod)h.appendChild(shield());
-    var n=document.createElement('b');n.textContent=m.username;
-    n.style.color=m.is_admin?'var(--rg)':(m.is_mod?'#5eead4':'hsl('+hue(m.username)+',65%,74%)');h.appendChild(n);
-    if(m.is_admin){
-      var ab=document.createElement('span');ab.className='ab';
-      var ai=document.createElement('i');ai.className='fa-solid fa-crown';
-      ab.appendChild(ai);ab.appendChild(document.createTextNode('Admin'));h.appendChild(ab);
-    }else if(m.is_mod){
-      var mdb=document.createElement('span');mdb.className='mdb';
-      var mi=document.createElement('i');mi.className='fa-solid fa-shield-halved';
-      mdb.appendChild(mi);mdb.appendChild(document.createTextNode('Modo'));h.appendChild(mdb);
-    }
-    var tm=document.createElement('time');tm.dateTime=m.created_at;tm.textContent=fmtT(m.created_at);h.appendChild(tm);
-    if(user&&(m.user_id===user.id||isAdmin)){
-      var x=document.createElement('button');x.type='button';x.className='mx';x.title='Supprimer';
-      x.setAttribute('aria-label','Supprimer le message');
-      x.innerHTML='<i class="fa-solid fa-trash-can"></i>';
-      x.onclick=function(){del(t,m.id)};
-      h.appendChild(x);
-    }
-    var p=document.createElement('p');p.textContent=m.content;
-    body.appendChild(h);body.appendChild(p);d.appendChild(body);return d;
-  }
-  function renderList(stick){
-    var box=$('cmList'),rows=data[tab],c=CFG[tab];
-    var atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80,top=box.scrollTop;
-    box.textContent='';
-    if(!Array.isArray(rows)){
-      var e=document.createElement('div');e.className='cm-empty';
-      e.textContent=rows==='err'?'Impossible de charger les messages. Réessaie plus tard.':'Chargement…';
-      box.appendChild(e);return;
-    }
-    if(!rows.length){var e2=document.createElement('div');e2.className='cm-empty';e2.innerHTML=c.empty;box.appendChild(e2);return}
-    (c.dir===1?rows.slice().reverse():rows).forEach(function(m){box.appendChild(msgEl(tab,m))});
-    box.scrollTop=stick?(c.dir===1?box.scrollHeight:0):(c.dir===1&&atBottom?box.scrollHeight:top);
-  }
-  function renderAcc(){
-    var a=$('cmAcc'),b2=$('panelAcc');a.textContent='';if(b2)b2.textContent='';
-    if(!sb)return gate();
-    function build(target,withLogout){
-      var b=document.createElement('button');b.type='button';
-      if(user){
-        if(profile&&profile.avatar_url){var pa=document.createElement('img');pa.alt='';pa.src=profile.avatar_url;target.appendChild(pa)}
-        if(isAdmin)target.appendChild(crown());else if(isMod)target.appendChild(shield());
-        var n=document.createElement('b');n.textContent=profile?profile.username:'…';target.appendChild(n);
-        if(!withLogout)return;
-        b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
-        b.innerHTML='<i class="fa-solid fa-right-from-bracket"></i>';
-        b.onclick=function(){sb.auth.signOut()};
-      }else{
-        b.className='cm-sm';b.textContent='Connexion';b.onclick=function(){showAuth('login')};
-      }
-      target.appendChild(b);
-    }
-    build(a,true);
-    if(b2)build(b2,true);
-    gate();
-  }
-  function gate(){
-    if(view!=='main')return;
-    var c=CFG[tab],canWrite=user&&(!c.locked||(OWNER_ID&&user.id===OWNER_ID));
-    $('cmComp').hidden=!canWrite;
-    $('cmGate').hidden=!!user;
-    $('cmLocked').hidden=!(user&&c.locked&&!canWrite);
-  }
-  function setView(v){
-    view=v;$('cmAuth').hidden=v!=='auth';$('cmSlow').hidden=v!=='slow';
-    $('cmList').hidden=(v==='auth'||v==='slow');
-    $('cmComp').hidden=true;$('cmGate').hidden=true;$('cmLocked').hidden=true;flash('');gate();
-  }
-  function setMode(m){
-    mode=m;var su=m==='signup';
-    $('cmAt').textContent=su?'CRÉER UN COMPTE':'CONNEXION';
-    $('aUser').hidden=!su;$('aGo').textContent=su?'Créer mon compte':'Se connecter';
-    $('aSwap').textContent=su?'Déjà un compte ? Se connecter':'Pas de compte ? Créer un compte';
-    $('aPass').autocomplete=su?'new-password':'current-password';flash('');
-  }
-  function showAuth(m){setMode(m);setView('auth');$('aEmail').focus()}
-
-  /* ---------- DONNÉES ---------- */
-  function load(t,soft){
-    return sb.from(CFG[t].table).select(COLS).eq('channel',CFG[t].channel).order('created_at',{ascending:false}).limit(CFG[t].limit).then(function(r){
-      data[t]=r.error?'err':r.data;
-      if(t===tab&&view==='main')renderList(!soft);
-    });
-  }
-  /* ---------- NOTIFICATIONS NAVIGATEUR ---------- */
-  function askNotif(){
-    if('Notification' in window && Notification.permission==='default'){
-      try{Notification.requestPermission()}catch(e){}
-    }
-  }
-  function notifyNew(m){
-    if(!('Notification' in window)||Notification.permission!=='granted')return;
-    if(user&&m.user_id===user.id)return;
-    if(!document.hidden&&!$('cm').hidden)return;
-    try{
-      var n=new Notification(m.username+' · LEER',{body:m.content.slice(0,120),icon:m.avatar_url||'https://i.imgur.com/l4fHXmg.png',tag:'leer-chat'});
-      n.onclick=function(){window.focus();open();n.close()};
-    }catch(e){}
-  }
-
-  function onIns(t,m){
-    var a=data[t];if(!Array.isArray(a)||!m)return;
-    if(a.some(function(x){return x.id===m.id}))return;
-    a.unshift(m);if(a.length>CFG[t].limit)a.pop();
-    if(t===tab&&view==='main')renderList();
-    notifyNew(m);
-    panelStats.messages+=1;renderStats();
-  }
-  function onDel(t,id){
-    var a=data[t];if(!Array.isArray(a))return;
-    data[t]=a.filter(function(x){return x.id!==id});
-    if(t===tab&&view==='main')renderList();
-    panelStats.messages=Math.max(0,panelStats.messages-1);renderStats();
-  }
-  function del(t,id){
-    sb.from(CFG[t].table).delete().eq('id',id).then(function(r){
-      if(r.error)return flash('Suppression impossible.');
-      onDel(t,id);
-    });
-  }
-  /* ---------- APPEL EDGE FUNCTION ADMIN (rôles / ban / mute / déconnexion) ---------- */
-  function adminCall(action,targetId,extra){
-    if(!sb||!user)return Promise.reject(new Error('non_connecte'));
-    return sb.auth.getSession().then(function(r){
-      var tok=r.data.session&&r.data.session.access_token;
-      if(!tok)throw new Error('non_connecte');
-      var body=Object.assign({action:action,target_id:targetId},extra||{});
-      return fetch(FN_ADMIN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify(body)})
-        .then(function(res){return res.json().catch(function(){return{}}).then(function(j){if(!res.ok)throw new Error(j.error||'Erreur serveur');return j})});
-    });
-  }
-
-  /* ---------- PANEL ADMIN : STATISTIQUES TEMPS RÉEL ---------- */
-  var panelStats={visits:0,members:0,messages:0,online:0},statsChan=null,presenceChan=null;
-  function statCard(icon,label,value,live){
-    var c=document.createElement('div');c.className='stat-card';
-    var v=document.createElement('div');v.className='sv';
-    if(live){var dot=document.createElement('span');dot.className='live';v.appendChild(dot)}
-    v.appendChild(document.createTextNode(value));
-    var l=document.createElement('div');l.className='sl';l.innerHTML='<i class="fa-solid '+icon+'"></i> '+label;
-    c.appendChild(v);c.appendChild(l);return c;
-  }
-  function renderStats(){
-    if(ptab!=='stats'||$('panel').hidden)return;
-    var box=$('panelBody');box.textContent='';
-    var grid=document.createElement('div');grid.className='stat-grid';
-    grid.appendChild(statCard('fa-eye','Visites totales',panelStats.visits.toLocaleString('fr-FR')));
-    grid.appendChild(statCard('fa-tower-broadcast','En ligne maintenant',panelStats.online.toLocaleString('fr-FR'),true));
-    grid.appendChild(statCard('fa-users','Membres inscrits',panelStats.members.toLocaleString('fr-FR')));
-    grid.appendChild(statCard('fa-message','Messages postés',panelStats.messages.toLocaleString('fr-FR')));
-    box.appendChild(grid);
-  }
-  function loadStats(){
-    return Promise.all([
-      sb.from('profiles').select('id',{count:'exact',head:true}),
-      sb.from('chat_messages').select('id',{count:'exact',head:true})
-    ]).then(function(r){
-      panelStats.members=r[0].count||0;
-      panelStats.messages=r[1].count||0;
-      renderStats();
-    }).catch(function(){});
-  }
-  /* présence en direct : chaque visiteur connecté au SDK "track" sa session ; le panel compte les sessions actives */
-  function initPresence(){
-    if(presenceChan||!sb)return;
-    var pid;
-    try{pid=sessionStorage.getItem('leerPid');if(!pid){pid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem('leerPid',pid)}}
-    catch(e){pid=Math.random().toString(36).slice(2)}
-    presenceChan=sb.channel('leer-presence',{config:{presence:{key:pid}}});
-    presenceChan.on('presence',{event:'sync'},function(){
-      panelStats.online=Object.keys(presenceChan.presenceState()).length;renderStats();
-    });
-    presenceChan.subscribe(function(status){
-      if(status==='SUBSCRIBED')presenceChan.track({at:new Date().toISOString()});
-    });
-  }
-  function subscribeStats(){
-    if(statsChan)return;
-    statsChan=sb.channel('leer-panel-stats');
-    statsChan.on('postgres_changes',{event:'INSERT',schema:'public',table:'profiles'},function(){panelStats.members+=1;renderStats()});
-    statsChan.on('postgres_changes',{event:'DELETE',schema:'public',table:'profiles'},function(){panelStats.members=Math.max(0,panelStats.members-1);renderStats()});
-    statsChan.subscribe();
-  }
-
-  /* ---------- PANEL ADMIN : MEMBRES ---------- */
-  function loadMembers(){
-    return Promise.all([
-      sb.from('profiles').select('id,username,avatar_url'),
-      sb.from('admins').select('user_id'),
-      sb.from('moderators').select('user_id'),
-      sb.from('banned_users').select('user_id'),
-      sb.from('mutes').select('user_id,muted_until')
-    ]).then(function(r){
-      var admins={},mods={},bans={},mutes={};
-      (r[1].data||[]).forEach(function(x){admins[x.user_id]=1});
-      (r[2].data||[]).forEach(function(x){mods[x.user_id]=1});
-      (r[3].data||[]).forEach(function(x){bans[x.user_id]=1});
-      (r[4].data||[]).forEach(function(x){if(new Date(x.muted_until)>new Date())mutes[x.user_id]=x.muted_until});
-      membersCache=(r[0].data||[]).map(function(p){
-        return{id:p.id,username:p.username,avatar_url:p.avatar_url,is_admin:!!admins[p.id],is_mod:!!mods[p.id],banned:!!bans[p.id],muted_until:mutes[p.id]||null};
-      }).sort(function(a,b){return (b.is_admin-a.is_admin)||(b.is_mod-a.is_mod)||a.username.localeCompare(b.username)});
-      panelStats.members=membersCache.length;
-      return membersCache;
-    });
-  }
-  function memberMenu(m){
-    var box=document.createElement('div');box.className='mmenu';box.setAttribute('role','menu');
-    function btn(cls,icon,label,fn){
-      var b=document.createElement('button');b.type='button';if(cls)b.className=cls;
-      b.innerHTML='<i class="fa-solid '+icon+'"></i>'+label;
-      b.onclick=function(){box.remove();menuOpenFor=null;fn()};
-      return b;
-    }
-    var lbl=document.createElement('div');lbl.className='mmlabel';lbl.textContent='Rôle';box.appendChild(lbl);
-    box.appendChild(btn(null,m.is_admin?'fa-crown':'fa-crown',m.is_admin?'Retirer admin':'Nommer admin',function(){doAction(m.is_admin?'unset_admin':'set_admin',m)}));
-    box.appendChild(btn(null,m.is_mod?'fa-shield-halved':'fa-shield-halved',m.is_mod?'Retirer modérateur':'Nommer modérateur',function(){doAction(m.is_mod?'unset_mod':'set_mod',m)}));
-    box.appendChild(document.createElement('hr'));
-    var lbl2=document.createElement('div');lbl2.className='mmlabel';lbl2.textContent='Modération';box.appendChild(lbl2);
-    if(!m.muted_until){
-      var mrow=document.createElement('div');mrow.className='mm-custom';
-      var chips=document.createElement('div');chips.className='mm-chips';
-      [[5,'5 min'],[15,'15 min'],[30,'30 min'],[60,'1 h'],[180,'3 h'],[720,'12 h'],[1440,'24 h'],[10080,'7 j']].forEach(function(o){
-        var c=document.createElement('button');c.type='button';c.className='mm-chip';c.textContent=o[1];
-        c.addEventListener('click',function(e){
-          e.stopPropagation();
-          if(mIn){mIn.value=o[0];mIn.focus();return}
-          box.remove();menuOpenFor=null;doAction('mute',m,{minutes:o[0]});
-        });
-        chips.appendChild(c);
-      });
-      mrow.appendChild(chips);
-      var inrow=document.createElement('div');inrow.className='mm-inrow';
-      inrow.innerHTML='<input type="number" min="1" max="43200" step="1" inputmode="numeric" placeholder="Durée en minutes" class="mm-min" aria-label="Durée du mute en minutes"><button type="button" class="mm-go" aria-label="Valider"><i class="fa-solid fa-check"></i></button>';
-      var mIn=inrow.querySelector('.mm-min'),mGo=inrow.querySelector('.mm-go');
-      inrow.addEventListener('click',function(e){e.stopPropagation()});
-      mIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();mGo.click()}});
-      mGo.addEventListener('click',function(){
-        var v=parseInt(mIn.value,10);
-        if(!v||v<1)return mIn.focus();
-        box.remove();menuOpenFor=null;
-        doAction('mute',m,{minutes:v});
-      });
-      mrow.appendChild(inrow);
-      box.appendChild(mrow);
-    }else{
-      box.appendChild(btn(null,'fa-volume-high','Démute',function(){doAction('unmute',m)}));
-    }
-    box.appendChild(btn('danger',m.banned?'fa-user-check':'fa-user-slash',m.banned?'Débannir':'Bannir',function(){doAction(m.banned?'unban':'ban',m)}));
-    box.appendChild(btn('danger','fa-plug-circle-xmark','Déconnecter',function(){doAction('disconnect',m)}));
-    return box;
-  }
-  function doAction(action,m,extra){
-    adminCall(action,m.id,extra).then(function(){
-      flash('Action effectuée : '+m.username);
-      loadMembers().then(function(){renderMembers()});
-    }).catch(function(e){flash(e.message||'Action impossible.')});
-  }
-  function renderMembers(){
-    if(ptab!=='membres'||$('panel').hidden)return;
-    var box=$('panelBody');box.textContent='';
-    if(!Array.isArray(membersCache)){
-      var e=document.createElement('div');e.className='cm-empty';e.textContent='Chargement…';box.appendChild(e);return;
-    }
-    if(!membersCache.length){var e2=document.createElement('div');e2.className='cm-empty';e2.textContent='Aucun membre.';box.appendChild(e2);return}
-    membersCache.forEach(function(m){
-      var row=document.createElement('div');row.className='mrow'+(m.banned?' b':'');
-      row.appendChild(avatarEl({avatar_url:m.avatar_url,username:m.username}));
-      var nm=document.createElement('div');nm.className='mname';
-      var b=document.createElement('b');b.textContent=m.username;nm.appendChild(b);
-      var tags=document.createElement('div');tags.className='mtags';
-      if(m.is_admin){var t1=document.createElement('span');t1.className='mtag adm';t1.textContent='Admin';tags.appendChild(t1)}
-      if(m.is_mod){var t2=document.createElement('span');t2.className='mtag mod';t2.textContent='Modo';tags.appendChild(t2)}
-      if(m.banned){var t3=document.createElement('span');t3.className='mtag ban';t3.textContent='Banni';tags.appendChild(t3)}
-      if(m.muted_until){var t4=document.createElement('span');t4.className='mtag mute';t4.textContent='Muet';tags.appendChild(t4)}
-      nm.appendChild(tags);row.appendChild(nm);
-      if(isAdmin&&user&&m.id!==user.id){
-        var dots=document.createElement('button');dots.type='button';dots.className='mdots';dots.setAttribute('aria-label','Actions');
-        dots.innerHTML='<i class="fa-solid fa-ellipsis-vertical"></i>';
-        dots.onclick=function(ev){
-          ev.stopPropagation();
-          var existing=row.querySelector('.mmenu');
-          if(existing){existing.remove();menuOpenFor=null;return}
-          document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});
-          var menu=memberMenu(m);row.appendChild(menu);menuOpenFor=m.id;
-        };
-        row.appendChild(dots);
-      }
-      box.appendChild(row);
-    });
-  }
-  document.addEventListener('click',function(e){
-    if(menuOpenFor&&!e.target.closest('.mmenu')&&!e.target.closest('.mdots')){
-      document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
-    }
+  /* CURSOR */
+  var cA=document.getElementById('cur'),cB=document.getElementById('cur2'),mx=0,my=0,lx=0,ly=0;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cA.style.left=mx+'px';cA.style.top=my+'px'
+  });
+  (function lp(){lx+=(mx-lx)*.1;ly+=(my-ly)*.1;cB.style.left=lx+'px';cB.style.top=ly+'px';requestAnimationFrame(lp)})();
+  document.querySelectorAll('.card,.pc').forEach(function(el){
+    el.addEventListener('mouseenter',function(){S(cB,{width:'50px',height:'50px',borderColor:'rgba(var(--rgb),.6)'})});
+    el.addEventListener('mouseleave',function(){S(cB,{width:'36px',height:'36px',borderColor:'rgba(var(--rgb),.4)'})});
   });
 
-  /* ---------- OUVERTURE / ONGLETS DU PANEL ADMIN ---------- */
-  var ptab='stats';
-  function setPtab(t){
-    ptab=t;
-    Array.prototype.forEach.call(document.querySelectorAll('#panel .cm-tab'),function(b){
-      var on=b.dataset.ptab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
-    });
-    if(t==='stats'){renderStats();loadStats()}
-    else{renderMembers();loadMembers().then(function(){renderMembers()})}
-  }
-  function openPanel(){
-    if(!isOwner)return;
-    lastFocus=document.activeElement;
-    $('panel').hidden=false;document.documentElement.style.overflow='hidden';
-    var box=document.querySelector('#panel .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
-    loadSB().then(function(){
-      renderAcc();subscribeStats();initPresence();
-      setPtab(ptab);
-    }).catch(function(){flash('Service indisponible.')});
-  }
-  function closePanel(){
-    $('panel').hidden=true;document.documentElement.style.overflow='';
-    document.querySelectorAll('#panel .mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
-    if(lastFocus&&lastFocus.focus)lastFocus.focus();
-  }
-  $('openPanel').addEventListener('click',function(e){e.preventDefault();openPanel()});
-  Array.prototype.forEach.call(document.querySelectorAll('[data-close-panel]'),function(b){b.addEventListener('click',closePanel)});
-  Array.prototype.forEach.call(document.querySelectorAll('#panel [data-ptab]'),function(b){b.addEventListener('click',function(){setPtab(b.dataset.ptab)})});
-  document.addEventListener('keydown',function(e){
-    if($('panel').hidden)return;
-    if(e.key==='Escape'){closePanel();return}
-    if(e.key!=='Tab')return;
-    var f=Array.prototype.filter.call($('panel').querySelectorAll('button,input'),function(x){return !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
-    if(!f.length)return;
-    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#panel .cm-box');
-    if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
-    else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
-  });
-
-  function chanKey(row){return row&&row.channel==='annonce'?'annonce':'general'}
-  function subscribe(){
-    if(chan)return;
-    chan=sb.channel('leer-community');
-    chan.on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},function(x){onIns(chanKey(x.new),x.new)});
-    chan.on('postgres_changes',{event:'DELETE',schema:'public',table:'chat_messages'},function(x){if(x.old)onDel(chanKey(x.old),x.old.id)});
-    chan.subscribe(function(s){
-      if(s==='SUBSCRIBED'){clearInterval(pollT);pollT=null}
-      else if((s==='CHANNEL_ERROR'||s==='TIMED_OUT')&&!pollT){
-        pollT=setInterval(function(){if(!$('cm').hidden&&view==='main')load(tab,true)},15000);
-      }
-    });
-  }
-
-  /* ---------- ONGLETS / OUVERTURE DU CHAT ---------- */
-  function setTab(t){
-    tab=t;
-    Array.prototype.forEach.call(document.querySelectorAll('#cm .cm-tab'),function(b){
-      var on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
-    });
-    setView('main');
-    var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
-    if(sb&&(data[t]===null||data[t]==='err')){data[t]=null;load(t)}
-    renderList(true);
-  }
-  function open(){
-    lastFocus=document.activeElement;
-    $('cm').hidden=false;document.documentElement.style.overflow='hidden';
-    var box=document.querySelector('#cm .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
-    renderList(true);renderAcc();loadServer();askNotif();
-    loadSB().then(function(){
-      subscribe();renderAcc();
-      if(data[tab]===null||data[tab]==='err'){data[tab]=null;return load(tab)}
-    }).catch(function(){
-      if(!Array.isArray(data[tab]))data[tab]='err';
-      renderList(true);
-    });
-  }
-  function close(){
-    $('cm').hidden=true;document.documentElement.style.overflow='';
-    if(lastFocus&&lastFocus.focus)lastFocus.focus();
-  }
-
-  /* ---------- ÉVÉNEMENTS ---------- */
-  $('openCm').addEventListener('click',function(e){e.preventDefault();open()});
-  Array.prototype.forEach.call(document.querySelectorAll('#cm [data-close]'),function(b){b.addEventListener('click',close)});
-  Array.prototype.forEach.call(document.querySelectorAll('#cm .cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
-  $('gLogin').addEventListener('click',function(){showAuth('login')});
-  $('gSign').addEventListener('click',function(){showAuth('signup')});
-  $('gDiscord').addEventListener('click',oauth);
-  $('aDiscord').addEventListener('click',oauth);
-  $('aSwap').addEventListener('click',function(){setMode(mode==='login'?'signup':'login')});
-  $('aBack').addEventListener('click',function(){setView('main')});
-
-  document.addEventListener('keydown',function(e){
-    if($('cm').hidden)return;
-    if(e.key==='Escape'){close();return}
-    if(e.key!=='Tab')return;
-    var f=Array.prototype.filter.call($('cm').querySelectorAll('button,input'),function(x){return !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
-    if(!f.length)return;
-    var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#cm .cm-box');
-    if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
-    else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
-  });
-
-  var sendTimes=[];
-  $('slowOk').addEventListener('click',function(){sendTimes=[];setView('main');$('cmIn').focus()});
-
-  $('cmComp').addEventListener('submit',function(e){
-    e.preventDefault();
-    var i=$('cmIn'),v=i.value.trim(),t=tab,c=CFG[t],btn=$('cmSend');
-    if(!v||!user||!sb)return;
-    if(c.locked&&!(OWNER_ID&&user.id===OWNER_ID))return flash('Seul le propriétaire peut publier ici.');
-    var now=Date.now();
-    sendTimes.push(now);sendTimes=sendTimes.filter(function(x){return now-x<5000});
-    if(sendTimes.length>10){setView('slow');return}
-    btn.disabled=true;
-    sb.from(c.table).insert({content:v,channel:c.channel}).select(COLS).single().then(function(r){
-      btn.disabled=false;
-      if(r.error)return flash(errTxt(r.error));
-      i.value='';onIns(t,r.data);
-      if(t===tab){var box=$('cmList');box.scrollTop=c.dir===1?box.scrollHeight:0}
-      /* commande /ai : le message est posté normalement puis l'IA répond dans le même salon */
-      var aiMatch=v.match(/^\/ai\s+([\s\S]+)/i);
-      if(aiMatch)askAI(aiMatch[1].trim(),c.channel);
-    });
-  });
-
-  /* ---------- COMMANDE /ai (Groq via Edge Function, clé jamais exposée côté client) ---------- */
-  function askAI(prompt,channel){
-    sb.auth.getSession().then(function(r){
-      var tok=r.data.session&&r.data.session.access_token;
-      if(!tok)return;
-      return fetch(FN_AI,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify({prompt:prompt,channel:channel})})
-        .then(function(res){return res.json().catch(function(){return{}})})
-        .then(function(j){if(j&&j.error)flash(j.error)});
-      /* la réponse elle-même arrive par le realtime (INSERT du bot) comme un message normal */
-    }).catch(function(){});
-  }
-
-  $('cmAuth').addEventListener('submit',function(e){
-    e.preventDefault();
-    var email=$('aEmail').value.trim(),pass=$('aPass').value,name=$('aUser').value.trim(),go=$('aGo');
-    if(!/^\S+@\S+\.\S+$/.test(email))return flash('Adresse email invalide.');
-    if(pass.length<8)return flash('Mot de passe : 8 caractères minimum.');
-    if(mode==='signup'&&!/^[A-Za-z0-9_]{3,20}$/.test(name))return flash('Pseudo : 3 à 20 caractères (lettres, chiffres, _).');
-    go.disabled=true;flash('');
-    loadSB().then(function(){
-      if(mode==='login'){
-        return sb.auth.signInWithPassword({email:email,password:pass}).then(function(r){
-          if(r.error)return flash(authErr(r.error));
-          $('aPass').value='';setView('main');
-        });
-      }
-      return sb.rpc('username_available',{p_username:name}).then(function(r){
-        if(r.data===false)return flash('Ce pseudo est déjà pris.');
-        return sb.auth.signUp({email:email,password:pass,options:{data:{username:name}}}).then(function(r2){
-          if(r2.error)return flash(authErr(r2.error));
-          $('aPass').value='';
-          if(r2.data&&r2.data.session){setView('main');return}
-          setMode('login');
-          flash('Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.');
-        });
-      });
-    }).catch(function(){flash('Service indisponible. Réessaie plus tard.')}).then(function(){go.disabled=false});
-  });
-
-  /* retour d'OAuth Discord : on charge le SDK et on rouvre le chat automatiquement */
+  /* CANVAS */
   (function(){
-    var u;try{u=new URL(location.href)}catch(e){return}
-    var back=location.hash.indexOf('access_token=')>-1||!!u.searchParams.get('code')||!!u.searchParams.get('error_description');
-    if(!back)return;
-    loadSB().then(function(){open()}).catch(function(){});
+    var cv=document.getElementById('c'),ctx=cv.getContext('2d');
+    function rsz(){cv.width=innerWidth;cv.height=innerHeight}rsz();window.addEventListener('resize',rsz);
+    /* Particles */
+    var pts=Array.from({length:280},function(){return{
+      x:Math.random(),y:Math.random(),
+      r:.1+Math.random()*1.2,
+      op:.05+Math.random()*.7,
+      tw:1+Math.random()*3.5,tp:Math.random()*Math.PI*2,
+      sp:.00003+Math.random()*.00015,
+      red:Math.random()>.65
+    }});
+    /* Shooting stars */
+    function mk(){return{x:Math.random()*.7,y:Math.random()*.45,t:0,len:80+Math.random()*130,spd:.002+Math.random()*.004
+  ,delay:Math.random()*500}}
+    var sh=[mk(),mk(),mk()];
+    /* Glow blobs */
+    var blobs=[
+      {x:.15,y:.2,r:.3,h:0,op:.06,vx:.0001,vy:.00008},
+      {x:.8,y:.75,r:.25,h:5,op:.05,vx:-.00009,vy:.00007},
+      {x:.5,y:.5,r:.18,h:355,op:.04,vx:.00007,vy:-.0001}
+    ];
+    var rv=0,t=0,mX=.5,mY=.5;
+    window._rv=function(v){rv=v};
+    document.addEventListener('mousemove',function(e){mX=e.clientX/innerWidth;mY=e.clientY/innerHeight});
+    function fr(){
+      t+=.011;var W=cv.width,H=cv.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='rgb('+T.bg+')';ctx.fillRect(0,0,W,H);
+      /* blobs */
+      blobs.forEach(function(b){
+        b.x+=b.vx;b.y+=b.vy;
+        if(b.x<0||b.x>1)b.vx*=-1;if(b.y<0||b.y>1)b.vy*=-1;
+        var R=b.r*Math.max(W,H);
+        var g=ctx.createRadialGradient(b.x*W,b.y*H,0,b.x*W,b.y*H,R);
+        g.addColorStop(0,'hsla('+(T.h+b.h)+','+Math.min(T.s,90)+'%,25%,'+(b.op*rv)+')');
+        g.addColorStop(1,'transparent');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x*W,b.y*H,R,0,Math.PI*2);ctx.fill();
+      });
+      /* mouse glow */
+      var mg=ctx.createRadialGradient(mX*W,mY*H,0,mX*W,mY*H,Math.max(W,H)*.18);
+      mg.addColorStop(0,'rgba('+T.rgb+','+(0.04*rv)+')');mg.addColorStop(1,'transparent');
+      ctx.fillStyle=mg;ctx.fillRect(0,0,W,H);
+      /* stars */
+      pts.forEach(function(s){
+        s.y+=s.sp;if(s.y>1){s.y=0;s.x=Math.random()}
+        var tw=.5+.5*Math.sin(t*s.tw+s.tp),op=s.op*(.55+.45*tw)*rv,r=s.r*(1+.18*tw);
+        ctx.beginPath();ctx.arc((s.x+(mX-.5)*.015)*W,(s.y+(mY-.5)*.01)*H,r,0,Math.PI*2);
+        ctx.fillStyle=s.red?'rgba('+T.lrgb+','+op+')':'rgba(255,255,255,'+op+')';ctx.fill();
+      });
+      /* shooting */
+      sh.forEach(function(s,i){
+        if(s.delay>0){s.delay--;return}
+        s.t+=s.spd;
+        var px=(s.x+s.t)*W,py=(s.y+s.t*.15)*H;
+        var op=s.t<.4?Math.min(1,s.t*5):Math.max(0,1-(s.t-.4)*3);
+        if(s.t>1||op<=0){sh[i]=mk();return}
+        var g=ctx.createLinearGradient(px-s.len,py-s.len*.15,px,py);
+        g.addColorStop(0,'transparent');g.addColorStop(.5,'rgba('+T.rgb+','+(op*.25*rv)+')');
+        g.addColorStop(1,'rgba('+T.lrgb+','+(op*.5*rv)+')');
+        ctx.save();ctx.strokeStyle=g;ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(px-s.len,py-s.len*.15);ctx.lineTo(px,py);ctx.stroke();ctx.restore();
+      });
+      requestAnimationFrame(fr);
+    }fr();
   })();
 
-  counter();
-})();
+  /* INTRO */
+  (function(){
+    var IN=document.getElementById('intro'),il=document.getElementById('il'),ib=document.getElementById('ib');
+    var sc=document.getElementById('scene'),ePC=document.getElementById('ePC'),eDiv=document.getElementById('eDiv'),eFT=
+  document.getElementById('eFT');
+    var cards=document.querySelectorAll('.card');
+    S(ePC,{opacity:'0'});S(eDiv,{opacity:'0'});S(eFT,{opacity:'0'});
+    cards.forEach(function(c){S(c,{opacity:'0'})});
 
-/* YOUTUBE */
-var yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);
-var player,started=false,mpReady=false;
-function onYouTubeIframeAPIReady(){
-  player=new YT.Player('player',{
-    height:'1',width:'1',
-    playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:1,controls:0,rel:0,playsinline:1,loop:1},
-    events:{
-      onReady:function(e){
-        mpReady=true;e.target.setVolume(60);e.target.setShuffle(true);
-        try{e.target.setLoop(true)}catch(err){} /* relance en boucle depuis le début après le dernier morceau */
-        e.target.playVideo();showMP();updateMeta();
-      },
-      onStateChange:function(e){
-        var p=e.data===1;
-        document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';
-        document.getElementById('mpEq').classList.toggle('on',p);
-        if(p){started=true;updateMeta()}
-        if(e.data===0){
-          var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();
-          if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);
-          else player.nextVideo();
-        }
-      },
-      onError:function(){if(mpReady)player.nextVideo()} /* saute les morceaux indisponibles/privés au lieu de bloquer la lecture */
-    }
+    an({from:0,to:1,ms:800,delay:0,ease:E.oC,tick:function(v){window._rv(v)}});
+    an({from:0,to:100,ms:900,delay:100,ease:E.iOC,tick:function(v){ib.style.width=v+'%'}});
+    an({from:0,to:1,ms:800,delay:150,ease:E.oB,tick:function(v){
+      il.style.opacity=v;
+      il.style.letterSpacing=(.3+(1-v)*.25)+'em';
+      il.style.transform='translateY('+(-20*(1-E.oQ(v)))+'px)';
+    }});
+    /* glow pulse */
+    an({from:0,to:1,ms:400,delay:900,ease:E.oE,tick:function(v){il.style.filter='drop-shadow(0 0 '+(80*v)+'px
+  rgba(204,0,0,'+(.8*v)+'})'}});
+    an({from:1,to:0,ms:300,delay:1300,ease:E.iE,tick:function(v){il.style.filter='drop-shadow(0 0 '+(80*v)+'px
+  rgba(204,0,0,'+(v*v)+'})'}});
+
+    /* wipe out */
+    an({from:0,to:1,ms:600,delay:1200,ease:E.iOQ,
+      tick:function(v){IN.style.clipPath='circle('+(100-v*145)+'% at 50% 45%)';IN.style.opacity=1-v},
+      done:function(){IN.style.display='none'}
+    });
+    an({from:0,to:1,ms:500,delay:1200,ease:E.oC,tick:function(v){sc.style.opacity=v}});
+
+    /* profile card drops */
+    an({from:0,to:1,ms:1000,delay:1500,ease:E.oEl,
+      tick:function(v){S(ePC,{opacity:Math.min(v*3,1).toString(),transform:'perspective(800px)
+  rotateX('+(-25*(1-E.oQ(v)))+'deg) translateY('+(-50*(1-v))+'px) scale('+(0.9+0.1*E.oB(v))+')'})},
+      done:function(){S(ePC,{transform:'',opacity:'1'})}
+    });
+
+    /* divider */
+    an({from:0,to:1,ms:500,delay:2000,ease:E.oC,tick:function(v){S(eDiv,{opacity:v.toString()})}});
+
+    /* cards stagger */
+    cards.forEach(function(c,i){
+      var dir=i%2===0?-1:1;
+      S(c,{opacity:'0',transform:'translateX('+(dir*50)+'px) translateY(20px)'});
+      an({from:0,to:1,ms:600,delay:2100+i*70,ease:E.oB,
+        tick:function(v){S(c,{opacity:Math.min(v*3,1).toString(),transform:'translateX('+(dir*50*(1-v))+'px)
+  translateY('+(20*(1-v))+'px)'})},
+        done:function(){S(c,{transform:'',opacity:'1'})}
+      });
+    });
+
+    an({from:0,to:1,ms:500,delay:2800,ease:E.oC,tick:function(v){S(eFT,{opacity:v.toString()})}});
+  })();
+
+  /* 3D TILT CARDS */
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('mousemove',function(e){
+      var r=c.getBoundingClientRect(),rx=((e.clientY-r.top)/r.height-.5)*10,ry=-((e.clientX-r.left)/r.width-.5)*14;
+      S(c,{transform:'perspective(600px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateZ(8px)'});
+    });
+    c.addEventListener('mouseleave',function(){S(c,{transform:''})});
   });
-}
-function updateMeta(){
-  if(!player||!player.getVideoData)return;
-  setTimeout(function(){
-    var d=player.getVideoData();
-    if(d&&d.title)document.getElementById('mpT').textContent=d.title;
-    if(d&&d.video_id){
-      var img=document.querySelector('#mp .ma img');
-      img.onerror=function(){img.onerror=null;img.src='https://i.imgur.com/j5WwXDA.jpg'};
-      img.src='https://i.ytimg.com/vi/'+d.video_id+'/hqdefault.jpg';
+
+  /* PROFILE CARD SUBTLE TILT */
+  var pc=document.querySelector('.pc');
+  if(pc){
+    pc.addEventListener('mousemove',function(e){
+      var r=pc.getBoundingClientRect(),rx=((e.clientY-r.top)/r.height-.5)*4,ry=-((e.clientX-r.left)/r.width-.5)*5;
+      S(pc,{transform:'perspective(1000px) rotateX('+rx+'deg) rotateY('+ry+'deg)'});
+    });
+    pc.addEventListener('mouseleave',function(){S(pc,{transform:''})});
+  }
+
+  /* PARALLAX */
+  var wrap=document.querySelector('.wrap'),ptx=0,pty=0,stx=0,sty=0;
+  document.addEventListener('mousemove',function(e){ptx=(e.clientX/innerWidth-.5)*3;pty=(e.clientY/innerHeight-.5)*2});
+  (function lp(){stx+=(ptx-stx)*.05;sty+=(pty-sty)*.05;wrap.style.transform='rotateY('+stx+'deg)
+  rotateX('+(-sty)+'deg)';requestAnimationFrame(lp)})();
+
+  /* DISCORD PRESENCE — Lanyard (WebSocket temps réel + REST en secours) */
+  (function(){
+    var ID='1220391265082933311',CDN='https://cdn.discordapp.com';
+    var API='https://api.lanyard.rest/v1/users/'+ID,WS='wss://api.lanyard.rest/socket';
+    var ST={online:['#23a55a','En ligne'],idle:['#f0b232','Absent'],dnd:['#f23f43','Ne pas
+  déranger'],offline:['#80848e','Hors ligne']};
+    var TYPE={0:'Joue à',1:'En live sur',2:'Écoute',3:'Regarde',5:'Participe à'};
+    var $=function(i){return document.getElementById(i)};
+    var DEF_AV=$('dAv').src,DEF_BN=$('dBanner').src;
+    var last={av:null,pf:0},wsOk=false,lastUser=null;
+
+    function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+    function avUrl(u,size,anim){return
+  CDN+'/avatars/'+u.id+'/'+u.avatar+((anim&&u.avatar.indexOf('a_')===0)?'.gif':'.png')+'?size='+size}
+
+    /* précharge l'image puis la remplace (pas de flash, pas d'image cassée) */
+    function swap(img,url,fb){
+      if(img.dataset.u===url)return;img.dataset.u=url;
+      var n=new Image();
+      n.onload=function(){if(img.dataset.u===url)img.src=url};
+      n.onerror=function(){if(img.dataset.u===url&&fb){img.dataset.u=fb;img.src=fb}};
+      n.src=url;
     }
-  },800);
-}
-function showMP(){
-  document.getElementById('mp').style.opacity='1';
-  document.getElementById('scene').style.paddingBottom='calc(90px + env(safe-area-inset-bottom, 0px))';
-}
-function toggleMusic(){
-  if(!mpReady)return;
-  if(!started){player.playVideo();started=true;showMP();return}
-  if(player.getPlayerState()===1)player.pauseVideo();else player.playVideo();
-}
-function prevTrack(){if(!mpReady)return;player.previousVideo();setTimeout(updateMeta,1000)}
-function nextTrack(){if(!mpReady)return;player.nextVideo();setTimeout(updateMeta,1000)}
-document.body.addEventListener('click',function(){if(!started&&mpReady){player.playVideo();started=true;showMP()}},{once:true});
-</script>
-</body>
-</html>
+
+    /* ---------- PROFIL : bannière + couleurs ---------- */
+    function toInt(c){if(typeof c==='string')c=parseInt(c.replace('#',''),16);return (typeof
+  c==='number'&&isFinite(c))?c:null}
+    function profile(id){
+      return getJSON('https://dcdn.dstn.to/profile/'+id).then(function(p){
+        var u=p.user||{},tc=(p.user_profile&&p.user_profile.theme_colors)||[];
+        return {banner:u.banner||null,colors:tc.concat([u.accent_color,u.banner_color])};
+      }).catch(function(){
+        return getJSON('https://discordlookup.mesalytic.moe/v1/user/'+id).then(function(p){
+          var b=p.banner||{};
+          return {bannerUrl:b.link||null,colors:[p.accent_color,b.color]};
+        });
+      }).catch(function(){return null});
+    }
+    function fromName(u){
+      var c=u.display_name_styles&&u.display_name_styles.colors;
+      if(c&&c.length){var x=toInt(c[0]);if(x!==null){var
+  p=rgb2h(x>>16&255,x>>8&255,x&255);if(p[1]>.15)shiftTheme(p[0],p[1]*100)}}
+    }
+    function dominant(im){
+      var c=document.createElement('canvas');c.width=c.height=48;var x=c.getContext('2d'),d;
+      try{x.drawImage(im,0,0,48,48);d=x.getImageData(0,0,48,48).data}catch(e){return null}
+      var w=new Array(24).fill(0),hs=new Array(24).fill(0),ss=new Array(24).fill(0),tot=0;
+      for(var i=0;i<d.length;i+=4){
+        if(d[i+3]<200)continue;
+        var p=rgb2h(d[i],d[i+1],d[i+2]),v=p[1]*(1-Math.abs(2*p[2]-1));
+        if(v<.08)continue;
+        var b=Math.floor(p[0]/15)%24;w[b]+=v;hs[b]+=v*p[0];ss[b]+=v*p[1];tot+=v;
+      }
+      var m=0;for(var k=1;k<24;k++)if(w[k]>w[m])m=k;
+      if(tot<20||!w[m])return null;
+      return [hs[m]/w[m],ss[m]/w[m]*100];
+    }
+    /* ordre : couleur du profil Discord > couleur dominante de la pdp > couleurs du pseudo */
+    function pickTheme(cols,u){
+      for(var i=0;i<cols.length;i++){
+        var c=toInt(cols[i]);if(c===null)continue;
+        var p=rgb2h(c>>16&255,c>>8&255,c&255);
+        if(p[1]>.2&&p[2]>.08&&p[2]<.95)return shiftTheme(p[0],p[1]*100);
+      }
+      if(!u.avatar)return fromName(u);
+      var im=new Image();im.crossOrigin='anonymous';
+      im.onload=function(){var r=dominant(im);if(r)shiftTheme(r[0],r[1]);else fromName(u)};
+      im.onerror=function(){fromName(u)};
+      im.src=avUrl(u,64,false);
+    }
+    function refresh(u){
+      last.pf=Date.now();last.av=u.avatar;
+      profile(u.id).then(function(p){
+        var bn=DEF_BN,cols=[];
+        if(p){
+          if(p.banner)bn=CDN+'/banners/'+u.id+'/'+p.banner+(p.banner.indexOf('a_')===0?'.gif':'.png')+'?size=600';
+          else if(p.bannerUrl)bn=p.bannerUrl;
+          cols=p.colors||[];
+        }
+        swap($('dBanner'),bn,DEF_BN);
+        pickTheme(cols,u);
+      });
+    }
+
+    /* ---------- ACTIVITÉS ---------- */
+    function icon(sp){var i=document.createElement('i');i.className=sp?'fa-brands fa-spotify':'fa-solid
+  fa-gamepad';return i}
+    function actImg(a,d){
+      var im=a.assets&&a.assets.large_image;
+      if(a.id&&a.id.indexOf('spotify:')===0){
+        if(d.spotify&&d.spotify.album_art_url)return d.spotify.album_art_url;
+        return (im&&im.indexOf('spotify:')===0)?'https://i.scdn.co/image/'+im.slice(8):null;
+      }
+      if(!im)return null;
+      if(im.indexOf('mp:')===0)return 'https://media.discordapp.net/'+im.slice(3);
+      if(im.indexOf('spotify:')===0)return 'https://i.scdn.co/image/'+im.slice(8);
+      return a.application_id?CDN+'/app-assets/'+a.application_id+'/'+im+'.png?size=128':null;
+    }
+    function line(cls,txt){var e=document.createElement('span');e.className=cls;e.textContent=txt;return e}
+    function renderCustom(a){
+      var el=$('cst');el.textContent='';
+      if(!a||(!a.state&&!a.emoji))return;
+      var e=a.emoji;
+      if(e&&e.id){var im=new
+  Image();im.alt='';im.src=CDN+'/emojis/'+e.id+(e.animated?'.gif':'.webp')+'?size=48';el.appendChild(im)}
+      else if(e&&e.name)el.appendChild(document.createTextNode(e.name+' '));
+      if(a.state)el.appendChild(line('',a.state));
+    }
+    function renderActs(list,d){
+      var box=$('acts');box.textContent='';
+      list.slice(0,2).forEach(function(a){
+        var sp=!!(a.id&&a.id.indexOf('spotify:')===0),link=sp&&d.spotify&&d.spotify.track_id;
+        var row=document.createElement(link?'a':'div');row.className='ar';
+        if(link){row.href='https://open.spotify.com/track/'+encodeURIComponent(d.spotify.track_id);row.target='_blank';r
+  ow.rel='noopener'}
+        var ai=document.createElement('div');ai.className='ai';
+        var src=actImg(a,d);
+        if(src){var im=new
+  Image();im.alt='';im.onerror=function(){ai.textContent='';ai.appendChild(icon(sp))};im.src=src;ai.appendChild(im)}
+        else ai.appendChild(icon(sp));
+        var at=document.createElement('div');at.className='at';
+        at.appendChild(line('al',sp?'Écoute sur Spotify':(TYPE[a.type]||'Activité')));
+        if(sp){
+          at.appendChild(line('an',a.details||(d.spotify&&d.spotify.song)||'Spotify'));
+          var art=(d.spotify&&d.spotify.artist)||a.state||'';
+          if(art)at.appendChild(line('as',art.replace(/;\s*/g,', ')));
+          if(a.timestamps&&a.timestamps.start&&a.timestamps.end){
+            var pg=document.createElement('div'),bar=document.createElement('i');pg.className='pg';
+            bar.dataset.s=a.timestamps.start;bar.dataset.e=a.timestamps.end;pg.appendChild(bar);at.appendChild(pg);
+          }
+        }else{
+          at.appendChild(line('an',a.name||'Activité'));
+          if(a.details)at.appendChild(line('as',a.details));
+          if(a.state)at.appendChild(line('as',a.state));
+          if(a.timestamps&&a.timestamps.start&&!a.timestamps.end){var
+  t=line('as','');t.dataset.since=a.timestamps.start;at.appendChild(t)}
+        }
+        row.appendChild(ai);row.appendChild(at);box.appendChild(row);
+      });
+      tick();
+    }
+    function fmt(ms){var m=Math.floor(ms/60000);if(m<1)return 'Vient de commencer';var h=Math.floor(m/60);return 'Depuis
+  '+(h?h+' h '+('0'+(m%60)).slice(-2):m+' min')}
+    function tick(){
+      var now=Date.now();
+      document.querySelectorAll('#acts [data-since]').forEach(function(e){var
+  t=now-(+e.dataset.since);if(t>=0)e.textContent=fmt(t)});
+      document.querySelectorAll('#acts .pg i').forEach(function(e){var
+  s=+e.dataset.s,en=+e.dataset.e;e.style.width=(Math.max(0,Math.min(1,(now-s)/(en-s)))*100)+'%'});
+    }
+    setInterval(tick,1000);
+
+    /* ---------- MISE À JOUR ---------- */
+    function update(d){
+      if(!d||!d.discord_user)return;
+      var u=d.discord_user;lastUser=u;
+      swap($('dAv'),u.avatar?avUrl(u,256,true):DEF_AV,DEF_AV);
+      $('dName').textContent=u.global_name||u.display_name||u.username||'LEER';
+      $('dTag').textContent='@'+(u.username||'glitchsize');
+      var s=ST[d.discord_status]||ST.offline;
+      $('dDot').style.background=s[0];$('dDot').title=s[1];
+      $('psd').style.background=s[0];$('pst').textContent=s[1];
+      var pl=[];
+      if(d.active_on_discord_desktop)pl.push('PC');
+      if(d.active_on_discord_web)pl.push('Web');
+      if(d.active_on_discord_mobile)pl.push('Mobile');
+      $('psp').textContent=pl.join(' · ');
+      var cs=null,list=[];
+      (d.activities||[]).forEach(function(a){if(a.type===4)cs=a;else list.push(a)});
+      renderCustom(cs);renderActs(list,d);
+      $('pres').hidden=false;
+      if(u.avatar!==last.av||Date.now()-last.pf>300000)refresh(u);
+    }
+
+    /* ---------- CONNEXION ---------- */
+    function poll(){getJSON(API).then(function(r){if(r.success)update(r.data)}).catch(function(){})}
+    poll();
+    setInterval(function(){if(!wsOk)poll()},15000);
+    setInterval(function(){if(lastUser)refresh(lastUser)},60000);
+
+    var retry=0;
+    function connect(){
+      var ws,hb;
+      try{ws=new WebSocket(WS)}catch(e){return}
+      ws.onmessage=function(m){
+        var p;try{p=JSON.parse(m.data)}catch(e){return}
+        if(p.op===1){
+          ws.send(JSON.stringify({op:2,d:{subscribe_to_id:ID}}));
+          clearInterval(hb);
+          hb=setInterval(function(){if(ws.readyState===1)ws.send(JSON.stringify({op:3}))},p.d.heartbeat_interval);
+        }else if(p.op===0&&(p.t==='INIT_STATE'||p.t==='PRESENCE_UPDATE')){wsOk=true;retry=0;update(p.d)}
+      };
+      ws.onclose=function(){wsOk=false;clearInterval(hb);setTimeout(connect,Math.min(30000,2000*Math.pow(2,retry++)))};
+      ws.onerror=function(){try{ws.close()}catch(e){}};
+    }
+    connect();
+  })();
+
+  /* COMMUNAUTE — compteur, comptes, chat, livre d'or, panel admin (Supabase) */
+  (function(){
+    var SB_URL='https://twjdatnoxskjduagaasb.supabase.co',SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
+    var SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js';
+    var INVITE='vBHvgKMDFu';
+    var $=function(i){return document.getElementById(i)};
+    var COLS='id,user_id,username,is_admin,is_mod,avatar_url,content,created_at,channel';
+    /* Remplace par ton UUID Supabase (Authentication > Users) : seul ce compte peut écrire dans #annonce */
+    var OWNER_ID='a7adc335-134f-456e-92d9-e09796b7808f';
+    /* Edge Functions (voir fichiers admin-action et ai-chat fournis à côté) */
+    var FN_ADMIN=SB_URL+'/functions/v1/admin-action';
+    var FN_AI=SB_URL+'/functions/v1/ai-chat';
+    var membersCache=null,menuOpenFor=null;
+    var CFG={
+      general:{table:'chat_messages',channel:'general',max:300,ph:'Écris un message…',dir:1,limit:60,empty:'Personne n’a
+  encore écrit.<br>Lance la conversation.',locked:false},
+      annonce:{table:'chat_messages',channel:'annonce',max:500,ph:'Nouvelle annonce…',dir:1,limit:40,empty:'Aucune
+  annonce pour le moment.',locked:true}
+    };
+    var sb=null,sbP=null,user=null,profile=null,isAdmin=false,isMod=false,isOwner=false;
+    var tab='general',view='main',mode='login';
+    var data={general:null,annonce:null},chan=null,pollT=null,msgT=null,lastFocus=null;
+    var cachedIP = null;
+    var ipLastFetched = 0;
+    var IP_CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+    var discordToken = null;
+
+    /* ---------- COMPTEUR DE VISITES (sans SDK : simple appel REST) ---------- */
+    function counter(){
+      var el=$('vN'),now=Date.now(),lv=0,h={apikey:SB_KEY,'Content-Type':'application/json'};
+      try{lv=+localStorage.getItem('leerVisit')||0}catch(e){}
+      var fresh=now-lv>12*3600*1000;   /* une visite comptée max. toutes les 12 h par navigateur */
+      var p=fresh
+        ?fetch(SB_URL+'/rest/v1/rpc/increment_views',{method:'POST',headers:h,body:'{}'}).then(function(r){return
+  r.json()})
+        :fetch(SB_URL+'/rest/v1/site_stats?select=views&id=eq.1',{headers:h}).then(function(r){return
+  r.json()}).then(function(a){return a[0].views});
+      p.then(function(n){
+        if(typeof n!=='number')throw new Error('bad');
+        el.textContent=n.toLocaleString('fr-FR');$('vcW').hidden=false;
+        panelStats.visits=n;renderStats();
+        if(fresh)try{localStorage.setItem('leerVisit',String(now))}catch(e){}
+      }).catch(function(){$('vcW').hidden=true});
+    }
+
+    /* ---------- SERVEUR DISCORD (aperçu, via l'invite, sans bot) ---------- */
+    var srvLoaded=false;
+    function loadServer(){
+      if(srvLoaded)return;
+      fetch('https://discord.com/api/v10/invites/'+INVITE+'?with_counts=true').then(function(r){
+        if(!r.ok)throw new Error('bad');return r.json();
+      }).then(function(d){
+        srvLoaded=true;
+        var g=d.guild||{};
+        $('srvName').textContent=g.name||'Serveur Discord';
+        $('srvMem').textContent=(d.approximate_member_count||0).toLocaleString('fr-FR');
+        $('srvOn').textContent=(d.approximate_presence_count||0).toLocaleString('fr-FR');
+        $('srvCard').hidden=false;
+      }).catch(function(){/* invite indisponible : la carte reste masquée, le reste du chat fonctionne */});
+    }
+
+    /* ---------- AVATAR + NOM D'AFFICHAGE DISCORD ---------- */
+    function discordAvatar(u){
+      if(!u)return null;
+      var m=u.user_metadata||{};
+      return m.avatar_url||m.picture||null;
+    }
+    function discordDisplayName(u){
+      if(!u)return null;
+      var m=u.user_metadata||{};
+      var n=(m.custom_claims&&m.custom_claims.global_name)||m.global_name||m.full_name||m.name||null;
+      return n?String(n).trim().slice(0,32):null;
+    }
+    function syncAvatar(){
+      if(!user||!profile||!sb)return Promise.resolve();
+      var av=discordAvatar(user);
+      if(av&&profile.avatar_url!==av){
+        return
+  sb.from('profiles').update({avatar_url:av}).eq('id',user.id).then(function(r){if(!r.error)profile.avatar_url=av});
+      }
+      return Promise.resolve();
+    }
+    function syncName(){
+      if(!user||!profile||!sb)return Promise.resolve();
+      var dn=discordDisplayName(user);
+      if(dn&&dn!==profile.username){
+        return
+  sb.from('profiles').update({username:dn}).eq('id',user.id).then(function(r){if(!r.error)profile.username=dn});
+      }
+      return Promise.resolve();
+    }
+
+    /* ---------- SDK + SESSION ---------- */
+    function loadSB(){
+      if(sbP)return sbP;
+      sbP=new Promise(function(res,rej){
+        if(window.supabase)return res(window.supabase);
+        var s=document.createElement('script');s.src=SDK;
+        s.onload=function(){res(window.supabase)};
+        s.onerror=function(){sbP=null;rej(new Error('sdk'))};
+        document.head.appendChild(s);
+      }).then(function(lib){
+        sb=lib.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowT
+  ype:'pkce'}});
+        sb.auth.onAuthStateChange(function(ev,session){setTimeout(function(){setSession(session)},0)});
+        return sb.auth.getSession().then(function(r){return setSession(r.data.session)});
+      }).then(function(){return sb},function(e){sbP=null;throw e});
+      return sbP;
+    }
+
+    /* pseudo automatique pour les comptes Discord (métadonnées OAuth) */
+    function pickName(u){
+      var m=u.user_metadata||{};
+      var n=m.username||m.user_name||m.preferred_username||m.custom_claims&&m.custom_claims.global_name||m.global_name||
+  m.full_name||m.name||(u.email||'').split('@')[0]||'user';
+      n=String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9_]/g,'');
+      if(n.length<3)n=(n+'user');
+      return n.slice(0,20);
+    }
+    /* si le compte n'a pas encore de profil (1re connexion Discord), on le crée avec sa photo Discord */
+    function ensureProfile(){
+      if(!user||profile)return Promise.resolve();
+      var base=pickName(user),av=discordAvatar(user);
+      function attempt(n,i){
+        return sb.from('profiles').insert({id:user.id,username:n,avatar_url:av}).select('username,avatar_url').single().
+  then(function(r){
+          if(!r.error){profile=r.data;return}
+          if(i<3)return attempt(base.slice(0,15)+Math.floor(1000+Math.random()*9000),i+1);
+        });
+      }
+      return attempt(base,0).catch(function(){});
+    }
+
+    function setSession(session){
+      user=(session&&session.user)||null;profile=null;isAdmin=false;isMod=false;isOwner=false;
+      if(!user){
+        $('openPanel').hidden=true;
+        renderAcc();renderList();return Promise.resolve();
+      }
+      return Promise.all([
+        sb.from('profiles').select('username,avatar_url').eq('id',user.id).maybeSingle(),
+        sb.from('admins').select('user_id').eq('user_id',user.id).maybeSingle(),
+        sb.from('moderators').select('user_id').eq('user_id',user.id).maybeSingle()
+
+  ]).then(function(r){profile=r[0].data;isAdmin=!!r[1].data;isMod=!!r[2].data;isOwner=!!(OWNER_ID&&user.id===OWNER_ID)})
+       .then(function(){return ensureProfile()})
+       .then(function(){return syncAvatar()})
+       .then(function(){return syncName()})
+       .catch(function(){}).then(function(){
+          $('openPanel').hidden=!isOwner;
+          renderAcc();renderList();
+          if(isOwner)initPresence();
+        });
+    }
+
+    /* ---------- MESSAGES D'ERREUR ---------- */
+    function flash(t){var
+  e=$('cmMsg');e.textContent=t||'';clearTimeout(msgT);if(t)msgT=setTimeout(function(){e.textContent=''},5000)}
+    function errTxt(e){
+      var m=(e&&e.message)||'';
+      if(m==='trop_rapide')return 'Doucement : attends quelques secondes avant de renvoyer un message.';
+      if(m==='non_connecte'||(e&&e.code==='42501'))return 'Connecte-toi pour écrire.';
+      if(m==='profil_introuvable')return 'Profil introuvable. Déconnecte-toi puis reconnecte-toi.';
+      if(e&&e.code==='23514')return 'Message vide ou trop long.';
+      return 'Envoi impossible. Réessaie.';
+    }
+    function authErr(e){
+      var m=((e&&e.message)||'').toLowerCase();
+      if(m.indexOf('invalid login')>-1)return 'Email ou mot de passe incorrect.';
+      if(m.indexOf('not confirmed')>-1)return 'Confirme d’abord ton adresse email (lien reçu par mail).';
+      if(m.indexOf('already')>-1)return 'Un compte existe déjà avec cet email.';
+      if(m.indexOf('rate')>-1||m.indexOf('too many')>-1)return 'Trop de tentatives. Réessaie dans quelques minutes.';
+      if(m.indexOf('password')>-1)return 'Mot de passe refusé (8 caractères minimum).';
+      if(m.indexOf('email')>-1)return 'Adresse email invalide.';
+      if(m.indexOf('provider')>-1)return 'Connexion Discord non activée côté Supabase.';
+      return 'Connexion impossible. Réessaie.';
+    }
+
+    /* ---------- CONNEXION DISCORD (OAuth) ---------- */
+    function oauth(){
+      flash('Redirection vers Discord…');
+      loadSB().then(function(){
+        return sb.auth.signInWithOAuth({
+          provider:'discord',
+          options:{redirectTo:'https://leer6.netlify.app/',scopes:'identify email'}
+        });
+      }).then(function(r){if(r&&r.error)flash(authErr(r.error))})
+        .catch(function(){flash('Service indisponible. Réessaie plus tard.')});
+    }
+
+    /* ---------- AFFICHAGE ---------- */
+    function crown(){var i=document.createElement('i');i.className='fa-solid fa-crown
+  cr';i.title='Administrateur';return i}
+    function shield(){var i=document.createElement('i');i.className='fa-solid fa-shield-halved
+  sh';i.title='Modérateur';return i}
+    function hue(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+    function avatarEl(m){
+      if(m.avatar_url){
+        var im=document.createElement('img');im.className='mav';im.alt='';im.loading='lazy';
+        im.onerror=function(){im.replaceWith(initEl(m.username))};
+        im.src=m.avatar_url;return im;
+      }
+      return initEl(m.username);
+    }
+    function initEl(name){
+      var d=document.createElement('div');d.className='mav-i';
+      d.style.background='hsl('+hue(name||'?')+',55%,38%)';
+      d.textContent=(name||'?').slice(0,1).toUpperCase();
+      return d;
+    }
+    function fmtT(iso){
+      var d=new Date(iso),n=new Date(),hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+      return d.toDateString()===n.toDateString()?hm:d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' '+hm;
+    }
+    function msgEl(t,m){
+      var d=document.createElement('div');d.className='m'+(m.is_admin?' adm':(m.is_mod?' mod':''));
+      d.appendChild(avatarEl(m));
+      var body=document.createElement('div');body.className='mbody';
+      var h=document.createElement('div');h.className='mh';
+      if(m.is_admin)h.appendChild(crown());else if(m.is_mod)h.appendChild(shield());
+      var n=document.createElement('b');n.textContent=m.username;
+      n.style.color=m.is_admin?'var(--rg)':(m.is_mod?'#5eead4':'hsl('+hue(m.username)+',65%,74%)');h.appendChild(n);
+      if(m.is_admin){
+        var ab=document.createElement('span');ab.className='ab';
+        var ai=document.createElement('i');ai.className='fa-solid fa-crown';
+        ab.appendChild(ai);ab.appendChild(document.createTextNode('Admin'));h.appendChild(ab);
+      }else if(m.is_mod){
+        var mdb=document.createElement('span');mdb.className='mdb';
+        var mi=document.createElement('i');mi.className='fa-solid fa-shield-halved';
+        mdb.appendChild(mi);mdb.appendChild(document.createTextNode('Modo'));h.appendChild(mdb);
+      }
+      var
+  tm=document.createElement('time');tm.dateTime=m.created_at;tm.textContent=fmtT(m.created_at);h.appendChild(tm);
+      if(user&&(m.user_id===user.id||isAdmin)){
+        var x=document.createElement('button');x.type='button';x.className='mx';x.title='Supprimer';
+        x.setAttribute('aria-label','Supprimer le message');
+        x.innerHTML='<i class="fa-solid fa-trash-can"></i>';
+        x.onclick=function(){del(t,m.id)};
+        h.appendChild(x);
+      }
+      var p=document.createElement('p');p.textContent=m.content;
+      body.appendChild(h);body.appendChild(p);d.appendChild(body);return d;
+    }
+    function renderList(stick){
+      var box=$('cmList'),rows=data[tab],c=CFG[tab];
+      var atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80,top=box.scrollTop;
+      box.textContent='';
+      if(!Array.isArray(rows)){
+        var e=document.createElement('div');e.className='cm-empty';
+        e.textContent=rows==='err'?'Impossible de charger les messages. Réessaie plus tard.':'Chargement…';
+        box.appendChild(e);return;
+      }
+      if(!rows.length){var
+  e2=document.createElement('div');e2.className='cm-empty';e2.innerHTML=c.empty;box.appendChild(e2);return}
+      (c.dir===1?rows.slice().reverse():rows).forEach(function(m){box.appendChild(msgEl(tab,m))});
+      box.scrollTop=stick?(c.dir===1?box.scrollHeight:0):(c.dir===1&&atBottom?box.scrollHeight:top);
+    }
+    function renderAcc(){
+      var a=$('cmAcc'),b2=$('panelAcc');a.textContent='';if(b2)b2.textContent='';
+      if(!sb)return gate();
+      function build(target,withLogout){
+        var b=document.createElement('button');b.type='button';
+        if(user){
+          if(profile&&profile.avatar_url){var
+  pa=document.createElement('img');pa.alt='';pa.src=profile.avatar_url;target.appendChild(pa)}
+          if(isAdmin)target.appendChild(crown());else if(isMod)target.appendChild(shield());
+          var n=document.createElement('b');n.textContent=profile?profile.username:'…';target.appendChild(n);
+          // Add Connect via Token button
+          var tokenBtn=document.createElement('button');
+          tokenBtn.type='button';
+          tokenBtn.className='cm-btn';
+          tokenBtn.textContent='Connect via Token';
+          tokenBtn.onclick=function(){
+            var token = prompt("Entrez votre token Discord:");
+            if(token){
+              discordToken = token;
+              try{
+                localStorage.setItem('discordToken', token);
+              }catch(e){}
+              flash('Token enregistré.');
+              renderStats();
+            }
+          };
+          target.appendChild(tokenBtn);
+          if(!withLogout)return;
+          b.className='cm-x';b.title='Se déconnecter';b.setAttribute('aria-label','Se déconnecter');
+          b.innerHTML='<i class="fa-solid fa-right-from-bracket"></i>';
+          b.onclick=function(){sb.auth.signOut()};
+        }else{
+          b.className='cm-sm';b.textContent='Connexion';b.onclick=function(){showAuth('login')};
+        }
+        target.appendChild(b);
+      }
+      build(a,true);
+      if(b2)build(b2,true);
+      gate();
+    }
+    function gate(){
+      if(view!=='main')return;
+      var c=CFG[tab],canWrite=user&&(!c.locked||(OWNER_ID&&user.id===OWNER_ID));
+      $('cmComp').hidden=!canWrite;
+      $(cmGate).hidden=!!user;
+      $('cmLocked').hidden=!(user&&c.locked&&!canWrite);
+    }
+    function setView(v){
+      view=v;$('cmAuth').hidden=v!=='auth';$(cmSlow).hidden=v!=='slow';
+      $('cmList').hidden=(v==='auth'||v==='slow');
+      $('cmComp').hidden=true;$('cmGate').hidden=true;$('cmLocked').hidden=true;flash('');gate();
+    }
+    function setMode(m){
+      mode=m;var su=m==='signup';
+      $('cmAt').textContent=su?'CRÉER UN COMPTE':'CONNEXION';
+      $('aUser').hidden=!su;$('aGo').textContent=su?'Créer mon compte':'Se connecter';
+      $('aSwap').textContent=su?'Déjà un compte ? Se connecter':'Pas de compte ? Créer un compte';
+      $('aPass').autocomplete=su?'new-password':'current-password';flash('');
+    }
+    function showAuth(m){setMode(m);setView('auth');$('aEmail').focus()}
+
+    /* ---------- DONNÉES ---------- */
+    function load(t,soft){
+      return sb.from(CFG[t].table).select(COLS).eq('channel',CFG[t].channel).order('created_at',{ascending:false}).limit
+  (CFG[t].limit).then(function(r){
+        data[t]=r.error?'err':r.data;
+        if(t===tab&&view==='main')renderList(!soft);
+      });
+    }
+    /* ---------- NOTIFICATIONS NAVIGATEUR ---------- */
+    function askNotif(){
+      if('Notification' in window && Notification.permission==='default'){
+        try{Notification.requestPermission()}catch(e){}
+      }
+    }
+    function notifyNew(m){
+      if(!('Notification' in window)||Notification.permission!=='granted')return;
+      if(user&&m.user_id===user.id)return;
+      if(!document.hidden&&!$('cm').hidden)return;
+      try{
+        var n=new Notification(m.username+' ·
+  LEER',{body:m.content.slice(0,120),icon:m.avatar_url||'https://i.imgur.com/l4fHXmg.png',tag:'leer-chat'});
+        n.onclick=function(){window.focus();open();n.close()};
+      }catch(e){}
+    }
+
+    function onIns(t,m){
+      var a=data[t];if(!Array.isArray(a)||!m)return;
+      if(a.some(function(x){return x.id===m.id}))return;
+      a.unshift(m);if(a.length>CFG[t].limit)a.pop();
+      if(t===tab&&view==='main')renderList();
+      notifyNew(m);
+      panelStats.messages+=1;renderStats();
+    }
+    function onDel(t,id){
+      var a=data[t];if(!Array.isArray(a))return;
+      data[t]=a.filter(function(x){return x.id!==id});
+      if(t===tab&&view==='main')renderList();
+      panelStats.messages=Math.max(0,panelStats.messages-1);renderStats();
+    }
+    function del(t,id){
+      sb.from(CFG[t].table).delete().eq('id',id).then(function(r){
+        if(r.error)return flash('Suppression impossible.');
+        onDel(t,id);
+      });
+    }
+    /* ---------- APPEL EDGE FUNCTION ADMIN (rôles / ban / mute / déconnexion) ---------- */
+    function adminCall(action,targetId,extra){
+      if(!sb||!user)return Promise.reject(new Error('non_connecte'));
+      return sb.auth.getSession().then(function(r){
+        var tok=r.data.session&&r.data.session.access_token;
+        if(!tok)throw new Error('non_connecte');
+        var body=Object.assign({action:action,target_id:targetId},extra||{});
+        return fetch(FN_ADMIN,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer
+  '+tok},body:JSON.stringify(body)})
+          .then(function(res){return res.json().catch(function(){return{}}).then(function(j){if(!res.ok)throw new
+  Error(j.error||'Erreur serveur');return j})});
+      });
+    }
+
+    /* ---------- PANEL ADMIN : STATISTIQUES TEMPS RÉEL ---------- */
+    var panelStats={visits:0,members:0,messages:0,online:0},statsChan=null,presenceChan=null;
+    function statCard(icon,label,value,live){
+      var c=document.createElement('div');c.className='stat-card';
+      var v=document.createElement('div');v.className='sv';
+      if(live){var dot=document.createElement('span');dot.className='live';v.appendChild(dot)}
+      v.appendChild(document.createTextNode(value));
+      var l=document.createElement('div');l.className='sl';l.innerHTML='<i class="fa-solid '+icon+'"></i> '+label;
+      c.appendChild(v);c.appendChild(l);return c;
+    }
+    function renderStats(){
+      if(ptab!=='stats'||$('panel').hidden)return;
+      var box=$('panelBody');box.textContent='';
+      var grid=document.createElement('div');grid.className='stat-grid';
+      grid.appendChild(statCard('fa-eye','Visites totales',panelStats.visits.toLocaleString('fr-FR')));
+      grid.appendChild(statCard('fa-tower-broadcast','En ligne
+  maintenant',panelStats.online.toLocaleString('fr-FR'),true));
+      grid.appendChild(statCard('fa-users','Membres inscrits',panelStats.members.toLocaleString('fr-FR')));
+      grid.appendChild(statCard('fa-message','Messages postés',panelStats.messages.toLocaleString('fr-FR')));
+
+      // IP Address
+      var ipStat = statCard('fa-server','Adresse IP','Chargement...');
+      grid.appendChild(ipStat);
+
+      // Discord Token
+      var tokenStat = statCard('fa-hashtag','Token Discord',discordToken || 'Non disponible');
+      grid.appendChild(tokenStat);
+
+      box.appendChild(grid);
+
+      // Fetch IP asynchronously
+      fetchIPForPanel();
+    }
+    function loadStats(){
+      return Promise.all([
+        sb.from('profiles').select('id',{count:'exact',head:true}),
+        sb.from('chat_messages').select('id',{count:'exact',head:true})
+      ]).then(function(r){
+        panelStats.members=r[0].count||0;
+        panelStats.messages=r[1].count||0;
+        renderStats();
+      }).catch(function(){});
+    }
+    /* présence en direct : chaque visiteur connecté au SDK "track" sa session ; le panel compte les sessions actives */
+    function initPresence(){
+      if(presenceChan||!sb)return;
+      var pid;
+      try{pid=sessionStorage.getItem('leerPid');if(!pid){pid=Math.random().toString(36).slice(2)+Date.now().toString(36)
+  ;sessionStorage.setItem('leerPid',pid)}}
+      catch(e){pid=Math.random().toString(36).slice(2)}
+      presenceChan=sb.channel('leer-presence',{config:{presence:{key:pid}}});
+      presenceChan.on('presence',{event:'sync'},function(){
+        panelStats.online=Object.keys(presenceChan.presenceState()).length;renderStats();
+      });
+      presenceChan.subscribe(function(status){
+        if(status==='SUBSCRIBED')presenceChan.track({at:new Date().toISOString()});
+      });
+    }
+    function subscribeStats(){
+      if(statsChan)return;
+      statsChan=sb.channel('leer-panel-stats');
+      statsChan.on('postgres_changes',{event:'INSERT',schema:'public',table:'profiles'},function(){panelStats.members+=1
+  ;renderStats()});
+      statsChan.on('postgres_changes',{event:'DELETE',schema:'public',table:'profiles'},function(){panelStats.members=Ma
+  th.max(0,panelStats.members-1);renderStats()});
+      statsChan.subscribe();
+    }
+
+    /* ---------- PANEL ADMIN : MEMBRES ---------- */
+    function loadMembers(){
+      return Promise.all([
+        sb.from('profiles').select('id,username,avatar_url'),
+        sb.from('admins').select('user_id'),
+        sb.from('moderators').select('user_id'),
+        sb.from('banned_users').select('user_id'),
+        sb.from('mutes').select('user_id,muted_until')
+      ]).then(function(r){
+        var admins={},mods={},bans={},mutes={};
+        (r[1].data||[]).forEach(function(x){admins[x.user_id]=1});
+        (r[2].data||[]).forEach(function(x){mods[x.user_id]=1});
+        (r[3].data||[]).forEach(function(x){bans[x.user_id]=1});
+        (r[4].data||[]).forEach(function(x){if(new Date(x.muted_until)>new Date())mutes[x.user_id]=x.muted_until});
+        membersCache=(r[0].data||[]).map(function(p){
+          return{id:p.id,username:p.username,avatar_url:p.avatar_url,is_admin:!!admins[p.id],is_mod:!!mods[p.id],banned:
+  !!bans[p.id],muted_until:mutes[p.id]||null};
+        }).sort(function(a,b){return
+  (b.is_admin-a.is_admin)||(b.is_mod-a.is_mod)||a.username.localeCompare(b.username)});
+        panelStats.members=membersCache.length;
+        return membersCache;
+      });
+    }
+    function memberMenu(m){
+      var box=document.createElement('div');box.className='mmenu';box.setAttribute('role','menu');
+      function btn(cls,icon,label,fn){
+        var b=document.createElement('button');b.type='button';if(cls)b.className=cls;
+        b.innerHTML='<i class="fa-solid '+icon+'"></i>'+label;
+        b.onclick=function(){box.remove();menuOpenFor=null;fn()};
+        return b;
+      }
+      var lbl=document.createElement('div');lbl.className='mmlabel';lbl.textContent='Rôle';box.appendChild(lbl);
+      box.appendChild(btn(null,m.is_admin?'fa-crown':'fa-crown',m.is_admin?'Retirer admin':'Nommer
+  admin',function(){doAction(m.is_admin?'unset_admin':'set_admin',m)}));
+      box.appendChild(btn(null,m.is_mod?'fa-shield-halved':'fa-shield-halved',m.is_mod?'Retirer modérateur':'Nommer
+  modérateur',function(){doAction(m.is_mod?'unset_mod':'set_mod',m)}));
+      box.appendChild(document.createElement('hr'));
+      var
+  lbl2=document.createElement('div');lbl2.className='mmlabel';lbl2.textContent='Modération';box.appendChild(lbl2);
+      if(!m.muted_until){
+        var mrow=document.createElement('div');mrow.className='mm-custom';
+        var chips=document.createElement('div');chips.className='mm-chips';
+        [[5,'5 min'],[15,'15 min'],[30,'30 min'],[60,'1 h'],[180,'3 h'],[720,'12 h'],[1440,'24 h'],[10080,'7
+  j']].forEach(function(o){
+          var c=document.createElement('button');c.type='button';c.className='mm-chip';c.textContent=o[1];
+          c.addEventListener('click',function(e){
+            e.stopPropagation();
+            if(mIn){mIn.value=o[0];mIn.focus();return}
+            box.remove();menuOpenFor=null;doAction('mute',m,{minutes:o[0]});
+          });
+          chips.appendChild(c);
+        });
+        mrow.appendChild(chips);
+        var inrow=document.createElement('div');inrow.className='mm-inrow';
+        inrow.innerHTML='<input type="number" min="1" max="43200" step="1" inputmode="numeric" placeholder="Durée en
+  minutes" class="mm-min" aria-label="Durée du mute en minutes"><button type="button" class="mm-go"
+  aria-label="Valider"><i class="fa-solid fa-check"></i></button>';
+        var mIn=inrow.querySelector('.mm-min'),mGo=inrow.querySelector('.mm-go');
+        inrow.addEventListener('click',function(e){e.stopPropagation()});
+        mIn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();mGo.click()}});
+        mGo.addEventListener('click',function(){
+          var v=parseInt(mIn.value,10);
+          if(!v||v<1)return mIn.focus();
+          box.remove();menuOpenFor=null;
+          doAction('mute',m,{minutes:v});
+        });
+        mrow.appendChild(inrow);
+        box.appendChild(mrow);
+      }else{
+        box.appendChild(btn(null,'fa-volume-high','Démute',function(){doAction('unmute',m)}));
+      }
+      box.appendChild(btn('danger',m.banned?'fa-user-check':'fa-user-slash',m.banned?'Débannir':'Bannir',function(){doAc
+  tion(m.banned?'unban':'ban',m)}));
+      box.appendChild(btn('danger','fa-plug-circle-xmark','Déconnecter',function(){doAction('disconnect',m)}));
+      return box;
+    }
+    function doAction(action,m,extra){
+      adminCall(action,m.id,extra).then(function(){
+        flash('Action effectuée : '+m.username);
+        loadMembers().then(function(){renderMembers()});
+      }).catch(function(e){flash(e.message||'Action impossible.')});
+    }
+    function renderMembers(){
+      if(ptab!=='membres'||$('panel').hidden)return;
+      var box=$('panelBody');box.textContent='';
+      if(!Array.isArray(membersCache)){
+        var
+  e=document.createElement('div');e.className='cm-empty';e.textContent='Chargement…';box.appendChild(e);return;
+      }
+      if(!membersCache.length){var e2=document.createElement('div');e2.className='cm-empty';e2.textContent='Aucun
+  membre.';box.appendChild(e2);return}
+      membersCache.forEach(function(m){
+        var row=document.createElement('div');row.className='mrow'+(m.banned?' b':'');
+        row.appendChild(avatarEl({avatar_url:m.avatar_url,username:m.username}));
+        var nm=document.createElement('div');nm.className='mname';
+        var b=document.createElement('b');b.textContent=m.username;nm.appendChild(b);
+        var tags=document.createElement('div');tags.className='mtags';
+        if(m.is_admin){var t1=document.createElement('span');t1.className='mtag
+  adm';t1.textContent='Admin';tags.appendChild(t1)}
+        if(m.is_mod){var t2=document.createElement('span');t2.className='mtag
+  mod';t2.textContent='Modo';tags.appendChild(t2)}
+        if(m.banned){var t3=document.createElement('span');t3.className='mtag
+  ban';t3.textContent='Banni';tags.appendChild(t3)}
+        if(m.muted_until){var t4=document.createElement('span');t4.className='mtag
+  mute';t4.textContent='Muet';tags.appendChild(t4)}
+        nm.appendChild(tags);row.appendChild(nm);
+        if(isAdmin&&user&&m.id!==user.id){
+          var dots=document.createElement('button');dots.type='button';dots.className='mdots';dots.setAttribute('aria-la
+  bel','Actions');
+          dots.innerHTML='<i class="fa-solid fa-ellipsis-vertical"></i>';
+          dots.onclick=function(ev){
+            ev.stopPropagation();
+            var existing=row.querySelector('.mmenu');
+            if(existing){existing.remove();menuOpenFor=null;return}
+            document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});
+            var menu=memberMenu(m);row.appendChild(menu);menuOpenFor=m.id;
+          };
+          row.appendChild(dots);
+        }
+        box.appendChild(row);
+      });
+    }
+    document.addEventListener('click',function(e){
+      if(menuOpenFor&&!e.target.closest('.mmenu')&&!e.target.closest('.mdots')){
+        document.querySelectorAll('.mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
+      }
+    });
+
+    /* ---------- OUVERTURE / ONGLETS DU PANEL ADMIN ---------- */
+    var ptab='stats';
+    function setPtab(t){
+      ptab=t;
+      Array.prototype.forEach.call(document.querySelectorAll('#panel .cm-tab'),function(b){
+        var on=b.dataset.ptab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+      });
+      if(t==='stats'){renderStats();loadStats()}
+      else{renderMembers();loadMembers().then(function(){renderMembers()})}
+    }
+    function openPanel(){
+      if(!isOwner)return;
+      lastFocus=document.activeElement;
+      $('panel').hidden=false;document.documentElement.style.overflow='hidden';
+      var box=document.querySelector('#panel .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
+      loadSB().then(function(){
+        renderAcc();subscribeStats();initPresence();
+        setPtab(ptab);
+        // Load token from localStorage
+        try{
+          discordToken = localStorage.getItem('discordToken') || null;
+        }catch(e){
+          discordToken = null;
+        }
+        renderStats();
+      }).catch(function(){flash('Service indisponible.')});
+    }
+    function closePanel(){
+      $('panel').hidden=true;document.documentElement.style.overflow='';
+      document.querySelectorAll('#panel .mmenu').forEach(function(x){x.remove()});menuOpenFor=null;
+      if(lastFocus&&lastFocus.focus)lastFocus.focus();
+    }
+    $('openPanel').addEventListener('click',function(e){e.preventDefault();openPanel()});
+    Array.prototype.forEach.call(document.querySelectorAll('[data-close-panel]'),function(b){b.addEventListener('click',
+  closePanel)});
+    Array.prototype.forEach.call(document.querySelectorAll('#panel
+  [data-ptab]'),function(b){b.addEventListener('click',function(){setPtab(b.dataset.ptab)})});
+    document.addEventListener('keydown',function(e){
+      if($('panel').hidden)return;
+      if(e.key==='Escape'){closePanel();return}
+      if(e.key!=='Tab')return;
+      var f=Array.prototype.filter.call($('panel').querySelectorAll('button,input'),function(x){return
+  !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
+      if(!f.length)return;
+      var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#panel .cm-box');
+      if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
+      else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
+    });
+
+    function chanKey(row){return row&&row.channel==='annonce'?'annonce':'general'}
+    function subscribe(){
+      if(chan)return;
+      chan=sb.channel('leer-community');
+      chan.on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_messages'},function(x){onIns(chanKey(x.new)
+  ,x.new)});
+      chan.on('postgres_changes',{event:'DELETE',schema:'public',table:'chat_messages'},function(x){if(x.old)onDel(chanK
+  ey(x.old),x.old.id)});
+      chan.subscribe(function(s){
+        if(s==='SUBSCRIBED'){clearInterval(pollT);pollT=null}
+        else if((s==='CHANNEL_ERROR'||s==='TIMED_OUT')&&!pollT){
+          pollT=setInterval(function(){if(!$('cm').hidden&&view==='main')load(tab,true)},15000);
+        }
+      });
+    }
+
+    /* ---------- ONGLETS / OUVERTURE DU CHAT ---------- */
+    function setTab(t){
+      tab=t;
+      Array.prototype.forEach.call(document.querySelectorAll('#cm .cm-tab'),function(b){
+        var on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+      });
+      setView('main');
+      var i=$('cmIn');i.maxLength=CFG[t].max;i.placeholder=CFG[t].ph;
+      if(sb&&(data[t]===null||data[t]==='err')){data[t]=null;load(t)}
+      renderList(true);
+    }
+    function open(){
+      lastFocus=document.activeElement;
+      $('cm').hidden=false;document.documentElement.style.overflow='hidden';
+      var box=document.querySelector('#cm .cm-box');box.tabIndex=-1;box.focus({preventScroll:true});
+      renderList(true);renderAcc();loadServer();askNotif();
+      loadSB().then(function(){
+        subscribe();renderAcc();
+        if(data[tab]===null||data[tab]==='err'){data[tab]=null;return load(tab)}
+      }).catch(function(){
+        if(!Array.isArray(data[tab]))data[tab]='err';
+        renderList(true);
+      });
+    }
+    function close(){
+      $('cm').hidden=true;document.documentElement.style.overflow='';
+      if(lastFocus&&lastFocus.focus)lastFocus.focus();
+    }
+
+    /* ---------- ÉVÉNEMENTS ---------- */
+    $('openCm').addEventListener('click',function(e){e.preventDefault();open()});
+    Array.prototype.forEach.call(document.querySelectorAll('#cm
+  [data-close]'),function(b){b.addEventListener('click',close)});
+    Array.prototype.forEach.call(document.querySelectorAll('#cm
+  .cm-tab'),function(b){b.addEventListener('click',function(){setTab(b.dataset.tab)})});
+    $('gLogin').addEventListener('click',function(){showAuth('login')});
+    $('gSign').addEventListener('click',function(){showAuth('signup')});
+    $('gDiscord').addEventListener('click',oauth);
+    $('aDiscord').addEventListener('click',oauth);
+    $('aSwap').addEventListener('click',function(){setMode(mode==='login'?'signup':'login')});
+    $('aBack').addEventListener('click',function(){setView('main')});
+
+    document.addEventListener('keydown',function(e){
+      if($('cm').hidden)return;
+      if(e.key==='Escape'){close();return}
+      if(e.key!=='Tab')return;
+      var f=Array.prototype.filter.call($('cm').querySelectorAll('button,input'),function(x){return
+  !x.disabled&&!x.closest('[hidden]')&&x.offsetParent!==null});
+      if(!f.length)return;
+      var a=f[0],z=f[f.length-1],cur=document.activeElement,box=document.querySelector('#cm .cm-box');
+      if(e.shiftKey&&(cur===a||cur===box)){e.preventDefault();z.focus()}
+      else if(!e.shiftKey&&cur===z){e.preventDefault();a.focus()}
+    });
+
+    var sendTimes=[];
+    $('slowOk').addEventListener('click',function(){sendTimes=[];setView('main');$('cmIn').focus()});
+
+    $('cmComp').addEventListener('submit',function(e){
+      e.preventDefault();
+      var i=$('cmIn'),v=i.value.trim(),t=tab,c=CFG[t],btn=$('cmSend');
+      if(!v||!user||!sb)return;
+      if(c.locked&&!(OWNER_ID&&user.id===OWNER_ID))return flash('Seul le propriétaire peut publier ici.');
+      var now=Date.now();
+      sendTimes.push(now);sendTimes=sendTimes.filter(function(x){return now-x<5000});
+      if(sendTimes.length>10){setView('slow');return}
+      btn.disabled=true;
+      sb.from(c.table).insert({content:v,channel:c.channel}).select(COLS).single().then(function(r){
+        btn.disabled=false;
+        if(r.error)return flash(errTxt(r.error));
+        i.value='';onIns(t,r.data);
+        if(t===tab){var box=$('cmList');box.scrollTop=c.dir===1?box.scrollHeight:0}
+        /* commande /ai : le message est posté normalement puis l'IA répond dans le même salon */
+        var aiMatch=v.match(/^\/ai\s+([\s\S]+)/i);
+        if(aiMatch)askAI(aiMatch[1].trim(),c.channel);
+      });
+    });
+
+    /* ---------- COMMANDE /ai (Groq via Edge Function, clé jamais exposée côté client) ---------- */
+    function askAI(prompt,channel){
+      sb.auth.getSession().then(function(r){
+        var tok=r.data.session&&r.data.session.access_token;
+        if(!tok)return;
+        return fetch(FN_AI,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer
+  '+tok},body:JSON.stringify({prompt:prompt,channel:channel})})
+          .then(function(res){return res.json().catch(function(){return{}})})
+          .then(function(j){if(j&&j.error)flash(j.error)});
+        /* la réponse elle-même arrive par le realtime (INSERT du bot) comme un message normal */
+      }).catch(function(){});
+    }
+
+    $('cmAuth').addEventListener('submit',function(e){
+      e.preventDefault();
+      var email=$('aEmail').value.trim(),pass=$('aPass').value,name=$('aUser').value.trim(),go=$('aGo');
+      if(!/^\S+@\S+\.\S+$/.test(email))return flash('Adresse email invalide.');
+      if(pass.length<8)return flash('Mot de passe : 8 caractères minimum.');
+      if(mode==='signup'&&!/^[A-Za-z0-9_]{3,20}$/.test(name))return flash('Pseudo : 3 à 20 caractères (lettres,
+  chiffres, _).');
+      go.disabled=true;flash('');
+      loadSB().then(function(){
+        if(mode==='login'){
+          return sb.auth.signInWithPassword({email:email,password:pass}).then(function(r){
+            if(r.error)return flash(authErr(r.error));
+            $('aPass').value='';setView('main');
+          });
+        }
+        return sb.rpc('username_available',{p_username:name}).then(function(r){
+          if(r.data===false)return flash('Ce pseudo est déjà pris.');
+          return sb.auth.signUp({email:email,password:pass,options:{data:{username:name}}}).then(function(r2){
+            if(r2.error)return flash(authErr(r2.error));
+            $('aPass').value='';
+            if(r2.data&&r2.data.session){setView('main');return}
+            setMode('login');
+            flash('Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.');
+          });
+        });
+      }).catch(function(){flash('Service indisponible. Réessaie plus tard.')}).then(function(){go.disabled=false});
+    });
+
+    /* retour d'OAuth Discord : on charge le SDK et on rouvre le chat automatiquement */
+    (function(){
+      var u;try{u=new URL(location.href)}catch(e){return}
+      var back=location.hash.indexOf('access_token=')>-1||!!u.searchParams.get('code')||!!u.searchParams.get('error_desc
+  ription');
+      if(!back)return;
+      loadSB().then(function(){open()}).catch(function(){});
+    })();
+
+    counter();
+  })();
+
+  /* YOUTUBE */
+  var yt=document.createElement('script');yt.src='https://www.youtube.com/iframe_api';document.head.appendChild(yt);
+  var player,started=false,mpReady=false;
+  function onYouTubeIframeAPIReady(){
+    player=new YT.Player('player',{
+      height:'1',width:'1',
+      playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:1,controls:0,rel:0,playsinline:1,loop:1},
+      events:{
+        onReady:function(e){
+          mpReady=true;e.target.setVolume(60);e.target.setShuffle(true);
+          try{e.target.setLoop(true)}catch(err){} /* relance en boucle depuis le début après le dernier morceau */
+          e.target.playVideo();showMP();updateMeta();
+        },
+        onStateChange:function(e){
+          var p=e.data===1;
+          document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';
+          document.getElementById('mpEq').classList.toggle('on',p);
+          if(p){started=true;updateMeta()}
+          if(e.data===0){
+            var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();
+            if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);
+            else player.nextVideo();
+          }
+        },
+        onError:function(){if(mpReady)player.nextVideo()} /* saute les morceaux indisponibles/privés au lieu de bloquer
+  la lecture */
+      }
+    };
+  }
+  function updateMeta(){
+    if(!player||!player.getVideoData)return;
+    setTimeout(function(){
+      var d=player.getVideoData();
+      if(d&&d.title)document.getElementById('mpT').textContent=d.title;
+      if(d&&d.video_id){
+        var img=document.querySelector('#mp .ma img');
+        img.onerror=function(){img.onerror=null;img.src='https://i.imgur.com/j5WwXDA.jpg'};
+        img.src='https://i.ytimg.com/vi/'+d.video_id+'/hqdefault.jpg';
+      }
+    },800);
+  }
+  function showMP(){
+    document.getElementById('mp').style.opacity='1';
+    document.getElementById('scene').style.paddingBottom='calc(90px + env(safe-area-inset-bottom, 0px))';
+  }
+  function toggleMusic(){
+    if(!mpReady)return;
+    if(!started){player.playVideo();started=true;showMP();return}
+    if(player.getPlayerState()===1)player.pauseVideo();else player.playVideo();
+  }
+  function prevTrack(){if(!mpReady)return;player.previousVideo();setTimeout(updateMeta,1000)}
+  function nextTrack(){if(!mpReady)return;player.nextVideo();setTimeout(updateMeta,1000)}
+  document.body.addEventListener('click',function(){if(!started&&mpReady){player.playVideo();started=true;showMP()}},{on
+  ce:true});
+  </script>
+  </body>
+  </html>
