@@ -314,7 +314,7 @@ a,button{-webkit-tap-highlight-color:transparent}
       <div class="ct"><span class="cs">Live</span><span class="cn">TWITCH</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
     </a>
-    <a href="https://youtube.com/@leer0610" class="card" target="_blank">
+    <a href="https://www.youtube.com/@LEER0610" class="card" target="_blank">
       <div class="ci"><i class="fa-brands fa-youtube"></i></div>
       <div class="ct"><span class="cs">Vid&eacute;os</span><span class="cn">YOUTUBE</span></div>
       <div class="ca"><i class="fa-solid fa-arrow-right"></i></div>
@@ -1497,7 +1497,11 @@ function onYouTubeIframeAPIReady(){
         document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';
         document.getElementById('mpEq').classList.toggle('on',p);
         if(p){started=true;updateMeta()}
-        if(e.data===0)player.nextVideo();
+        if(e.data===0){
+          var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();
+          if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);
+          else player.nextVideo();
+        }
       },
       onError:function(){if(mpReady)player.nextVideo()} /* saute les morceaux indisponibles/privés au lieu de bloquer la lecture */
     }
