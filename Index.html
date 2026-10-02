@@ -241,7 +241,7 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
 
 /* VOLUME */
-.vol{position:relative;display:flex;align-items:center;margin-left:4px}
+.vol{position:relative;display:flex;align-items:center}
 #volBtn.open{color:#fff;background:rgba(var(--rgb),.25)}
 .vpanel{position:absolute;right:0;bottom:calc(100% + 22px);display:flex;align-items:center;gap:6px;padding:10px 12px;border-radius:16px;background:rgba(var(--bgrgb),.97);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 40px rgba(0,0,0,.7);backdrop-filter:blur(20px);z-index:120;animation:cmIn .2s ease}
 .vpanel[hidden]{display:none}
@@ -471,8 +471,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   <div class="mc">
     <button class="mb" onclick="prevTrack()"><i class="fa-solid fa-backward-step"></i></button>
     <button class="mb main" onclick="toggleMusic()"><i class="fa-solid fa-play" id="mpI"></i></button>
-    <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
-    <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="vol" id="volWrap">
       <button class="mb" id="volBtn" onclick="toggleVolPanel(event)" aria-label="Régler le volume" aria-expanded="false"><i class="fa-solid fa-volume-high" id="volI"></i></button>
       <div class="vpanel" id="vPanel" hidden>
@@ -483,6 +481,8 @@ a,button{-webkit-tap-highlight-color:transparent}
         <span id="volPct">60%</span>
       </div>
     </div>
+    <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
+    <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span><span></span></div>
   </div>
 </div>
 <div id="player"></div>
