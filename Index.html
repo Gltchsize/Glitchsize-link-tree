@@ -241,16 +241,20 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
 
 /* VOLUME */
-.vol{display:flex;align-items:center;gap:2px;margin-left:4px}
-#vol{-webkit-appearance:none;appearance:none;width:80px;height:4px;border-radius:2px;outline:none;cursor:none;background:linear-gradient(90deg,var(--rl) var(--v,60%),rgba(255,255,255,.12) var(--v,60%))}
-#vol::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
-#vol::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
+.vol{position:relative;display:flex;align-items:center;margin-left:4px}
+#volBtn.open{color:#fff;background:rgba(var(--rgb),.25)}
+.vpanel{position:absolute;right:0;bottom:calc(100% + 22px);display:flex;align-items:center;gap:6px;padding:10px 12px;border-radius:16px;background:rgba(var(--bgrgb),.97);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 40px rgba(0,0,0,.7);backdrop-filter:blur(20px);z-index:120;animation:cmIn .2s ease}
+.vpanel[hidden]{display:none}
+.vpanel .mb{width:30px;height:30px;justify-content:center;font-size:.8rem}
+#vol{-webkit-appearance:none;appearance:none;width:120px;height:4px;border-radius:2px;outline:none;cursor:none;background:linear-gradient(90deg,var(--rl) var(--v,60%),rgba(255,255,255,.12) var(--v,60%))}
+#vol::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
+#vol::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
 #vol::-moz-range-track{background:transparent}
-#volBtn{width:30px;justify-content:center}
+#volPct{font-size:.58rem;letter-spacing:1px;color:rgba(255,255,255,.6);min-width:32px;text-align:right}
 @media (max-width:520px){
   #mp{padding-left:14px;padding-right:14px;gap:10px}
-  #vol{width:54px}
   .meq{display:none}
+  #vol{width:90px}
 }
 
 #player{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
@@ -469,9 +473,15 @@ a,button{-webkit-tap-highlight-color:transparent}
     <button class="mb main" onclick="toggleMusic()"><i class="fa-solid fa-play" id="mpI"></i></button>
     <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
     <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span><span></span></div>
-    <div class="vol">
-      <button class="mb" id="volBtn" onclick="toggleMute()" aria-label="Couper le son"><i class="fa-solid fa-volume-high" id="volI"></i></button>
-      <input type="range" id="vol" min="0" max="100" value="60" aria-label="Volume">
+    <div class="vol" id="volWrap">
+      <button class="mb" id="volBtn" onclick="toggleVolPanel(event)" aria-label="Régler le volume" aria-expanded="false"><i class="fa-solid fa-volume-high" id="volI"></i></button>
+      <div class="vpanel" id="vPanel" hidden>
+        <button class="mb" onclick="toggleMute()" aria-label="Couper le son"><i class="fa-solid fa-volume-high" id="vMuteI"></i></button>
+        <button class="mb" onclick="stepVol(-10)" aria-label="Baisser le volume"><i class="fa-solid fa-minus"></i></button>
+        <input type="range" id="vol" min="0" max="100" value="60" aria-label="Volume">
+        <button class="mb" onclick="stepVol(10)" aria-label="Augmenter le volume"><i class="fa-solid fa-plus"></i></button>
+        <span id="volPct">60%</span>
+      </div>
     </div>
   </div>
 </div>
@@ -521,7 +531,10 @@ try{var sv=localStorage.getItem('leerVol');if(sv!==null&&isFinite(+sv))vol=Math.
 function applyVol(){
   var v=document.getElementById('vol'),ic=document.getElementById('volI');
   if(v){v.value=vol;v.style.setProperty('--v',(muted?0:vol)+'%')}
-  if(ic)ic.className='fa-solid '+((muted||vol===0)?'fa-volume-xmark':vol<40?'fa-volume-low':'fa-volume-high');
+  var cls='fa-solid '+((muted||vol===0)?'fa-volume-xmark':vol<40?'fa-volume-low':'fa-volume-high');
+  if(ic)ic.className=cls;
+  var mi=document.getElementById('vMuteI');if(mi)mi.className=cls;
+  var pc=document.getElementById('volPct');if(pc)pc.textContent=(muted?0:vol)+'%';
   if(mpReady&&player){
     if(muted||vol===0)player.mute();
     else{player.unMute();player.setVolume(vol)}
@@ -532,6 +545,22 @@ function toggleMute(){
   try{localStorage.setItem('leerMuted',muted?'1':'0');localStorage.setItem('leerVol',vol)}catch(e){}
   applyVol();
 }
+function stepVol(d){
+  vol=Math.max(0,Math.min(100,vol+d));muted=false;
+  try{localStorage.setItem('leerVol',vol);localStorage.setItem('leerMuted','0')}catch(e){}
+  applyVol();
+}
+function toggleVolPanel(e){
+  if(e)e.stopPropagation();
+  var p=document.getElementById('vPanel'),b=document.getElementById('volBtn');
+  p.hidden=!p.hidden;b.classList.toggle('open',!p.hidden);b.setAttribute('aria-expanded',String(!p.hidden));
+}
+function closeVolPanel(){
+  var p=document.getElementById('vPanel'),b=document.getElementById('volBtn');
+  if(p.hidden)return;p.hidden=true;b.classList.remove('open');b.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click',function(e){if(!e.target.closest('#volWrap'))closeVolPanel()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeVolPanel()});
 document.addEventListener('DOMContentLoaded',function(){
   var v=document.getElementById('vol');
   v.addEventListener('input',function(){
