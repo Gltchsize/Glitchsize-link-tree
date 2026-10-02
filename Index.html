@@ -239,6 +239,20 @@ a.ar:hover{background:rgba(var(--rgb),.11);border-color:rgba(var(--rgb),.3)}
 .meq span:nth-child(1){height:5px}.meq span:nth-child(2){height:11px;animation-delay:.1s}.meq span:nth-child(3){height:7px;animation-delay:.2s}.meq span:nth-child(4){height:13px;animation-delay:.08s}.meq span:nth-child(5){height:4px;animation-delay:.18s}
 .meq.on span{opacity:.8}
 @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+
+/* VOLUME */
+.vol{display:flex;align-items:center;gap:2px;margin-left:4px}
+#vol{-webkit-appearance:none;appearance:none;width:80px;height:4px;border-radius:2px;outline:none;cursor:none;background:linear-gradient(90deg,var(--rl) var(--v,60%),rgba(255,255,255,.12) var(--v,60%))}
+#vol::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
+#vol::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(var(--rgb),.6);border:none}
+#vol::-moz-range-track{background:transparent}
+#volBtn{width:30px;justify-content:center}
+@media (max-width:520px){
+  #mp{padding-left:14px;padding-right:14px;gap:10px}
+  #vol{width:54px}
+  .meq{display:none}
+}
+
 #player{position:fixed;width:1px;height:1px;left:-9999px;top:-9999px;opacity:0;pointer-events:none}
 
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
@@ -455,6 +469,10 @@ a,button{-webkit-tap-highlight-color:transparent}
     <button class="mb main" onclick="toggleMusic()"><i class="fa-solid fa-play" id="mpI"></i></button>
     <button class="mb" onclick="nextTrack()"><i class="fa-solid fa-forward-step"></i></button>
     <div class="meq" id="mpEq"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="vol">
+      <button class="mb" id="volBtn" onclick="toggleMute()" aria-label="Couper le son"><i class="fa-solid fa-volume-high" id="volI"></i></button>
+      <input type="range" id="vol" min="0" max="100" value="60" aria-label="Volume">
+    </div>
   </div>
 </div>
 <div id="player"></div>
@@ -496,12 +514,40 @@ function updateAudioLevels(){
 
 /* YOUTUBE */
 var player,started=false,mpReady=false;
+
+/* VOLUME */
+var vol=60,muted=false;
+try{var sv=localStorage.getItem('leerVol');if(sv!==null&&isFinite(+sv))vol=Math.max(0,Math.min(100,+sv));muted=localStorage.getItem('leerMuted')==='1'}catch(e){}
+function applyVol(){
+  var v=document.getElementById('vol'),ic=document.getElementById('volI');
+  if(v){v.value=vol;v.style.setProperty('--v',(muted?0:vol)+'%')}
+  if(ic)ic.className='fa-solid '+((muted||vol===0)?'fa-volume-xmark':vol<40?'fa-volume-low':'fa-volume-high');
+  if(mpReady&&player){
+    if(muted||vol===0)player.mute();
+    else{player.unMute();player.setVolume(vol)}
+  }
+}
+function toggleMute(){
+  if(vol===0){vol=50;muted=false}else muted=!muted;
+  try{localStorage.setItem('leerMuted',muted?'1':'0');localStorage.setItem('leerVol',vol)}catch(e){}
+  applyVol();
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var v=document.getElementById('vol');
+  v.addEventListener('input',function(){
+    vol=+v.value;muted=false;
+    try{localStorage.setItem('leerVol',vol);localStorage.setItem('leerMuted','0')}catch(e){}
+    applyVol();
+  });
+  applyVol();
+});
+
 function onYouTubeIframeAPIReady(){
   player=new YT.Player('player',{
     height:'1',width:'1',
     playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:1,controls:0,rel:0,playsinline:1,loop:1},
     events:{
-      onReady:function(e){mpReady=true;e.target.setVolume(60);e.target.setShuffle(true);try{e.target.setLoop(true)}catch(err){}e.target.playVideo();showMP();updateMeta();initAudioAnalysis()},
+      onReady:function(e){mpReady=true;applyVol();e.target.setShuffle(true);try{e.target.setLoop(true)}catch(err){}e.target.playVideo();showMP();updateMeta();initAudioAnalysis()},
       onStateChange:function(e){var p=e.data===1;document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';document.getElementById('mpEq').classList.toggle('on',p);if(p){started=true;updateMeta()}if(e.data===0){var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);else player.nextVideo()}},
       onError:function(){if(mpReady)player.nextVideo()}
     }
