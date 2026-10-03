@@ -23,10 +23,10 @@ html,body{width:100%;min-height:100vh;font-family:'Inter',sans-serif;color:#fff;
 
 /* CANVAS */
 #c{position:fixed;inset:0;z-index:0}
-#c3p{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);width:100%;height:180px;z-index:100;pointer-events:none;opacity:0;transition:opacity .6s}
-@media (max-width:640px){#c3p{height:150px}}
+#c3p{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);width:100%;height:210px;z-index:100;pointer-events:none;opacity:0;transition:opacity .6s}
+@media (max-width:640px){#c3p{height:175px}}
 .p3d #mp{display:none!important}
-.p3d #scene{padding-bottom:calc(200px + env(safe-area-inset-bottom,0px))!important}
+.p3d #scene{padding-bottom:calc(230px + env(safe-area-inset-bottom,0px))!important}
 #c3d{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
 
 /* INTRO */
@@ -303,11 +303,11 @@ function updateAudioLevels(){
 }
 
 /* YOUTUBE */
-var player,started=false,mpReady=false;
+var player,started=false,mpReady=false,playedOnce=false,lastG=0,errN=0;
 
 /* VOLUME */
 var vol=60,muted=false;
-try{var sv=localStorage.getItem('leerVol');if(sv!==null&&isFinite(+sv))vol=Math.max(0,Math.min(100,+sv));muted=localStorage.getItem('leerMuted')==='1'}catch(e){}
+try{var sv=localStorage.getItem('leerVol');if(sv!==null&&isFinite(+sv))vol=Math.max(0,Math.min(100,+sv))}catch(e){}
 function applyVol(){
   var v=document.getElementById('vol'),ic=document.getElementById('volI');
   if(v){v.value=vol;v.style.setProperty('--v',(muted?0:vol)+'%')}
@@ -322,7 +322,7 @@ function applyVol(){
 }
 function toggleMute(){
   if(vol===0){vol=50;muted=false}else muted=!muted;
-  try{localStorage.setItem('leerMuted',muted?'1':'0');localStorage.setItem('leerVol',vol)}catch(e){}
+  try{localStorage.setItem('leerVol',vol)}catch(e){}
   applyVol();
 }
 function stepVol(d){
@@ -357,8 +357,8 @@ function onYouTubeIframeAPIReady(){
     playerVars:{listType:'playlist',list:'PLPMWvmH_Lej8',autoplay:1,controls:0,rel:0,playsinline:1,loop:1},
     events:{
       onReady:function(e){mpReady=true;applyVol();e.target.setShuffle(true);try{e.target.setLoop(true)}catch(err){}e.target.playVideo();showMP();updateMeta();initAudioAnalysis()},
-      onStateChange:function(e){var p=e.data===1;document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';document.getElementById('mpEq').classList.toggle('on',p);if(p){started=true;updateMeta()}if(e.data===0){var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);else player.nextVideo()}},
-      onError:function(){if(mpReady)player.nextVideo()}
+      onStateChange:function(e){var p=e.data===1;document.getElementById('mpI').className=p?'fa-solid fa-pause':'fa-solid fa-play';document.getElementById('mpEq').classList.toggle('on',p);if(p){started=true;playedOnce=true;errN=0;updateMeta()}if(e.data===0){var list=player.getPlaylist&&player.getPlaylist(),idx=player.getPlaylistIndex&&player.getPlaylistIndex();if(list&&list.length&&idx>=list.length-1)player.playVideoAt(0);else player.nextVideo()}},
+      onError:function(e){var M={2:'Lien de playlist invalide',5:'Erreur du lecteur',100:'Video introuvable',101:'Lecture bloquee par le proprietaire',150:'Lecture bloquee par le proprietaire',153:'Lecture impossible (ouvre le site en ligne, pas en fichier local)'};document.getElementById('mpT').textContent='Erreur '+e.data+' : '+(M[e.data]||'lecture impossible');errN++;if(mpReady&&errN<6)setTimeout(function(){player.nextVideo()},800)}
     }
   });
 }
@@ -367,7 +367,13 @@ function showMP(){document.getElementById('mp').style.opacity='1';document.getEl
 function toggleMusic(){if(!mpReady)return;if(!started){player.playVideo();started=true;showMP();initAudioAnalysis();return}if(player.getPlayerState()===1)player.pauseVideo();else player.playVideo()}
 function prevTrack(){if(!mpReady)return;player.previousVideo();setTimeout(updateMeta,1000)}
 function nextTrack(){if(!mpReady)return;player.nextVideo();setTimeout(updateMeta,1000)}
-document.body.addEventListener('click',function(){if(!started&&mpReady){player.playVideo();started=true;showMP();initAudioAnalysis()}},{once:true});
+function startGesture(){
+  if(playedOnce){['pointerdown','touchend','keydown','click'].forEach(function(n){window.removeEventListener(n,startGesture,true)});return}
+  if(!mpReady||!player)return;
+  try{if(muted||vol===0){player.mute()}else{player.unMute();player.setVolume(vol)}player.playVideo()}catch(e){}
+  lastG=Date.now();started=true;showMP();initAudioAnalysis();
+}
+['pointerdown','touchend','keydown','click'].forEach(function(n){window.addEventListener(n,startGesture,true)});
 setInterval(updateAudioLevels,50);
 
 /* EASING */
@@ -570,7 +576,7 @@ var pc=document.querySelector('.pc');if(pc){pc.addEventListener('mousemove',func
     var st={g:g,act:act,press:0,hov:0,pressed:false,body:bm,ring:rg.material,icon:im};
     body.userData.st=st;hits.push(body);btns.push(st);return st}
   var bPrev=mkBtn(.3,-.05,.65,.38,function(){prevTrack()},tPrev);
-  var bPlay=mkBtn(2.3,-.05,.85,.45,function(){toggleMusic()},tPlay);
+  var bPlay=mkBtn(2.3,-.05,.85,.45,function(){if(Date.now()-lastG<700)return;toggleMusic()},tPlay);
   var bNext=mkBtn(4.3,-.05,.65,.38,function(){nextTrack()},tNext);
   var bMute=mkBtn(.3,-1.55,.5,.3,function(){toggleMute()},tSpk);
 
@@ -616,7 +622,7 @@ var pc=document.querySelector('.pc');if(pc){pc.addEventListener('mousemove',func
   function rsz(){
     var w=cv.clientWidth||innerWidth,h=cv.clientHeight||180;
     ren.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
-    var pxw=Math.min(w,620),D=14.8;
+    var pxw=Math.min(w,640),D=15.6;
     cam.position.set(0,0,D*h/pxw/2/Math.tan(cam.fov*Math.PI/360));cam.lookAt(0,0,0)}
   rsz();window.addEventListener('resize',rsz);
 
@@ -638,7 +644,7 @@ var pc=document.querySelector('.pc');if(pc){pc.addEventListener('mousemove',func
     accMats.forEach(function(a){a.m.emissive.copy(acc);a.m.emissiveIntensity=a.ei});
     cx+=(mX-cx)*.05;cy+=(mY-cy)*.05;
     var k=Math.min(1,(performance.now()-t0)/1400),e=ease(k);
-    grp.position.y=-.1-(1-e)*4;
+    grp.position.y=.3-(1-e)*4;
     grp.rotation.y=cx*.14;grp.rotation.x=-.75+cy*.05;
     spin+=((play?.055:0)-spin)*.04;vin.rotation.z-=spin;
     theta+=((play?.62:-.2)-theta)*.05;arm.rotation.z=theta;
