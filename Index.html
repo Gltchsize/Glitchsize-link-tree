@@ -637,11 +637,15 @@ var pc=document.querySelector('.pc');if(pc){pc.addEventListener('mousemove',func
   /* boucle */
   var elT=document.getElementById('mpT'),elI=document.getElementById('mpI');
   var t=0,t0=0,cx=0,cy=0,spin=0,theta=-.2,lastMap=null;
-  function loadCover(vid){
+  function loadCover(vid,n){
+    n=n||0;
+    var u='i.ytimg.com/vi/'+vid+'/hqdefault.jpg';
+    var urls=['https://'+u,'https://wsrv.nl/?w=256&h=256&fit=cover&url='+u,'https://images.weserv.nl/?w=256&h=256&fit=cover&url='+u];
+    if(n>=urls.length){coverImg=null;drawLabel(T.lrgb);return}
     var im=new Image();im.crossOrigin='anonymous';
     im.onload=function(){if(vid!==lastVid)return;coverImg=im;drawLabel(T.lrgb)};
-    im.onerror=function(){if(vid!==lastVid)return;coverImg=null;drawLabel(T.lrgb)};
-    im.src='https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg'}
+    im.onerror=function(){if(vid!==lastVid)return;loadCover(vid,n+1)};
+    im.src=urls[n]}
   var poll=0;
   function ease(x){return 1-Math.pow(1-x,3)}
   function loop(){
