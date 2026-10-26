@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>LEER</title>
+<meta name="description" content="LEER — Développeur C++ · C# · C · HTML · JS · CSS · Java · Skript &amp; plus. Streamer &amp; créateur de contenu : gaming, clips &amp; live.">
+<meta name="theme-color" content="#cc0000">
+<meta name="author" content="LEER">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="LEER • @leer061011">
+<meta property="og:title" content="LEER — Développeur &amp; Streamer">
+<meta property="og:description" content="💻 C++ · C# · C · HTML · JS · CSS · Java · Skript &amp; plus&#10;🎮 Gaming, clips &amp; live · 🔗 Tous mes liens, mon profil Discord en direct et mon lecteur musique.">
+<meta property="og:image" content="https://i.imgur.com/Avq5xsP.png">
+<meta property="og:image:alt" content="Bannière de LEER">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEER — Développeur &amp; Streamer">
+<meta name="twitter:description" content="C++ · C# · C · HTML · JS · CSS · Java · Skript &amp; plus. Gaming, clips &amp; live.">
+<meta name="twitter:image" content="https://i.imgur.com/Avq5xsP.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -268,6 +282,12 @@ body.hide-pc #ePC{display:none}
   #cfgP{top:auto;height:62vh;width:100%;border-left:none;border-top:1px solid rgba(var(--rgb),.35);border-radius:20px 20px 0 0;transform:translateY(105%);box-shadow:0 -20px 60px rgba(0,0,0,.6)}
   #cfgP.open{transform:none}
 }
+
+/* STACK DEV */
+.stk{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
+.stk-t{width:100%;text-align:center;font-size:.46rem;letter-spacing:3px;text-transform:uppercase;color:rgba(var(--rlrgb),.6)}
+.stk span{padding:5px 10px;border-radius:999px;font-size:.55rem;font-weight:600;letter-spacing:.5px;color:#fff;background:linear-gradient(145deg,rgba(var(--rgb),.28),rgba(var(--rgb),.06));border:1px solid rgba(var(--rlrgb),.35);box-shadow:0 2px 0 rgba(var(--rgb),.4);transition:transform .2s,box-shadow .2s}
+.stk span:hover{transform:translateY(-2px);box-shadow:0 4px 0 rgba(var(--rgb),.5),0 0 14px rgba(var(--rgb),.4)}
 </style>
 </head>
 <body>
@@ -300,7 +320,11 @@ body.hide-pc #ePC{display:none}
       <div class="pb">
         <div class="pname" id="dName">LEER</div>
         <div class="ptag" id="dTag">@leer061011</div>
-        <div class="bio">Streamer &amp; créateur de contenu &mdash; gaming, clips &amp; live.</div>
+        <div class="bio">Développeur &amp; streamer &mdash; gaming, clips &amp; live.</div>
+        <div class="stk">
+          <div class="stk-t"><i class="fa-solid fa-code"></i> Développeur</div>
+          <span>C++</span><span>C#</span><span>C</span><span>HTML</span><span>JS</span><span>CSS</span><span>Java</span><span>Skript</span><span>&amp; plus…</span>
+        </div>
         <div class="pres" id="pres" hidden>
           <div class="ps"><i id="psd"></i><b id="pst">Hors ligne</b><span id="psp"></span></div>
           <div class="cst" id="cst"></div>
@@ -1624,7 +1648,7 @@ body.fx-dcprof #cst{display:none!important}
   var $=function(i){return document.getElementById(i)};
   if(!$('dTag')||!document.querySelector('.av-wrap'))return;
   var UID='1345768072593805313',CDN='https://cdn.discordapp.com';
-  var FALLBACK={bio:'DEV OF RIFF / Murielle',tag:'LNR',status:'await Leer.Create(); // C-ZONE'};
+  var FALLBACK={bio:'Développeur C++ · C# · C · HTML · JS · CSS · Java · Skript & plus',tag:'LNR',status:'await Leer.Create(); // C-ZONE'};
 
   /* injection des elements */
   var wrapAv=document.querySelector('.av-wrap'),row=document.querySelector('.av-row');
