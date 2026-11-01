@@ -1670,7 +1670,7 @@ body.fx-dcprof #cst{display:none!important}
     else{var ic=document.createElement('i');ic.className='fa-solid fa-bolt';el.appendChild(ic)}
     el.appendChild(document.createTextNode(g.tag));el.hidden=false;
   }
-  function setBadges(list){
+  function setBadges(list){return;
     var el=$('fxBd');el.textContent='';
     if(!list||!list.length){el.hidden=true;return}
     list.slice(0,8).forEach(function(b){if(!b||!b.icon)return;var im=new Image();im.alt=b.description||'';im.title=b.description||'';im.onerror=function(){im.remove();if(!el.children.length)el.hidden=true};im.src=CDN+'/badge-icons/'+b.icon+'.png';el.appendChild(im)});
@@ -1720,7 +1720,7 @@ body.fx-dcprof #cst{display:none!important}
   setTimeout(function(){if(!lyOk){/* pas de donnees Lanyard : on garde le statut de secours */}},6000);
 
   loadLy();loadPf();
-  setInterval(function(){if(!document.hidden)loadLy()},60000);setInterval(function(){if(!document.hidden)loadPf()},300000);
+  setInterval(function(){if(!document.hidden)loadLy()},60000);
 })();
 </script>
 
@@ -2157,5 +2157,248 @@ body.lite .card,body.lite .av{animation:none!important}
   requestAnimationFrame(f);
 })();
 </script>
+
+<!-- ===== LEER : BADGES, PRONOMS & COMPTES LIES DISCORD (temps réel) ===== -->
+<style>
+.fxbd{gap:6px;padding:5px 9px;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.fxbd img{width:19px;height:19px}
+.fxbd .fb{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;font-size:.7rem;color:rgba(var(--rlrgb),.95);filter:drop-shadow(0 0 5px rgba(var(--rgb),.6));transition:transform .2s}
+.fxbd .fb:hover{transform:scale(1.25) rotate(-6deg)}
+.fxbd.fl{animation:fxBdFl .9s ease}
+@keyframes fxBdFl{30%{box-shadow:0 0 0 3px rgba(var(--rlrgb),.45),0 0 22px rgba(var(--rgb),.7)}}
+.fxpro{color:rgba(255,255,255,.75);font-weight:500}
+.fxpro[hidden]{display:none}
+.fxcn{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:12px}
+.fxcn[hidden]{display:none}
+.fxcn .cn1{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:6px 10px;border-radius:10px;text-decoration:none;color:rgba(255,255,255,.85);font-size:.55rem;font-weight:500;letter-spacing:.3px;
+  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.09);box-shadow:0 2px 0 rgba(var(--rgb),.35);transition:transform .2s,border-color .2s,background .2s}
+a.cn1:hover{transform:translateY(-2px);border-color:rgba(var(--rlrgb),.5);background:rgba(var(--rgb),.2)}
+.fxcn .cn1 i{color:rgba(var(--rlrgb),.95);font-size:.7rem}
+.fxcn .cn1 span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.fxcn .cn1 .ok{color:#23a55a;font-size:.55rem}
+</style>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var bd=$('fxBd'),rt=$('fxRowTag'),pb=document.querySelector('.pb');
+  if(!bd||!rt||!pb)return;
+  var UID='1345768072593805313',CDN='https://cdn.discordapp.com';
+  function getJSON(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+
+  /* pronoms (puce à côté du tag) */
+  var pro=document.createElement('span');pro.className='fxtag fxpro';pro.id='fxPro';pro.hidden=true;rt.appendChild(pro);
+  /* comptes liés */
+  var cn=document.createElement('div');cn.className='fxcn';cn.id='fxCn';cn.hidden=true;
+  var pres=$('pres');pb.insertBefore(cn,pres||null);
+
+  /* badges de secours (drapeaux publics) si l'API de profil ne répond pas */
+  var FLAGS=[[1,'Staff Discord','fa-shield-halved'],[2,'Propriétaire de serveur partenaire','fa-handshake'],[4,'HypeSquad Events','fa-house-flag'],[8,'Chasseur de bugs','fa-bug'],[64,'HypeSquad Bravery','fa-shield'],[128,'HypeSquad Brilliance','fa-lightbulb'],[256,'HypeSquad Balance','fa-scale-balanced'],[512,'Soutien de la première heure','fa-gem'],[16384,'Chasseur de bugs (or)','fa-bug-slash'],[131072,'Développeur de bot certifié','fa-robot'],[262144,'Modérateur certifié','fa-gavel'],[4194304,'Développeur actif','fa-code']];
+  var CN={twitch:['fa-brands fa-twitch',function(n){return 'https://twitch.tv/'+encodeURIComponent(n)}],youtube:['fa-brands fa-youtube'],github:['fa-brands fa-github',function(n){return 'https://github.com/'+encodeURIComponent(n)}],twitter:['fa-brands fa-x-twitter',function(n){return 'https://x.com/'+encodeURIComponent(n)}],steam:['fa-brands fa-steam'],spotify:['fa-brands fa-spotify'],tiktok:['fa-brands fa-tiktok',function(n){return 'https://tiktok.com/@'+encodeURIComponent(n)}],instagram:['fa-brands fa-instagram',function(n){return 'https://instagram.com/'+encodeURIComponent(n)}],reddit:['fa-brands fa-reddit',function(n){return 'https://reddit.com/user/'+encodeURIComponent(n)}],xbox:['fa-brands fa-xbox'],playstation:['fa-brands fa-playstation'],epicgames:['fa-solid fa-gamepad'],battlenet:['fa-solid fa-gamepad'],paypal:['fa-brands fa-paypal'],domain:['fa-solid fa-globe',function(n){return 'https://'+n}],facebook:['fa-brands fa-facebook']};
+
+  var sig='';
+  function paintBadges(list,flags){
+    var items=[];
+    (list||[]).forEach(function(b){if(b&&b.icon)items.push({img:CDN+'/badge-icons/'+b.icon+'.png',t:b.description||'',link:b.link})});
+    if(!items.length&&flags)FLAGS.forEach(function(f){if(flags&f[0])items.push({fa:f[2],t:f[1]})});
+    var s=JSON.stringify(items);if(s===sig)return;
+    var first=sig==='';sig=s;
+    bd.textContent='';
+    items.slice(0,12).forEach(function(it){
+      var el;
+      if(it.img){el=new Image();el.alt=it.t;el.onerror=function(){el.remove();if(!bd.children.length)bd.hidden=true};el.src=it.img}
+      else{el=document.createElement('i');el.className='fb fa-solid '+it.fa}
+      el.title=it.t;bd.appendChild(el)});
+    bd.hidden=!bd.children.length;
+    if(!first&&!bd.hidden){bd.classList.remove('fl');void bd.offsetWidth;bd.classList.add('fl')}
+  }
+  function paintPro(t){t=(t||'').trim();pro.hidden=!t;pro.textContent='';if(t){var i=document.createElement('i');i.className='fa-solid fa-user';pro.appendChild(i);pro.appendChild(document.createTextNode(t))}}
+  function paintConn(list){
+    cn.textContent='';
+    (list||[]).slice(0,8).forEach(function(c){
+      if(!c||!c.name)return;
+      var m=CN[c.type]||['fa-solid fa-link'],href=m[1]?m[1](c.name):null;
+      var el=document.createElement(href?'a':'div');el.className='cn1';
+      if(href){el.href=href;el.target='_blank';el.rel='noopener'}
+      var i=document.createElement('i');i.className=m[0];el.appendChild(i);
+      var sp=document.createElement('span');sp.textContent=c.name;el.appendChild(sp);
+      if(c.verified){var v=document.createElement('i');v.className='fa-solid fa-circle-check ok';el.appendChild(v)}
+      cn.appendChild(el)});
+    cn.hidden=!cn.children.length;
+  }
+
+  var busy=false;
+  function load(){
+    if(busy||document.hidden)return;busy=true;
+    var flags=0;
+    var ly=getJSON('https://api.lanyard.rest/v1/users/'+UID).then(function(r){if(r&&r.success&&r.data&&r.data.discord_user)flags=r.data.discord_user.public_flags||0}).catch(function(){});
+    var pf=getJSON('https://dcdn.dstn.to/profile/'+UID).catch(function(){return null});
+    Promise.all([ly,pf]).then(function(a){
+      var p=a[1]||{};
+      paintBadges(p.badges,flags);
+      if(a[1]){paintPro((p.user_profile||{}).pronouns);paintConn(p.connected_accounts)}
+    }).then(function(){busy=false},function(){busy=false});
+  }
+  load();
+  setInterval(load,30000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
+  /* dès que la présence Discord change (statut, appareil...), on resynchronise */
+  var ps=$('pst');if(ps&&window.MutationObserver)new MutationObserver(function(){setTimeout(load,1500)}).observe(ps,{childList:true,characterData:true,subtree:true});
+})();
+</script>
+
+<!-- ===== LEER : COMPTEUR DE VISITES (Supabase) — à coller JUSTE AVANT </body>, après le dernier bloc ===== -->
+<style>
+@property --vca{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes vcSpin{to{--vca:360deg}}
+@keyframes vcIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes vcPing{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
+@keyframes vcPop{40%{transform:scale(1.06);filter:brightness(1.5)}}
+@keyframes vcShine{0%,60%{background-position:160% 0}100%{background-position:-60% 0}}
+
+.vcx{position:relative;width:100%;margin-top:6px;padding:16px 16px 14px;border-radius:var(--rad,14px);text-align:center;color:#fff;
+  background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015)),rgba(var(--bgrgb),.6);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 0 rgba(var(--rgb),.35),0 18px 34px rgba(0,0,0,.55),0 0 36px rgba(var(--rgb),.1);
+  opacity:0;animation:vcIn .8s cubic-bezier(.34,1.56,.64,1) 2.9s forwards;overflow:hidden}
+.vcx[hidden]{display:none}
+.vcx::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--vca),rgba(var(--rgb),0) 0%,rgba(var(--rlrgb),.9) 18%,#fff 24%,rgba(var(--rgb),0) 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:vcSpin 5s linear infinite}
+.vcx::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);background-size:250% 100%;animation:vcShine 6s ease-in-out infinite}
+
+.vct{display:flex;align-items:center;justify-content:center;gap:9px;font-size:.5rem;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:12px}
+.vcl{position:relative;width:7px;height:7px;border-radius:50%;background:#23a55a;box-shadow:0 0 10px #23a55a;flex-shrink:0}
+.vcl::after{content:'';position:absolute;inset:0;border-radius:50%;background:#23a55a;animation:vcPing 1.8s ease-out infinite}
+.vcb{font-weight:600;letter-spacing:2.5px;font-size:.42rem;padding:3px 7px;border-radius:999px;color:rgba(var(--rlrgb),.95);background:rgba(var(--rgb),.16);border:1px solid rgba(var(--rlrgb),.28)}
+
+.vcd{display:flex;justify-content:center;gap:5px;margin:2px 0 14px;perspective:600px}
+.vcd.pop{animation:vcPop .6s ease}
+.vdg{position:relative;width:1.9rem;height:2.7rem;border-radius:9px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 50%,rgba(0,0,0,.35) 50.5%,rgba(255,255,255,.03)),rgba(var(--bgrgb),.85);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 -2px 6px rgba(0,0,0,.5),0 3px 0 rgba(var(--rgb),.4),0 8px 14px rgba(0,0,0,.45)}
+.vdg::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.65);box-shadow:0 1px 0 rgba(255,255,255,.07)}
+.vds{position:absolute;left:0;right:0;top:0;height:1000%;display:flex;flex-direction:column;
+  transform:translateY(calc(var(--d,0) * -10%));transition:transform 1.4s cubic-bezier(.16,1,.3,1) var(--dl,0s)}
+.vds span{height:10%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.45rem;
+  background:linear-gradient(180deg,#fff,rgba(var(--rlrgb),.85));-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(var(--rgb),.7))}
+.vdg.z{opacity:.35}
+.vdg.z .vds span{filter:none}
+.vsep{width:.5rem;align-self:flex-end;text-align:center;color:rgba(var(--rlrgb),.45);font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.3rem;line-height:1;padding-bottom:.35rem}
+
+.vcf{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.vcf span{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-size:.55rem;letter-spacing:.5px;color:rgba(255,255,255,.6);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.vcf span i{color:rgba(var(--rlrgb),.9);font-size:.6rem}
+.vcf b{color:#fff;font-weight:600}
+.vcf .me{background:rgba(var(--rgb),.16);border-color:rgba(var(--rlrgb),.3);color:#fff}
+.vcf .me[hidden]{display:none}
+
+body.lay-grid .vcx{flex:0 0 100%}
+body.lite .vcx::after,body.lite .vcx::before{animation:none}
+@media (max-width:380px){.vdg{width:1.55rem;height:2.3rem}.vds span{font-size:1.2rem}}
+@media (prefers-reduced-motion:reduce){.vcx,.vcx::before,.vcx::after,.vcl::after{animation:none!important}.vcx{opacity:1}.vds{transition:none}}
+</style>
+
+<script>
+(function(){
+  /* ---------- CONFIG SUPABASE ---------- */
+  var SB_URL='https://twjdatnoxskjduagaasb.supabase.co';
+  var SB_KEY='sb_publishable_nSi8009JQqZsLVkwzII3Sw_1xh9lpqY';
+  var SLUG='leer';
+
+  var wrap=document.querySelector('.wrap');if(!wrap)return;
+  var old=document.getElementById('vcW');if(old)old.remove();
+
+  /* ---------- carte ---------- */
+  var card=document.createElement('div');card.className='vcx';card.id='vcX';card.hidden=true;
+  card.innerHTML='<div class="vct"><i class="vcl"></i><span>Visites</span><b class="vcb">EN DIRECT</b></div>'
+    +'<div class="vcd" id="vcD" aria-live="polite"></div>'
+    +'<div class="vcf"><span><i class="fa-solid fa-user-group"></i><b id="vcU">0</b> visiteurs uniques</span>'
+    +'<span class="me" id="vcM" hidden><i class="fa-solid fa-star"></i>Visiteur n°<b id="vcN">0</b></span></div>';
+  var ft=document.getElementById('eFT');
+  wrap.insertBefore(card,ft&&ft.nextSibling?ft.nextSibling:null);
+  if(ft&&ft.nextSibling===null)wrap.appendChild(card);
+
+  var D=document.getElementById('vcD'),cols=[],shown=0;
+  var fmt=function(n){return Number(n).toLocaleString('fr-FR')};
+
+  /* ---------- compteur à rouleaux ---------- */
+  function build(len){
+    D.textContent='';cols=[];
+    for(var i=0;i<len;i++){
+      if(i>0&&(len-i)%3===0){var s=document.createElement('div');s.className='vsep';s.textContent='·';D.appendChild(s)}
+      var g=document.createElement('div');g.className='vdg z';
+      var st=document.createElement('div');st.className='vds';
+      for(var d=0;d<10;d++){var sp=document.createElement('span');sp.textContent=d;st.appendChild(sp)}
+      g.appendChild(st);D.appendChild(g);cols.push({g:g,s:st});
+    }
+  }
+  function show(n,first){
+    n=Math.max(0,Math.floor(n));
+    var str=String(n),len=Math.max(5,str.length);
+    if(cols.length!==len)build(len);
+    var pad=('0000000000'+str).slice(-len);
+    for(var i=0;i<len;i++){
+      var c=cols[i],lead=i<len-str.length;
+      c.g.classList.toggle('z',lead);
+      c.s.style.setProperty('--dl',((len-1-i)*.09)+'s');
+      c.s.style.setProperty('--d',pad.charAt(i));
+    }
+    if(!first&&n!==shown){D.classList.remove('pop');void D.offsetWidth;D.classList.add('pop')}
+    shown=n;
+    D.setAttribute('aria-label',fmt(n)+' visites');
+  }
+  show(0,true);
+
+  /* ---------- Supabase ---------- */
+  var H={'apikey':SB_KEY,'Content-Type':'application/json'};
+  function store(k,v){try{if(v===undefined)return sessionStorage.getItem(k);sessionStorage.setItem(k,v)}catch(e){return null}}
+  function lget(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+  function apply(row,mine){
+    if(!row)return;
+    card.hidden=false;
+    show(row.views);
+    document.getElementById('vcU').textContent=fmt(row.uniques||0);
+    if(mine){document.getElementById('vcN').textContent=fmt(mine);document.getElementById('vcM').hidden=false}
+    lset('leerVisitsCache',JSON.stringify({v:row.views,u:row.uniques}));
+  }
+  function fetchRow(){
+    return fetch(SB_URL+'/rest/v1/page_visits?slug=eq.'+SLUG+'&select=views,uniques',{headers:H})
+      .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){return a&&a[0]});
+  }
+  function hit(){
+    var isNew=!lget('leerVisitor');
+    return fetch(SB_URL+'/rest/v1/rpc/hit_page',{method:'POST',headers:H,body:JSON.stringify({p_slug:SLUG,p_new_visitor:isNew})})
+      .then(function(r){if(!r.ok)throw 0;return r.json()})
+      .then(function(a){var row=Array.isArray(a)?a[0]:a;if(isNew)lset('leerVisitor',String(Date.now()));return row});
+  }
+
+  /* cache : on affiche tout de suite la dernière valeur connue */
+  try{var c=JSON.parse(lget('leerVisitsCache')||'null');if(c&&isFinite(c.v)){card.hidden=false;document.getElementById('vcU').textContent=fmt(c.u||0)}}catch(e){}
+
+  var counted=store('leerCounted');
+  var start=counted?fetchRow():hit();
+  /* on laisse l'intro finir avant de faire rouler les chiffres */
+  var delay=Math.max(0,3000-performance.now());
+  start.then(function(row){
+    if(!counted&&row){store('leerCounted','1');store('leerMine',String(row.views))}
+    var mine=+store('leerMine')||0;
+    setTimeout(function(){apply(row,mine)},delay);
+  }).catch(function(){});
+
+  /* rafraîchissement en direct */
+  setInterval(function(){
+    if(document.hidden)return;
+    fetchRow().then(function(row){if(row)apply(row,+store('leerMine')||0)}).catch(function(){});
+  },30000);
+})();
+</script>
+
 </body>
 </html>
