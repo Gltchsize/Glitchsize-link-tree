@@ -314,7 +314,7 @@ body.hide-pc #ePC{display:none}
         </div>
         <div class="badges-inline">
           <div class="bi"><i class="fa-solid fa-bolt"></i> Live</div>
-          <div class="bi"><i class="fa-solid fa-fire"></i> 2026</div>
+          <div class="bi"><i class="fa-solid fa-code"></i> Developer 2026</div>
         </div>
       </div>
       <div class="pb">
@@ -323,7 +323,7 @@ body.hide-pc #ePC{display:none}
         <div class="bio">Développeur &amp; streamer &mdash; gaming, clips &amp; live.</div>
         <div class="stk">
           <div class="stk-t"><i class="fa-solid fa-code"></i> Développeur</div>
-          <span>C++</span><span>C#</span><span>C</span><span>HTML</span><span>JS</span><span>CSS</span><span>Java</span><span>Skript</span><span>&amp; plus…</span>
+          <span>C++</span><span>C#</span><span>C</span><span>HTML</span><span>JS</span><span>CSS</span><span>Java</span><span>Skript</span><span>Rust</span><span>Assembly</span><span>&amp; plus…</span>
         </div>
         <div class="pres" id="pres" hidden>
           <div class="ps"><i id="psd"></i><b id="pst">Hors ligne</b><span id="psp"></span></div>
@@ -1630,6 +1630,8 @@ body.fx-dcprof #cst{display:none!important}
 .fxbub::before{width:9px;height:9px;left:-13px;top:14px}
 .fxbub::after{width:5px;height:5px;left:-21px;top:22px}
 .fxbub img{width:16px;height:16px;object-fit:contain;flex-shrink:0}
+.fxbub .fxbi{color:#4f8cff;font-size:.85rem;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(79,140,255,.6))}
+.fxbub span{text-transform:uppercase;letter-spacing:.3px}
 .fxbub span{word-break:break-word}
 @keyframes fxBub{from{opacity:0;transform:scale(.6) translateX(-12px)}}
 @keyframes fxBubF{50%{translate:0 -3px}}
@@ -1648,7 +1650,7 @@ body.fx-dcprof #cst{display:none!important}
   var $=function(i){return document.getElementById(i)};
   if(!$('dTag')||!document.querySelector('.av-wrap'))return;
   var UID='1345768072593805313',CDN='https://cdn.discordapp.com';
-  var FALLBACK={bio:'Développeur C++ · C# · C · HTML · JS · CSS · Java · Skript & plus',tag:'LNR',status:'await Leer.Create(); // C-ZONE'};
+  var FALLBACK={bio:'Développeur C++ · C# · C · HTML · JS · CSS · Java · Skript · Rust · Assembly & plus',tag:'LNR',status:'DEV C# C++ C JS JAVA CSS HTML SKRIPT RUST ASSEMBLY AND MORE'};
 
   /* injection des elements */
   var wrapAv=document.querySelector('.av-wrap'),row=document.querySelector('.av-row');
@@ -1680,18 +1682,20 @@ body.fx-dcprof #cst{display:none!important}
   function setDeco(d){
     if(d&&d.asset){deco.src=CDN+'/avatar-decoration-presets/'+d.asset+'.png?size=128&passthrough=true';deco.hidden=false}else deco.hidden=true;
   }
+  function fbIcon(){if(bub.querySelector('.fxbi'))return;var ic=document.createElement('i');ic.className='fxbi fa-solid fa-code';bub.insertBefore(ic,$('fxBubT'))}
   function setStatus(a){
-    var t=$('fxBubT');t.textContent='';
-    var txt=a&&a.state;
+    var t=$('fxBubT');t.textContent='';clearEmoji();
+    var txt=a&&a.state,hasIcon=false;
     if(a&&a.emoji){
       var e=a.emoji;
-      if(e.id){var im=new Image();im.alt='';im.src=CDN+'/emojis/'+e.id+(e.animated?'.gif':'.webp')+'?size=32';bub.insertBefore(im,t)}
+      if(e.id){var im=new Image();im.alt='';im.src=CDN+'/emojis/'+e.id+(e.animated?'.gif':'.webp')+'?size=32';bub.insertBefore(im,t);hasIcon=true}
       else if(e.name)txt=e.name+' '+(txt||'');
     }
-    if(!txt){bub.hidden=true;return}
+    if(!txt){txt=FALLBACK.status;hasIcon=false}
+    if(!hasIcon)fbIcon();
     t.textContent=txt;bub.hidden=false;
   }
-  function clearEmoji(){var im=bub.querySelector('img');if(im)im.remove()}
+  function clearEmoji(){var im=bub.querySelector('img');if(im)im.remove();var ic=bub.querySelector('.fxbi');if(ic)ic.remove()}
 
   /* Lanyard : statut perso + tag + decoration */
   function loadLy(){
@@ -1716,7 +1720,7 @@ body.fx-dcprof #cst{display:none!important}
   /* valeurs de secours (le temps du chargement / si l'API ne repond pas) */
   setBio(null);
   setTag({tag:FALLBACK.tag});
-  $('fxBubT').textContent=FALLBACK.status;bub.hidden=false;
+  fbIcon();$('fxBubT').textContent=FALLBACK.status;bub.hidden=false;
   setTimeout(function(){if(!lyOk){/* pas de donnees Lanyard : on garde le statut de secours */}},6000);
 
   loadLy();loadPf();
@@ -1966,7 +1970,7 @@ body.fx3-halo .av{animation:f3H 2.6s ease-in-out infinite}
   function apply(){for(var k in DEF)B.classList.toggle('fx3-'+k,!!F[k]);try{localStorage.setItem('leerFx3',JSON.stringify(F))}catch(e){}}
 
   /* ---------- bandeau ---------- */
-  var tk=mk('div','f3Tick'),tx='LEER ✦ STREAMER ✦ GAMING ✦ CLIPS ✦ LIVE ✦ LEER061011 ✦ ';
+  var tk=mk('div','f3Tick'),tx='LEER ✦ DEVELOPER 2026 ✦ STREAMER ✦ GAMING ✦ CLIPS ✦ LIVE ✦ LEER061011 ✦ ';
   var ti=mk('div');ti.textContent=tx+tx+tx+tx+tx+tx;tk.appendChild(ti);B.appendChild(tk);
 
   /* ---------- canvas ---------- */
@@ -2092,7 +2096,7 @@ body.fx3-halo .av{animation:f3H 2.6s ease-in-out infinite}
   frame();
 
   /* ---------- titre de l'onglet ---------- */
-  var base=document.title,ts=' ★ LEER ★ STREAMER ★ LEER061011 ',ti2=0;
+  var base=document.title,ts=' ★ LEER ★ DEVELOPER 2026 ★ STREAMER ★ LEER061011 ',ti2=0;
   setInterval(function(){
     if(F.title&&!document.hidden){ti2=(ti2+1)%ts.length;document.title=ts.slice(ti2)+ts.slice(0,ti2)}
     else if(document.title!==base&&!F.title)document.title=base;
@@ -2164,6 +2168,7 @@ body.lite .card,body.lite .av{animation:none!important}
 .fxbd img{width:19px;height:19px}
 .fxbd .fb{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;font-size:.7rem;color:rgba(var(--rlrgb),.95);filter:drop-shadow(0 0 5px rgba(var(--rgb),.6));transition:transform .2s}
 .fxbd .fb:hover{transform:scale(1.25) rotate(-6deg)}
+.fxbd[hidden]{display:none}
 .fxbd.fl{animation:fxBdFl .9s ease}
 @keyframes fxBdFl{30%{box-shadow:0 0 0 3px rgba(var(--rlrgb),.45),0 0 22px rgba(var(--rgb),.7)}}
 .fxpro{color:rgba(255,255,255,.75);font-weight:500}
@@ -2195,10 +2200,13 @@ a.cn1:hover{transform:translateY(-2px);border-color:rgba(var(--rlrgb),.5);backgr
   var FLAGS=[[1,'Staff Discord','fa-shield-halved'],[2,'Propriétaire de serveur partenaire','fa-handshake'],[4,'HypeSquad Events','fa-house-flag'],[8,'Chasseur de bugs','fa-bug'],[64,'HypeSquad Bravery','fa-shield'],[128,'HypeSquad Brilliance','fa-lightbulb'],[256,'HypeSquad Balance','fa-scale-balanced'],[512,'Soutien de la première heure','fa-gem'],[16384,'Chasseur de bugs (or)','fa-bug-slash'],[131072,'Développeur de bot certifié','fa-robot'],[262144,'Modérateur certifié','fa-gavel'],[4194304,'Développeur actif','fa-code']];
   var CN={twitch:['fa-brands fa-twitch',function(n){return 'https://twitch.tv/'+encodeURIComponent(n)}],youtube:['fa-brands fa-youtube'],github:['fa-brands fa-github',function(n){return 'https://github.com/'+encodeURIComponent(n)}],twitter:['fa-brands fa-x-twitter',function(n){return 'https://x.com/'+encodeURIComponent(n)}],steam:['fa-brands fa-steam'],spotify:['fa-brands fa-spotify'],tiktok:['fa-brands fa-tiktok',function(n){return 'https://tiktok.com/@'+encodeURIComponent(n)}],instagram:['fa-brands fa-instagram',function(n){return 'https://instagram.com/'+encodeURIComponent(n)}],reddit:['fa-brands fa-reddit',function(n){return 'https://reddit.com/user/'+encodeURIComponent(n)}],xbox:['fa-brands fa-xbox'],playstation:['fa-brands fa-playstation'],epicgames:['fa-solid fa-gamepad'],battlenet:['fa-solid fa-gamepad'],paypal:['fa-brands fa-paypal'],domain:['fa-solid fa-globe',function(n){return 'https://'+n}],facebook:['fa-brands fa-facebook']};
 
+  /* BADGES MANUELS (secours si l'API ne renvoie rien) : ajoute { img:'URL de l image', t:'Nom' } */
+  var MANUAL_BADGES=[];
   var sig='';
   function paintBadges(list,flags){
     var items=[];
     (list||[]).forEach(function(b){if(b&&b.icon)items.push({img:CDN+'/badge-icons/'+b.icon+'.png',t:b.description||'',link:b.link})});
+    if(!items.length)MANUAL_BADGES.forEach(function(b){items.push(b)});
     if(!items.length&&flags)FLAGS.forEach(function(f){if(flags&f[0])items.push({fa:f[2],t:f[1]})});
     var s=JSON.stringify(items);if(s===sig)return;
     var first=sig==='';sig=s;
@@ -2229,20 +2237,25 @@ a.cn1:hover{transform:translateY(-2px);border-color:rgba(var(--rlrgb),.5);backgr
   var busy=false;
   function load(){
     if(busy||document.hidden)return;busy=true;
-    var flags=0;
-    var ly=getJSON('https://api.lanyard.rest/v1/users/'+UID).then(function(r){if(r&&r.success&&r.data&&r.data.discord_user)flags=r.data.discord_user.public_flags||0}).catch(function(){});
-    var pf=getJSON('https://dcdn.dstn.to/profile/'+UID).catch(function(){return null});
+    var flags=0,bust='?t='+Date.now();
+    var ly=getJSON('https://api.lanyard.rest/v1/users/'+UID+bust).then(function(r){if(r&&r.success&&r.data&&r.data.discord_user)flags=r.data.discord_user.public_flags||0}).catch(function(){});
+    var pf=getJSON('https://dcdn.dstn.to/profile/'+UID).catch(function(e){
+      console.warn('[LEER badges] dstn.to a échoué :',e);
+      return getJSON('https://discordlookup.mesalytic.moe/v1/user/'+UID).then(function(u){
+        if(u&&typeof u.public_flags==='number')flags=flags||u.public_flags;return null}).catch(function(){return null});
+    });
     Promise.all([ly,pf]).then(function(a){
       var p=a[1]||{};
+      if(a[1]&&!(p.badges&&p.badges.length))console.warn('[LEER badges] dstn.to a répondu sans badges',p);
       paintBadges(p.badges,flags);
       if(a[1]){paintPro((p.user_profile||{}).pronouns);paintConn(p.connected_accounts)}
     }).then(function(){busy=false},function(){busy=false});
   }
   load();
-  setInterval(load,30000);
+  setInterval(load,10000);
   document.addEventListener('visibilitychange',function(){if(!document.hidden)load()});
-  /* dès que la présence Discord change (statut, appareil...), on resynchronise */
-  var ps=$('pst');if(ps&&window.MutationObserver)new MutationObserver(function(){setTimeout(load,1500)}).observe(ps,{childList:true,characterData:true,subtree:true});
+  window.addEventListener('focus',load);
+  var ps=$('pst');if(ps&&window.MutationObserver)new MutationObserver(function(){setTimeout(load,1000)}).observe(ps,{childList:true,characterData:true,subtree:true});
 })();
 </script>
 
@@ -2383,19 +2396,38 @@ body.lite .vcx::after,body.lite .vcx::before{animation:none}
   try{var c=JSON.parse(lget('leerVisitsCache')||'null');if(c&&isFinite(c.v)){card.hidden=false;document.getElementById('vcU').textContent=fmt(c.u||0)}}catch(e){}
 
   var counted=store('leerCounted');
-  var start=counted?fetchRow():hit();
+  function fail(e){
+    console.warn('[LEER visites] Supabase indisponible :',e);
+    card.hidden=false;
+    var c=null;try{c=JSON.parse(lget('leerVisitsCache')||'null')}catch(x){}
+    if(c&&isFinite(c.v)){show(c.v)}
+    var u=document.getElementById('vcU');if(u&&!c)u.textContent='—';
+    var t=card.querySelector('.vcb');if(t){t.textContent='HORS LIGNE';t.title='Le compteur ne répond pas (Supabase / bloqueur de pub)'}
+  }
+  function errOf(r){return r.text().then(function(t){throw new Error(r.status+' '+t)})}
+  function fetchRow2(){
+    return fetch(SB_URL+'/rest/v1/page_visits?slug=eq.'+SLUG+'&select=views,uniques',{headers:H})
+      .then(function(r){if(!r.ok)return errOf(r);return r.json()}).then(function(a){return (a&&a[0])||{views:0,uniques:0}});
+  }
+  function hit2(){
+    var isNew=!lget('leerVisitor');
+    return fetch(SB_URL+'/rest/v1/rpc/hit_page',{method:'POST',headers:H,body:JSON.stringify({p_slug:SLUG,p_new_visitor:isNew})})
+      .then(function(r){if(!r.ok)return errOf(r);return r.json()})
+      .then(function(a){var row=Array.isArray(a)?a[0]:a;if(isNew)lset('leerVisitor',String(Date.now()));return row||{views:0,uniques:0}});
+  }
+  var start=counted?fetchRow2():hit2().catch(function(e){console.warn('[LEER visites] hit_page a échoué :',e);return fetchRow2()});
   /* on laisse l'intro finir avant de faire rouler les chiffres */
   var delay=Math.max(0,3000-performance.now());
   start.then(function(row){
     if(!counted&&row){store('leerCounted','1');store('leerMine',String(row.views))}
     var mine=+store('leerMine')||0;
     setTimeout(function(){apply(row,mine)},delay);
-  }).catch(function(){});
+  }).catch(function(e){setTimeout(function(){fail(e)},delay)});
 
   /* rafraîchissement en direct */
   setInterval(function(){
     if(document.hidden)return;
-    fetchRow().then(function(row){if(row)apply(row,+store('leerMine')||0)}).catch(function(){});
+    fetchRow2().then(function(row){if(row)apply(row,+store('leerMine')||0)}).catch(function(){});
   },30000);
 })();
 </script>
